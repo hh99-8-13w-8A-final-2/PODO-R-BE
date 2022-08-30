@@ -1,0 +1,39 @@
+package be.podor.theater.model;
+
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
+
+@Getter
+@Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+public class Theater {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long theaterId;
+
+    @Column(nullable = false)
+    private String theaterName;
+
+    @Column
+    private String theaterTel;
+
+    @Column
+    private String theaterUrl;
+
+    @Column(nullable = false)
+    private String theaterAddr;
+
+    // 위도
+    @Column(nullable = false)
+    private Double la;
+
+    // 경도
+    @Column(nullable = false)
+    private Double lo;
+}
