@@ -14,7 +14,7 @@ public enum ScoreEnum {
     private final String text;
     private final Integer score;
 
-    @JsonCreator
+    @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
     public static ScoreEnum from(Integer score) {
         for (ScoreEnum scoreEnum : ScoreEnum.values()) {
             if (scoreEnum.getScore().equals(score)) {
