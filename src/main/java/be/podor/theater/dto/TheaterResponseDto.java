@@ -22,7 +22,7 @@ public class TheaterResponseDto {
                 .theaterName(theater.getTheaterName())
                 .theaterTel(theater.getTheaterTel())
                 .theaterUrl(theater.getTheaterUrl())
-                .theaterAddr(theater.getTheaterUrl())
+                .theaterAddr(theater.getTheaterAddr())
                 .la(theater.getLa())
                 .lo(theater.getLo())
                 .build();

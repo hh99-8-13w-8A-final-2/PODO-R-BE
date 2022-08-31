@@ -33,6 +33,7 @@ public class TheaterService {
         return responseDto;
     }
 
+    // Todo refactoring
     //극장별 좌석 정보 조회
     public List<FloorResponseDto> getTheaterSeats(Long theaterId) {
 
