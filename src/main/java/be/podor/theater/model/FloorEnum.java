@@ -1,5 +1,6 @@
 package be.podor.theater.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -12,4 +13,14 @@ public enum FloorEnum {
 
     private final String floor;
     private final int num;
+
+    @JsonCreator
+    public static FloorEnum from(String floor) {
+        for (FloorEnum floorEnum : FloorEnum.values()) {
+            if (floorEnum.getFloor().equals(floor)) {
+                return floorEnum;
+            }
+        }
+        return null;
+    }
 }
