@@ -19,7 +19,7 @@ public class ReviewService {
     private final TheaterSeatRepository theaterSeatRepository;
 
     // 리뷰 작성
-    public void createReview(Long musicalId, ReviewRequestDto requestDto) {
+    public Review createReview(Long musicalId, ReviewRequestDto requestDto) {
         Musical musical = musicalRepository.findById(musicalId).orElseThrow(
                 () -> new IllegalArgumentException("존재하지 않는 뮤지컬입니다.")
         );
@@ -35,6 +35,6 @@ public class ReviewService {
 
         Review review = Review.of(theaterSeat, musical, requestDto);
 
-        reviewRepository.save(review);
+        return reviewRepository.save(review);
     }
 }
