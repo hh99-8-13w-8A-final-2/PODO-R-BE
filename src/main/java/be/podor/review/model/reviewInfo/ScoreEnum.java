@@ -1,5 +1,6 @@
 package be.podor.review.model.reviewInfo;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -12,4 +13,14 @@ public enum ScoreEnum {
 
     private final String text;
     private final Integer score;
+
+    @JsonCreator
+    public static ScoreEnum from(Integer score) {
+        for (ScoreEnum scoreEnum : ScoreEnum.values()) {
+            if (scoreEnum.getScore().equals(score)) {
+                return scoreEnum;
+            }
+        }
+        return null;
+    }
 }
