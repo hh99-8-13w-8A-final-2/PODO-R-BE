@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @Entity
@@ -36,4 +37,8 @@ public class Theater {
     // 경도
     @Column(nullable = false)
     private Double lo;
+
+    // 편의시설
+    @OneToMany(mappedBy = "theater", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TheaterConvenience> theaterConveniences;
 }
