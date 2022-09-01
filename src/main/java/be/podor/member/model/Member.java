@@ -1,11 +1,13 @@
 package be.podor.member.model;
 
+import be.podor.member.dto.responsedto.KakaoUserInfoDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
@@ -33,5 +35,17 @@ public class Member {
     @Column
     private String profilePic;
 
+    @Column
+    private LocalDateTime createdAt;
 
+
+    public static Member of(KakaoUserInfoDto kakaoUserInfoDto){
+
+        return Member.builder()
+                .nickname(kakaoUserInfoDto.getNickname())
+                .profilePic(kakaoUserInfoDto.getPropilePic())
+                .createdAt(LocalDateTime.now())
+                .kakaoId(kakaoUserInfoDto.getKakaoId())
+                .build();
+    }
 }

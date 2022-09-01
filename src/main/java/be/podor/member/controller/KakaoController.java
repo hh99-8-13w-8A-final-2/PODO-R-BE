@@ -3,23 +3,22 @@ package be.podor.member.controller;
 
 import be.podor.member.service.KakaoService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 
 @RestController
-@RequestMapping("/member")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class KakaoController {
     private final KakaoService kakaoService;
 
-
-    @GetMapping("/kakao/callback")
-    public void kakaoLogin(@RequestParam String code, HttpServletResponse response) throws IOException {
-        kakaoService.kakaoLogin(code, response);
+    @GetMapping("/oauth/kakao")
+    public ResponseEntity<?> kakaoLogin(
+            @RequestParam(value = "code") String code) throws IOException {
+        return ResponseEntity.ok(kakaoService.kakaoLogin(code));
     }
-    
 }
 
 

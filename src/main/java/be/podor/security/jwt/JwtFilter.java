@@ -33,7 +33,6 @@ public class JwtFilter extends OncePerRequestFilter {
     public static String AUTHORITIES_KEY = "auth";
     //    new JwtFilter 생성자에 넣은 변수값을 불러온다. ---------------------------------
 
-    private final String secretKey;
     private final JwtTokenProvider jwtTokenProvider;
 //    ---------------------------------------------------------------------
 
@@ -42,14 +41,9 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-//       아스키코드로 바꿔서 바이트 배열을 생성
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
-
-//      hmacShaKeyFor 메소드를 이용하여 key 객체로 변경
-        Key key = Keys.hmacShaKeyFor(keyBytes);
 
 //       토큰 선언
-        String jwt = subToken(request);
+        String jwt = subToken(request); // 변수이름 수정요망
 
 //      hasText = 문자가 유효한지 체크하는 메소드 (공백을 제외하고 길이가 1이상인경우 true 값을 내보냄)
         if (!(subToken(request) == null)) {
@@ -58,7 +52,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 //매니저님 주석 -- name / value 의 한 쌍으로 이뤄져있음
                 Claims claims;
                 try {
-                    claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt).getBody();
+                    claims = jwtTokenProvider.claims(jwt);
                 } catch (ExpiredJwtException e) {
                     claims = e.getClaims();
                 }

@@ -15,35 +15,37 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.UUID;
+
 
 
 @Service
 @RequiredArgsConstructor
 public class KakaoService {
-    @Value("${kakao.client_id}")
+    @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
     String kakaoClientId;
-    @Value("${kakao.redirect_uri}")
+    @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
     String RedirectURI;
 
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
 
+    private final JwtTokenProvider jwtTokenProvider;
+
     @Transactional
-    public void kakaoLogin(String code, HttpServletResponse response)
+    public String kakaoLogin(String code)
             throws IOException {
         // 1. "인가코드" 로 "액세스 토큰" 요청
-        String accessToken = getAccessToken(code);
+        String accessToken = getKAkaoAccessToken(code);
 
         // 2. 토큰으로 카카오 API 호출
         KakaoUserInfoDto kakaoUserInfo = getKakaoUserInfo(accessToken);
@@ -54,18 +56,13 @@ public class KakaoService {
         //4. 강제 로그인 처리
         forceLoginKakaoUser(kakaoUser);
 
-        // User 권한 확인
-//        userRoleCheckService.userRoleCheck(kakaoUser);
-
-        //  5. response Header에 JWT 토큰 추가
-//        kakaoService.accessAndRefreshTokenProcess(kakaoUser.getNickname());
-
-        new ResponseEntity<>(HttpStatus.OK);
+        return jwtTokenProvider.createToken(kakaoUser);
     }
 
     //header 에 Content-type 지정
     //1번
-    public String getAccessToken(String code) throws IOException {
+    private String getKAkaoAccessToken(String code) throws IOException {
+        // HTTP Header 생성
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
@@ -85,11 +82,12 @@ public class KakaoService {
                 HttpMethod.POST,
                 kakaoTokenRequest,
                 String.class
-        );
+        );//리스폰스 받기
+
         //HTTP 응답 (JSON) -> 액세스 토큰 파싱
         //JSON -> JsonNode 객체로 변환
-        String responseBody = response.getBody();
-        ObjectMapper objectMapper = new ObjectMapper();
+        String responseBody = response.getBody(); //바디부분
+        ObjectMapper objectMapper = new ObjectMapper(); //오브젝트 맵퍼 생성
         JsonNode jsonNode = objectMapper.readTree(responseBody);
         return jsonNode.get("access_token").asText();
     }
@@ -129,26 +127,11 @@ public class KakaoService {
         // DB 에 중복된 Kakao Id 가 있는지 확인
         Long kakaoId = kakaoUserInfoDto.getKakaoId();
         Member findKakao = memberRepository.findByKakaoId(kakaoUserInfoDto.getKakaoId())
-                .orElse(null);
-
-        //DB에 중복된 계정이 없으면 회원가입 처리
-        if (findKakao == null) {
-            String nickName = kakaoUserInfoDto.getNickname();
-            String profilePic = kakaoUserInfoDto.getPropilePic();
-            String password = UUID.randomUUID().toString();
-            String encodedPassword = passwordEncoder.encode(password);
-            LocalDateTime createdAt = LocalDateTime.now();
-            Member kakaoUser = Member.builder()
-                    .nickname(nickName)
-                    .password(encodedPassword)
-                    .profilePic(profilePic)
-                    .createdAt(createdAt)
-                    .kakaoId(kakaoId)
-                    .build();
-            memberRepository.save(kakaoUser);
-
-            return kakaoUser;
-        }
+                //DB에 중복된 계정이 없으면 회원가입 처리
+                .orElseGet(()-> {
+                    Member kakaoUser = Member.of(kakaoUserInfoDto);
+                    return memberRepository.save(kakaoUser);
+                });
         return findKakao;
     }
 
@@ -161,8 +144,5 @@ public class KakaoService {
     }
 
 
-//        public void accessAndRefreshTokenProcess(String username) {
-//            String refreshToken = JwtTokenProvider.createRefreshToken();
-//            JwtTokenProvider.createToken(username);
-//        }
+
 }
