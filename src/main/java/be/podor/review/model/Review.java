@@ -3,6 +3,7 @@ package be.podor.review.model;
 import be.podor.musical.model.Musical;
 import be.podor.review.dto.ReviewRequestDto;
 import be.podor.review.model.reviewInfo.BriefTag;
+import be.podor.share.Timestamped;
 import be.podor.theater.model.TheaterSeat;
 import lombok.*;
 
@@ -13,7 +14,7 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class Review {
+public class Review extends Timestamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
