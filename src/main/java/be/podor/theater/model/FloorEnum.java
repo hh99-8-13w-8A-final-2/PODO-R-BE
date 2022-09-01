@@ -14,7 +14,7 @@ public enum FloorEnum {
     private final String floor;
     private final int num;
 
-    @JsonCreator
+    @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
     public static FloorEnum from(String floor) {
         for (FloorEnum floorEnum : FloorEnum.values()) {
             if (floorEnum.getFloor().equals(floor)) {
