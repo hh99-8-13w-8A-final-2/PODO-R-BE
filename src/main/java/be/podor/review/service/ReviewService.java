@@ -30,11 +30,12 @@ public class ReviewService {
                 () -> new IllegalArgumentException("존재하지 않는 뮤지컬입니다.")
         );
 
-        TheaterSeat theaterSeat = theaterSeatRepository.findByFloorAndSectionAndSeatRowAndSeat(
+        TheaterSeat theaterSeat = theaterSeatRepository.findByFloorAndSectionAndSeatRowAndSeatAndTheater_TheaterId(
                 requestDto.getFloor(),
                 requestDto.getSection(),
                 requestDto.getRow(),
-                requestDto.getSeat()
+                requestDto.getSeat(),
+                musical.getTheater().getTheaterId()
         ).orElseThrow(
                 () -> new IllegalArgumentException("존재하지 않는 좌석입니다.")
         );
