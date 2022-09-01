@@ -51,6 +51,11 @@ dependencies {
 
     // cache
     implementation 'org.springframework.boot:spring-boot-starter-cache'
+
+    // slack webhook
+    implementation("com.slack.api:bolt:1.25.0")
+    implementation("com.slack.api:bolt-servlet:1.25.0")
+    implementation("com.slack.api:bolt-jetty:1.25.0")
 }
 
 tasks.named('test') {
