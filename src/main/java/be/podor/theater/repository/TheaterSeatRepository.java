@@ -54,6 +54,6 @@ public interface TheaterSeatRepository extends JpaRepository<TheaterSeat, Long> 
             @Param("floor") FloorEnum floor
     );
 
-    // 층, 섹션, 열, 좌석 정보로 조회
-    Optional<TheaterSeat> findByFloorAndSectionAndSeatRowAndSeat(FloorEnum floor, String section, String seatRow, Integer Seat);
+    // 뮤지컬, 층, 섹션, 열, 좌석 정보로 조회
+    Optional<TheaterSeat> findByFloorAndSectionAndSeatRowAndSeatAndTheater_TheaterId(FloorEnum floor, String section, String seatRow, Integer Seat, Long theaterId);
 }
