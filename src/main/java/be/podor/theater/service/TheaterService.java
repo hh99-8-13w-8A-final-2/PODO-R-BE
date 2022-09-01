@@ -10,6 +10,7 @@ import be.podor.theater.repository.TheaterRepository;
 import be.podor.theater.repository.TheaterSeatRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,7 @@ public class TheaterService {
     private final TheaterSeatRepository theaterSeatRepository;
 
     //극장 정보 조회
+    @Transactional(readOnly = true)
     public TheaterResponseDto findTheater(Long theaterId) {
         Theater theater = theaterRepository.findById(theaterId).orElseThrow(
                 () -> new IllegalArgumentException("존재하지 않는 극장입니다.")
