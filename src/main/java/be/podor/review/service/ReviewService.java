@@ -29,9 +29,14 @@ public class ReviewService {
                 () -> new IllegalArgumentException("존재하지 않는 뮤지컬입니다.")
         );
 
+        String section = requestDto.getSection();
+        if (section == null || section.isEmpty()) {
+            section = null;
+        }
+
         TheaterSeat theaterSeat = theaterSeatRepository.findByFloorAndSectionAndSeatRowAndSeatAndTheater_TheaterId(
                 requestDto.getFloor(),
-                requestDto.getSection(),
+                section,
                 requestDto.getRow(),
                 requestDto.getSeat(),
                 musical.getTheater().getTheaterId()

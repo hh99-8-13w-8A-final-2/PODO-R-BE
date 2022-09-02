@@ -56,13 +56,16 @@ public class Review extends Timestamped {
                 .sound((requestDto.getSound()))
                 .build();
 
+        boolean operaGlass = requestDto.getOperaGrass() != null && requestDto.getOperaGrass().equals("on");
+        boolean blockSight = requestDto.getBlock() != null && requestDto.getBlock().equals("on");
+
         return Review.builder()
                 .content(requestDto.getReviewContent())
                 .imgUrl(requestDto.getImgUrl())
                 .briefTag(briefTag)
                 .seatGrade(requestDto.getSeatGrade())
-                .operaGlass(requestDto.getOperaGrass())
-                .block(requestDto.getBlock())
+                .operaGlass(operaGlass)
+                .block(blockSight)
                 .musical(musical)
                 .theaterSeat(theaterSeat)
                 .build();
