@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 public class KakaoUserInfoDto {
     private Long KakaoId;
     private String nickname;
-    private String propilePic;
+    private String profilePic;
 
 }

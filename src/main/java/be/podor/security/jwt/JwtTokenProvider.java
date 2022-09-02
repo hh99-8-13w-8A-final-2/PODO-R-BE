@@ -1,6 +1,5 @@
 package be.podor.security.jwt;
 
-import be.podor.member.dto.responsedto.KakaoUserInfoDto;
 import be.podor.member.model.Member;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
@@ -33,8 +31,8 @@ public class JwtTokenProvider {
 
     // 토큰 유효시간
     // 프론트엔드와 약속해야 함
-    private final Long tokenValidTime = 30*60*1000L;  // 30분
-    private final Long refreshTokenValidTime = 7*24*60*60*1000L;  // 1주일
+    private final Long TokenValidTime = 30 * 60 * 1000L;  // 30분
+    private final Long RefreshTokenValidTime = 7 * 24 * 60 * 60 * 1000L;  // 1주일
 
     private final UserDetailsService userDetailsService;
 
@@ -49,28 +47,32 @@ public class JwtTokenProvider {
         key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public Claims claims(String jwt){ // 변수이름 수정 요망
+    public Claims claims(String jwt) { // 변수이름 수정 요망
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt).getBody();
     }
 
     // 토큰 생성 // member ID 수정 // 수정
-    public String createToken(Member member) {
+    public TokenDto createToken(Member member) {
         Date now = new Date();
-        String Token = Jwts.builder()
+        String accessToken = Jwts.builder()
                 .setSubject(member.getId().toString())// 유저 정보 Id값 저장
                 .setAudience(member.getNickname()) // 유저 정보 닉네임값 저장
-                .setExpiration(new Date(now.getTime() + tokenValidTime)) // 만료 시간 정보
+                .setExpiration(new Date(now.getTime() + TokenValidTime)) // 만료 시간 정보
                 .signWith(key, SignatureAlgorithm.HS256) // 키값과 알고리즘 세팅
                 .compact();
-//        response.addHeader(BEARER_PREFIX,"Bearer " + Token);
-        return BEARER_PREFIX+Token;
+        String refreshToken = createRefreshToken();
+
+        return TokenDto.builder()
+                .accessToken(BEARER_PREFIX + accessToken)
+                .refreshToken(refreshToken)
+                .build();
     }
 
-    public  String createRefreshToken() {
+    public String createRefreshToken() {
         Date now = new Date();
-        String refreshToken= Jwts.builder()
+        String refreshToken = Jwts.builder()
                 .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + refreshTokenValidTime))
+                .setExpiration(new Date(now.getTime() + RefreshTokenValidTime))
                 .signWith(key, SignatureAlgorithm.HS256) // 키값과 알고리즘 세팅
                 .compact();
         return refreshToken;

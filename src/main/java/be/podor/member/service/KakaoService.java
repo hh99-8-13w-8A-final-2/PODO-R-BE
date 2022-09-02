@@ -6,26 +6,26 @@ import be.podor.member.model.Member;
 import be.podor.member.repository.MemberRepository;
 import be.podor.security.UserDetailsImpl;
 import be.podor.security.jwt.JwtTokenProvider;
+import be.podor.security.jwt.TokenDto;
 import lombok.RequiredArgsConstructor;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-
 
 
 @Service
@@ -36,16 +36,15 @@ public class KakaoService {
     @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
     String RedirectURI;
 
-    private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
 
     private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional
-    public String kakaoLogin(String code)
+    public TokenDto kakaoLogin(String code)
             throws IOException {
         // 1. "인가코드" 로 "액세스 토큰" 요청
-        String accessToken = getKAkaoAccessToken(code);
+        String accessToken = getKakaoAccessToken(code);
 
         // 2. 토큰으로 카카오 API 호출
         KakaoUserInfoDto kakaoUserInfo = getKakaoUserInfo(accessToken);
@@ -61,7 +60,7 @@ public class KakaoService {
 
     //header 에 Content-type 지정
     //1번
-    private String getKAkaoAccessToken(String code) throws IOException {
+    private String getKakaoAccessToken(String code) throws IOException {
         // HTTP Header 생성
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
@@ -128,7 +127,7 @@ public class KakaoService {
         Long kakaoId = kakaoUserInfoDto.getKakaoId();
         Member findKakao = memberRepository.findByKakaoId(kakaoUserInfoDto.getKakaoId())
                 //DB에 중복된 계정이 없으면 회원가입 처리
-                .orElseGet(()-> {
+                .orElseGet(() -> {
                     Member kakaoUser = Member.of(kakaoUserInfoDto);
                     return memberRepository.save(kakaoUser);
                 });
@@ -142,7 +141,6 @@ public class KakaoService {
                 new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
-
 
 
 }

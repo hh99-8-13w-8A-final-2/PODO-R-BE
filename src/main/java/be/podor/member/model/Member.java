@@ -39,11 +39,11 @@ public class Member {
     private LocalDateTime createdAt;
 
 
-    public static Member of(KakaoUserInfoDto kakaoUserInfoDto){
+    public static Member of(KakaoUserInfoDto kakaoUserInfoDto) {
 
         return Member.builder()
                 .nickname(kakaoUserInfoDto.getNickname())
-                .profilePic(kakaoUserInfoDto.getPropilePic())
+                .profilePic(kakaoUserInfoDto.getProfilePic())
                 .createdAt(LocalDateTime.now())
                 .kakaoId(kakaoUserInfoDto.getKakaoId())
                 .build();
