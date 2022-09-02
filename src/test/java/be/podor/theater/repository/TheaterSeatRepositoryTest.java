@@ -29,17 +29,17 @@ class TheaterSeatRepositoryTest {
     @Autowired
     private TheaterSeatRepository theaterSeatRepository;
 
+    private Theater theater;
+
     @BeforeEach
     void setUp() {
-        Theater theater = Theater.builder()
-                .theaterId(1L)
+        theater = theaterRepository.save(Theater.builder()
                 .theaterName("테스트극장")
                 .theaterAddr("서울특별시 강남구 역삼1동 논현로 425")
                 .la(37.4979954)
                 .lo(127.0379322)
-                .build();
-
-        theaterRepository.save(theater);
+                .build()
+        );
 
         List<TheaterSeat> theaterSeats = new ArrayList<>();
 
@@ -47,11 +47,15 @@ class TheaterSeatRepositoryTest {
         for (FloorEnum floor : FloorEnum.values()) {
             for (char c = 'A'; c < 'A' + 3; c++) {
                 for (int i = 1; i < 1 + 3; i++) {
-                    theaterSeats.add(TheaterSeat.of(theater,
-                            floor,
-                            String.valueOf(c),
-                            String.valueOf(i),
-                            (c - 'A') * 3 + i));
+                    theaterSeats.add(
+                            TheaterSeat.of(
+                                    theater,
+                                    floor,
+                                    String.valueOf(c),
+                                    String.valueOf(i),
+                                    (c - 'A') * 3 + i
+                            )
+                    );
                 }
             }
         }
@@ -63,17 +67,32 @@ class TheaterSeatRepositoryTest {
     @DisplayName("극장 아이디로 상영관 전체 층 조회")
     void findFloorEnumsByTheaterIdGroupByFloor() {
         //given
-        Long theaterId = 1L;
+        Long theaterId = theater.getTheaterId();
 
         //when
-        List<FloorEnum> seats = theaterSeatRepository.findFloorEnumsByTheaterIdGroupByFloor(theaterId);
+        List<FloorEnum> floors = theaterSeatRepository.findFloorEnumsByTheaterIdGroupByFloor(theaterId);
 
         //then
-        Assertions.assertThat(seats.size()).isEqualTo(3);
+        Assertions.assertThat(floors.size()).isEqualTo(3);
+    }
+
+    @Test
+    @DisplayName("극장 아이디와 층으로 층별 섹션 조회")
+    void findSectionsByTheaterIdAndFloorGroupBySection() {
+        //given
+        Long theaterId = theater.getTheaterId();
+        FloorEnum floor = FloorEnum.FIRST;
+
+        //when
+        List<String> sections = theaterSeatRepository.findSectionsByTheaterIdAndFloorGroupBySection(theaterId, floor);
+
+        //then
+        Assertions.assertThat(sections.size()).isEqualTo(3);
     }
 
     @AfterEach
     void tearDown() {
+        System.out.println("afterEach");
         theaterSeatRepository.deleteAll();
         theaterRepository.deleteAll();
     }
