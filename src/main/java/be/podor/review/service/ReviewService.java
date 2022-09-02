@@ -9,10 +9,10 @@ import be.podor.review.repository.ReviewRepository;
 import be.podor.theater.model.TheaterSeat;
 import be.podor.theater.repository.TheaterSeatRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,7 +47,9 @@ public class ReviewService {
 
     // 최근 리뷰 가져오기 for live
     public List<ReviewLiveResponseDto> getRecentReviews(PageRequest pageRequest) {
-        Page<Review> reviews = reviewRepository.findAll(pageRequest);
+        List<Review> reviews = reviewRepository.findAll(pageRequest).toList();
+
+        Collections.reverse(reviews);
 
         return reviews.stream()
                 .map(ReviewLiveResponseDto::of)
