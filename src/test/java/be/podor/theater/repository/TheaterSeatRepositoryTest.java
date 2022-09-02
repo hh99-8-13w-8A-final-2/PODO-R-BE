@@ -9,14 +9,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.ActiveProfiles;
 
-import javax.persistence.Column;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @ComponentScan(basePackages = "be.podor.theater.repository")
 @ActiveProfiles("h2")
@@ -43,10 +42,10 @@ class TheaterSeatRepositoryTest {
 
         List<TheaterSeat> theaterSeats = new ArrayList<>();
 
-        // 1층, 2층 3층 각각 [A B C] 섹션 [1 2 3] row [1 2 3] 좌석
+        // 1층, 2층 3층 각각 [A B C D] 섹션 / [1, 2] row / 2개 좌석
         for (FloorEnum floor : FloorEnum.values()) {
-            for (char c = 'A'; c < 'A' + 2; c++) {
-                for (int i = 1; i < 1 + 1; i++) {
+            for (char c = 'A'; c < 'A' + 4; c++) {
+                for (int i = 1; i < 1 + 2; i++) {
                     theaterSeats.add(
                             TheaterSeat.of(
                                     theater,
@@ -87,7 +86,7 @@ class TheaterSeatRepositoryTest {
         List<String> sections = theaterSeatRepository.findSectionsByTheaterIdAndFloorGroupBySection(theaterId, floor);
 
         //then
-        Assertions.assertThat(sections.size()).isEqualTo(2);
+        Assertions.assertThat(sections.size()).isEqualTo(4);
     }
 
     @Test
@@ -102,7 +101,23 @@ class TheaterSeatRepositoryTest {
         List<String> sections = theaterSeatRepository.findRowsByTheaterIdAndFloorAndSectionGroupByRow(theaterId, floor, section);
 
         //then
-        Assertions.assertThat(sections.size()).isEqualTo(1);
+        Assertions.assertThat(sections.size()).isEqualTo(2);
+    }
+
+    @Test
+    @DisplayName("상영관, 층, 섹션, 열, 좌석 정보로 해당 극장에 해당 좌석이 존재하는지 조회")
+    void findByFloorAndSectionAndSeatRowAndSeatAndTheater_TheaterId() {
+        Long theaterId = theater.getTheaterId();
+        FloorEnum floor = FloorEnum.FIRST;
+        String section = "A";
+        String row = "1";
+        Integer seat = 1;
+
+        //when
+        Optional<TheaterSeat> theaterSeat = theaterSeatRepository.findByFloorAndSectionAndSeatRowAndSeatAndTheater_TheaterId(floor, section, row, seat, theaterId);
+
+        //then
+        Assertions.assertThat(theaterSeat).isPresent();
     }
 
     @AfterEach
