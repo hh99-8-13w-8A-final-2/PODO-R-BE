@@ -15,6 +15,9 @@ public interface TheaterSeatRepository extends JpaRepository<TheaterSeat, Long> 
     @Query(value = "SELECT ts FROM TheaterSeat ts WHERE ts.theater.theaterId = :theaterId GROUP BY ts.floor")
     List<TheaterSeat> findByTheaterIdGroupByFloor(@Param("theaterId") Long theaterId);
 
+    @Query(value = "SELECT ts.floor FROM TheaterSeat ts WHERE ts.theater.theaterId = :theaterId GROUP BY ts.floor")
+    List<FloorEnum> findFloorEnumsByTheaterIdGroupByFloor(@Param("theaterId") Long theaterId);
+
     // 층별 섹션 정보 조회
     @Query(value =
             "SELECT ts FROM TheaterSeat ts " +
@@ -23,6 +26,18 @@ public interface TheaterSeatRepository extends JpaRepository<TheaterSeat, Long> 
                     "GROUP BY ts.section"
     )
     List<TheaterSeat> findByTheaterIdAndFloorGroupBySection(
+            @Param("theaterId") Long theaterId,
+            @Param("floor") FloorEnum floor
+    );
+
+    // 층별 섹션 정보 조회
+    @Query(value =
+            "SELECT ts.section FROM TheaterSeat ts " +
+                    "WHERE ts.theater.theaterId = :theaterId " +
+                    "AND ts.floor = :floor " +
+                    "GROUP BY ts.section"
+    )
+    List<String> findSectionsByTheaterIdAndFloorGroupBySection(
             @Param("theaterId") Long theaterId,
             @Param("floor") FloorEnum floor
     );
@@ -41,6 +56,20 @@ public interface TheaterSeatRepository extends JpaRepository<TheaterSeat, Long> 
             @Param("section") String section
     );
 
+    // 층간 섹션별 열 정보 조회
+    @Query(value =
+            "SELECT ts.seatRow FROM TheaterSeat ts " +
+                    "WHERE ts.theater.theaterId = :theaterId " +
+                    "AND ts.floor = :floor " +
+                    "AND ts.section = :section " +
+                    "GROUP BY ts.seatRow"
+    )
+    List<String> findRowsByTheaterIdAndFloorAndSectionGroupByRow(
+            @Param("theaterId") Long theaterId,
+            @Param("floor") FloorEnum floor,
+            @Param("section") String section
+    );
+
     // 층간 섹션별 열 정보 조회 섹션이 존재하지 않음
     @Query(value =
             "SELECT ts FROM TheaterSeat ts " +
@@ -54,6 +83,6 @@ public interface TheaterSeatRepository extends JpaRepository<TheaterSeat, Long> 
             @Param("floor") FloorEnum floor
     );
 
-    // 뮤지컬, 층, 섹션, 열, 좌석 정보로 조회
+    // 상영관, 층, 섹션, 열, 좌석 정보로 조회
     Optional<TheaterSeat> findByFloorAndSectionAndSeatRowAndSeatAndTheater_TheaterId(FloorEnum floor, String section, String seatRow, Integer Seat, Long theaterId);
 }
