@@ -56,6 +56,20 @@ public interface TheaterSeatRepository extends JpaRepository<TheaterSeat, Long> 
             @Param("section") String section
     );
 
+    // 층간 섹션별 열 정보 조회
+    @Query(value =
+            "SELECT ts.seatRow FROM TheaterSeat ts " +
+                    "WHERE ts.theater.theaterId = :theaterId " +
+                    "AND ts.floor = :floor " +
+                    "AND ts.section = :section " +
+                    "GROUP BY ts.seatRow"
+    )
+    List<String> findRowsByTheaterIdAndFloorAndSectionGroupByRow(
+            @Param("theaterId") Long theaterId,
+            @Param("floor") FloorEnum floor,
+            @Param("section") String section
+    );
+
     // 층간 섹션별 열 정보 조회 섹션이 존재하지 않음
     @Query(value =
             "SELECT ts FROM TheaterSeat ts " +

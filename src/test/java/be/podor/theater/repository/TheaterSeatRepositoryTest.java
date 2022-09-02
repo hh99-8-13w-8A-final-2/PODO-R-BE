@@ -45,8 +45,8 @@ class TheaterSeatRepositoryTest {
 
         // 1층, 2층 3층 각각 [A B C] 섹션 [1 2 3] row [1 2 3] 좌석
         for (FloorEnum floor : FloorEnum.values()) {
-            for (char c = 'A'; c < 'A' + 3; c++) {
-                for (int i = 1; i < 1 + 3; i++) {
+            for (char c = 'A'; c < 'A' + 2; c++) {
+                for (int i = 1; i < 1 + 1; i++) {
                     theaterSeats.add(
                             TheaterSeat.of(
                                     theater,
@@ -87,7 +87,22 @@ class TheaterSeatRepositoryTest {
         List<String> sections = theaterSeatRepository.findSectionsByTheaterIdAndFloorGroupBySection(theaterId, floor);
 
         //then
-        Assertions.assertThat(sections.size()).isEqualTo(3);
+        Assertions.assertThat(sections.size()).isEqualTo(2);
+    }
+
+    @Test
+    @DisplayName("극장 아이디, 층, 섹션으로 층, 섹션별 열 조회")
+    void findRowsByTheaterIdAndFloorAndSectionGroupByRow() {
+        //given
+        Long theaterId = theater.getTheaterId();
+        FloorEnum floor = FloorEnum.FIRST;
+        String section = "A";
+
+        //when
+        List<String> sections = theaterSeatRepository.findRowsByTheaterIdAndFloorAndSectionGroupByRow(theaterId, floor, section);
+
+        //then
+        Assertions.assertThat(sections.size()).isEqualTo(1);
     }
 
     @AfterEach
