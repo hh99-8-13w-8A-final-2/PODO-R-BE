@@ -9,6 +9,7 @@ import be.podor.review.model.reviewfile.ReviewFile;
 import be.podor.review.repository.ReviewRepository;
 import be.podor.theater.model.TheaterSeat;
 import be.podor.theater.repository.TheaterSeatRepository;
+import be.podor.theater.validator.TheaterSeatValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -32,20 +33,7 @@ public class ReviewService {
                 () -> new IllegalArgumentException("존재하지 않는 뮤지컬입니다.")
         );
 
-        String section = requestDto.getSection();
-        if (section == null || section.isEmpty()) {
-            section = null;
-        }
-
-        TheaterSeat theaterSeat = theaterSeatRepository.findByFloorAndSectionAndSeatRowAndSeatAndTheater_TheaterId(
-                requestDto.getFloor(),
-                section,
-                requestDto.getRow(),
-                requestDto.getSeat(),
-                musical.getTheater().getTheaterId()
-        ).orElseThrow(
-                () -> new IllegalArgumentException("존재하지 않는 좌석입니다.")
-        );
+        TheaterSeat theaterSeat = TheaterSeatValidator.validate(theaterSeatRepository, requestDto, musical);
 
         Review review = Review.of(theaterSeat, musical, requestDto);
 
