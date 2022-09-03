@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,7 +19,7 @@ public class ReviewRequestDto {
     private Integer seat;
     private String seatGrade;
     private String reviewContent;
-    private String imgUrl;
+    private List<String> imgUrls;
     private ScoreEnum gap;
     private ScoreEnum sight;
     private ScoreEnum sound;

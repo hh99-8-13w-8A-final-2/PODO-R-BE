@@ -5,12 +5,14 @@ import be.podor.musical.repository.MusicalRepository;
 import be.podor.review.dto.ReviewLiveResponseDto;
 import be.podor.review.dto.ReviewRequestDto;
 import be.podor.review.model.Review;
+import be.podor.review.model.reviewfile.ReviewFile;
 import be.podor.review.repository.ReviewRepository;
 import be.podor.theater.model.TheaterSeat;
 import be.podor.theater.repository.TheaterSeatRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,6 +26,7 @@ public class ReviewService {
     private final TheaterSeatRepository theaterSeatRepository;
 
     // 리뷰 작성
+    @Transactional
     public Review createReview(Long musicalId, ReviewRequestDto requestDto) {
         Musical musical = musicalRepository.findById(musicalId).orElseThrow(
                 () -> new IllegalArgumentException("존재하지 않는 뮤지컬입니다.")
@@ -45,6 +48,15 @@ public class ReviewService {
         );
 
         Review review = Review.of(theaterSeat, musical, requestDto);
+
+        List<ReviewFile> reviewFiles = requestDto.getImgUrls().stream()
+                .map(path -> ReviewFile.builder()
+                        .filePath(path)
+                        .review(review)
+                        .build())
+                .collect(Collectors.toList());
+
+        review.getReviewFiles().addAll(reviewFiles);
 
         return reviewRepository.save(review);
     }
