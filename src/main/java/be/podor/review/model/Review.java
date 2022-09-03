@@ -4,6 +4,7 @@ import be.podor.musical.model.Musical;
 import be.podor.review.dto.ReviewRequestDto;
 import be.podor.review.model.reviewInfo.BriefTag;
 import be.podor.review.model.reviewfile.ReviewFile;
+import be.podor.review.model.tag.ReviewTag;
 import be.podor.share.Timestamped;
 import be.podor.theater.model.TheaterSeat;
 import lombok.*;
@@ -52,6 +53,10 @@ public class Review extends Timestamped {
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReviewFile> reviewFiles = new ArrayList<>();
 
+    @Builder.Default
+    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ReviewTag> reviewTags = new ArrayList<>();
+
     public static Review of(TheaterSeat theaterSeat, Musical musical, ReviewRequestDto requestDto) {
         BriefTag briefTag = BriefTag.builder()
                 .gap(requestDto.getGap())
@@ -76,5 +81,9 @@ public class Review extends Timestamped {
 
     public void addFiles(List<ReviewFile> files) {
         this.reviewFiles.addAll(files);
+    }
+
+    public void addTags(List<ReviewTag> tags) {
+        this.reviewTags.addAll(tags);
     }
 }
