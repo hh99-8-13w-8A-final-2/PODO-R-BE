@@ -37,10 +37,7 @@ public class ReviewService {
         Review review = Review.of(theaterSeat, musical, requestDto);
 
         List<ReviewFile> reviewFiles = requestDto.getImgUrls().stream()
-                .map(path -> ReviewFile.builder()
-                        .filePath(path)
-                        .review(review)
-                        .build())
+                .map(path -> ReviewFile.of(path, review))
                 .collect(Collectors.toList());
 
         review.getReviewFiles().addAll(reviewFiles);
