@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -22,24 +24,30 @@ public class S3Service {
     private String bucket;
 
     // 이미지 업로드
-    public S3Dto s3FileUpload(MultipartFile multipartFile) throws IOException {
+    public S3Dto s3FileUpload(List<MultipartFile> multipartFiles) throws IOException {
 
-        String fileName = UUID.randomUUID().toString();
+        List<String> imgurls = new ArrayList<>();
 
-        ObjectMetadata objectMetadata = new ObjectMetadata();
-        objectMetadata.setContentType(multipartFile.getContentType());
+        for (MultipartFile multipartFile : multipartFiles) {
 
-        PutObjectRequest putObjectRequest = new PutObjectRequest(
-                bucket,
-                fileName,
-                multipartFile.getInputStream(),
-                objectMetadata
-        );
+            String fileName = UUID.randomUUID().toString();
 
-        amazonS3.putObject(putObjectRequest);
+            ObjectMetadata objectMetadata = new ObjectMetadata();
+            objectMetadata.setContentType(multipartFile.getContentType());
 
-        String url = amazonS3.getUrl(bucket, fileName).toString();
+            PutObjectRequest putObjectRequest = new PutObjectRequest(
+                    bucket,
+                    fileName,
+                    multipartFile.getInputStream(),
+                    objectMetadata
+            );
 
-        return new S3Dto(url);
+            amazonS3.putObject(putObjectRequest);
+
+            imgurls.add(amazonS3.getUrl(bucket, fileName).toString());
+        }
+
+
+        return new S3Dto(imgurls);
     }
 }
