@@ -3,11 +3,14 @@ package be.podor.review.model;
 import be.podor.musical.model.Musical;
 import be.podor.review.dto.ReviewRequestDto;
 import be.podor.review.model.reviewInfo.BriefTag;
+import be.podor.review.model.reviewfile.ReviewFile;
 import be.podor.share.Timestamped;
 import be.podor.theater.model.TheaterSeat;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -22,9 +25,6 @@ public class Review extends Timestamped {
 
     @Column(nullable = false)
     private String content;
-
-    @Column
-    private String imgUrl;
 
     @Embedded
     @Column(nullable = false)
@@ -48,6 +48,10 @@ public class Review extends Timestamped {
     @JoinColumn(name = "seat_id")
     private TheaterSeat theaterSeat;
 
+    @Builder.Default
+    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ReviewFile> reviewFiles = new ArrayList<>();
+
     public static Review of(TheaterSeat theaterSeat, Musical musical, ReviewRequestDto requestDto) {
         BriefTag briefTag = BriefTag.builder()
                 .gap(requestDto.getGap())
@@ -56,15 +60,21 @@ public class Review extends Timestamped {
                 .sound((requestDto.getSound()))
                 .build();
 
+        boolean operaGlass = requestDto.getOperaGrass() != null && requestDto.getOperaGrass().equals("on");
+        boolean blockSight = requestDto.getBlock() != null && requestDto.getBlock().equals("on");
+
         return Review.builder()
                 .content(requestDto.getReviewContent())
-                .imgUrl(requestDto.getImgUrl())
                 .briefTag(briefTag)
                 .seatGrade(requestDto.getSeatGrade())
-                .operaGlass(requestDto.getOperaGrass())
-                .block(requestDto.getBlock())
+                .operaGlass(operaGlass)
+                .block(blockSight)
                 .musical(musical)
                 .theaterSeat(theaterSeat)
                 .build();
+    }
+
+    public void addFiles(List<ReviewFile> files) {
+        this.reviewFiles.addAll(files);
     }
 }
