@@ -40,7 +40,7 @@ public class ReviewService {
                 .map(path -> ReviewFile.of(path, review))
                 .collect(Collectors.toList());
 
-        review.getReviewFiles().addAll(reviewFiles);
+        review.addFiles(reviewFiles);
 
         return reviewRepository.save(review);
     }

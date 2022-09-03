@@ -73,4 +73,8 @@ public class Review extends Timestamped {
                 .theaterSeat(theaterSeat)
                 .build();
     }
+
+    public void addFiles(List<ReviewFile> files) {
+        this.reviewFiles.addAll(files);
+    }
 }
