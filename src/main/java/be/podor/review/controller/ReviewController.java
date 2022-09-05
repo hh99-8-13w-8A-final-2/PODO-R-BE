@@ -31,12 +31,12 @@ public class ReviewController {
         Review review = reviewService.createReview(musicalId, requestDto);
 
         // 소켓에 쏘기
-        liveReview(review);
+//        liveReview(review);
 
         return ResponseEntity.ok().build();
     }
 
-    // // 최근 리뷰 가져오기 for live
+    // 최근 리뷰 가져오기 for live
     @GetMapping("/api/reviews/live")
     public ResponseEntity<?> getRecentReviews() {
         // 최근 10개
