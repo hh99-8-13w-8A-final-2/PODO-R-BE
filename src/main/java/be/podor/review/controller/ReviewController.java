@@ -1,5 +1,6 @@
 package be.podor.review.controller;
 
+import be.podor.review.dto.ReviewDetailResponseDto;
 import be.podor.review.dto.ReviewListResponseDto;
 import be.podor.review.dto.ReviewLiveResponseDto;
 import be.podor.review.dto.ReviewRequestDto;
@@ -60,6 +61,17 @@ public class ReviewController {
         Page<ReviewListResponseDto> responseDtos = reviewService.getMusicalReviews(musicalId, pageable);
 
         return ResponseEntity.ok(responseDtos);
+    }
+
+    // 리뷰 상세 조회
+    @GetMapping("/api/musicals/{musicalId}/reviews/{reviewId}")
+    public ResponseEntity<?> getMusicalReview(
+            @PathVariable Long musicalId,
+            @PathVariable Long reviewId
+    ) {
+        ReviewDetailResponseDto responseDto = reviewService.getReviewDetail(musicalId, reviewId);
+
+        return ResponseEntity.ok(responseDto);
     }
 
     // 라이브 리뷰

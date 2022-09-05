@@ -3,6 +3,7 @@ package be.podor.review.service;
 import be.podor.musical.model.Musical;
 import be.podor.musical.repository.MusicalRepository;
 import be.podor.musical.validator.MusicalValidator;
+import be.podor.review.dto.ReviewDetailResponseDto;
 import be.podor.review.dto.ReviewListResponseDto;
 import be.podor.review.dto.ReviewLiveResponseDto;
 import be.podor.review.dto.ReviewRequestDto;
@@ -85,5 +86,14 @@ public class ReviewService {
                 .collect(Collectors.toList());
 
         return new PageImpl<>(reviewListResponseDtos, reviews.getPageable(), reviews.getTotalElements());
+    }
+
+    // 리뷰 상세 조회
+    public ReviewDetailResponseDto getReviewDetail(Long musicalId, Long reviewId) {
+        Review review = reviewRepository.findById(reviewId).orElseThrow(
+                () -> new IllegalArgumentException("해당 리뷰가 존재하지 않습니다.")
+        );
+
+        return ReviewDetailResponseDto.of(review);
     }
 }
