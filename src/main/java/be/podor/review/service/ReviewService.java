@@ -79,7 +79,7 @@ public class ReviewService {
 
     // 뮤지컬 선택시 해당 뮤지컬의 전체 리뷰 리스트 조회
     public Page<ReviewListResponseDto> getMusicalReviews(Long musicalId, Pageable pageable) {
-        Page<Review> reviews = reviewRepository.findByMusical_MusicalIdOrderByContentDesc(musicalId, pageable);
+        Page<Review> reviews = reviewRepository.findByMusical_MusicalIdOrderByCreatedAtDesc(musicalId, pageable);
 
         List<ReviewListResponseDto> reviewListResponseDtos = reviews.stream()
                 .map(ReviewListResponseDto::of)
