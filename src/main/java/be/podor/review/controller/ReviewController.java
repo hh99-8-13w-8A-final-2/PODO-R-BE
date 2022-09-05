@@ -56,9 +56,12 @@ public class ReviewController {
     @GetMapping("/api/musicals/{musicalId}/reviews")
     public ResponseEntity<?> getMusicalReviews(
             @PathVariable Long musicalId,
-            @PageableDefault(size = 20) Pageable pageable
+            @PageableDefault(size = 20, page = 1) Pageable pageable
     ) {
-        Page<ReviewListResponseDto> responseDtos = reviewService.getMusicalReviews(musicalId, pageable);
+        // 페이지번호 -1 처리, 1 2 3 4 -> 0, 1, 2, 3
+        PageRequest pageRequest = PageRequest.of(pageable.getPageNumber() - 1, pageable.getPageSize());
+
+        Page<ReviewListResponseDto> responseDtos = reviewService.getMusicalReviews(musicalId, pageRequest);
 
         return ResponseEntity.ok(responseDtos);
     }
