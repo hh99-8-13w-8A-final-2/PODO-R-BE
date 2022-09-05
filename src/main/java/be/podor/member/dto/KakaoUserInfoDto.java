@@ -1,4 +1,4 @@
-package be.podor.member.dto.responsedto;
+package be.podor.member.dto;
 
 
 import lombok.AllArgsConstructor;

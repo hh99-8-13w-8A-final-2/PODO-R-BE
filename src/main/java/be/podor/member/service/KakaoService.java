@@ -1,15 +1,15 @@
 package be.podor.member.service;
 
 
-import be.podor.member.dto.responsedto.KakaoUserInfoDto;
+import be.podor.member.dto.KakaoUserInfoDto;
 import be.podor.member.model.Member;
 import be.podor.member.repository.MemberRepository;
 import be.podor.security.UserDetailsImpl;
 import be.podor.security.jwt.JwtTokenProvider;
 import be.podor.security.jwt.TokenDto;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -31,10 +31,10 @@ import java.io.IOException;
 @Service
 @RequiredArgsConstructor
 public class KakaoService {
-    @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
+    @Value("${kakao.client-id}")
     String kakaoClientId;
-    @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
-    String RedirectURI;
+    @Value("${kakao.redirect-uri}")
+    String redirectUri;
 
     private final MemberRepository memberRepository;
 
@@ -69,7 +69,7 @@ public class KakaoService {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
         body.add("client_id", kakaoClientId);
-        body.add("redirect_uri", RedirectURI);
+        body.add("redirect_uri", redirectUri);
         body.add("code", code);
 
         //HTTP 요청 보내기
@@ -125,7 +125,7 @@ public class KakaoService {
 //        int mannerTemp = userRoleCheckService.userResignCheck(kakaoUserInfoDto.getEmail());
         // DB 에 중복된 Kakao Id 가 있는지 확인
         Long kakaoId = kakaoUserInfoDto.getKakaoId();
-        Member findKakao = memberRepository.findByKakaoId(kakaoUserInfoDto.getKakaoId())
+        Member findKakao = memberRepository.findByKakaoId(kakaoId)
                 //DB에 중복된 계정이 없으면 회원가입 처리
                 .orElseGet(() -> {
                     Member kakaoUser = Member.of(kakaoUserInfoDto);
