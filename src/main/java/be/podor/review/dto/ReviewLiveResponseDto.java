@@ -1,6 +1,8 @@
 package be.podor.review.dto;
 
 import be.podor.review.model.Review;
+import be.podor.review.model.reviewInfo.BriefTag;
+import be.podor.review.model.reviewInfo.ScoreEnum;
 import lombok.*;
 
 @Getter
@@ -17,13 +19,23 @@ public class ReviewLiveResponseDto {
 
     private String reviewScore;
 
+    private String gap;
+
+    private String sight;
+
+    private String sound;
+
+    private String light;
+
     public static ReviewLiveResponseDto of(Review review) {
         Double score = 0.0;
 
-        score += review.getBriefTag().getGap().getScore();
-        score += review.getBriefTag().getLight().getScore();
-        score += review.getBriefTag().getSight().getScore();
-        score += review.getBriefTag().getSound().getScore();
+        BriefTag briefTag = review.getBriefTag();
+
+        score += briefTag.getGap().getScore();
+        score += briefTag.getLight().getScore();
+        score += briefTag.getSight().getScore();
+        score += briefTag.getSound().getScore();
 
         // 0 ~ 10
         score = (score - 4) / 8 * 10;
@@ -34,6 +46,10 @@ public class ReviewLiveResponseDto {
                 .reviewId(review.getReviewId())
                 .musicalName(review.getMusical().getMusicalName())
                 .reviewContent(review.getContent())
+                .gap(briefTag.getGap().getText())
+                .sight(briefTag.getSight().getText())
+                .sound(briefTag.getSound().getText())
+                .light(briefTag.getLight().getText())
                 .reviewScore(String.format("%.1f", score))
                 .build();
     }
