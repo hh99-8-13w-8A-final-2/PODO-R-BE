@@ -1,6 +1,7 @@
 package be.podor.member.model;
 
-import be.podor.member.dto.responsedto.KakaoUserInfoDto;
+import be.podor.member.dto.KakaoUserInfoDto;
+import be.podor.member.dto.TwitterUserInfoDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,7 +25,7 @@ public class Member {
     private Long kakaoId;
 
     @Column(unique = true)
-    private Long twitterId;
+    private String twitterId;
 
     @Column
     private String password;
@@ -46,6 +47,16 @@ public class Member {
                 .profilePic(kakaoUserInfoDto.getProfilePic())
                 .createdAt(LocalDateTime.now())
                 .kakaoId(kakaoUserInfoDto.getKakaoId())
+                .build();
+    }
+
+    public static Member ofs(TwitterUserInfoDto twitterUserInfoDto) {
+
+        return Member.builder()
+                .nickname(twitterUserInfoDto.getNickname())
+                .profilePic(twitterUserInfoDto.getProfilePic())
+                .createdAt(LocalDateTime.now())
+                .twitterId(twitterUserInfoDto.getTwitterId())
                 .build();
     }
 }
