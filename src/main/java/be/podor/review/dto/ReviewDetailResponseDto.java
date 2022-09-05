@@ -8,6 +8,7 @@ import be.podor.review.model.tag.Tag;
 import be.podor.theater.model.TheaterSeat;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,6 +37,7 @@ public class ReviewDetailResponseDto {
     private Boolean operaGrass;
     private Boolean block;
     private List<String> tags;
+    private LocalDateTime createdAt;
 //    private String reviewHits;
 //    private String reviewHearts;
 //    private List<CommentDto> comments;
@@ -84,6 +86,7 @@ public class ReviewDetailResponseDto {
                 .operaGrass(review.getOperaGlass())
                 .block(review.getBlock())
                 .tags(reviewTags)
+                .createdAt(review.getCreatedAt())
                 .build();
     }
 }

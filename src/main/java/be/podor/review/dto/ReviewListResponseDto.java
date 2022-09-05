@@ -7,7 +7,7 @@ import be.podor.review.model.tag.Tag;
 import be.podor.theater.model.TheaterSeat;
 import lombok.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,9 +17,9 @@ import java.util.stream.Collectors;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ReviewListResponseDto {
     private Long reviewId;
-//    private String memberNickname;
+    //    private String memberNickname;
     private String imgUrl;
-//    private String theaterName;
+    //    private String theaterName;
     private String floor;
     private String section;
     private String row;
@@ -32,9 +32,9 @@ public class ReviewListResponseDto {
     private Boolean operaGrass;
     private Boolean block;
     private List<String> tags;
-//    private String reviewReads;
+    //    private String reviewReads;
 //    private String reviewHearts;
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 
     // 불 필요한 정보들 뷰 완성되면 덜어내기
     public static ReviewListResponseDto of(Review review) {
@@ -76,7 +76,7 @@ public class ReviewListResponseDto {
                 .tags(reviewTags)
 //                .reviewReads()
 //                .reviewHearts()
-                .createdAt(review.getCreatedAt().toLocalDate())
+                .createdAt(review.getCreatedAt())
                 .build();
     }
 }
