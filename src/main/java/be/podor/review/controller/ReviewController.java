@@ -1,12 +1,16 @@
 package be.podor.review.controller;
 
+import be.podor.review.dto.ReviewListResponseDto;
 import be.podor.review.dto.ReviewLiveResponseDto;
 import be.podor.review.dto.ReviewRequestDto;
 import be.podor.review.model.Review;
 import be.podor.review.service.ReviewService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -43,6 +47,17 @@ public class ReviewController {
         PageRequest pageRequest = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "createdAt"));
 
         List<ReviewLiveResponseDto> responseDtos = reviewService.getRecentReviews(pageRequest);
+
+        return ResponseEntity.ok(responseDtos);
+    }
+
+    // 뮤지컬 선택시 해당 뮤지컬의 전체 리뷰 리스트 조회
+    @GetMapping("/api/musicals/{musicalId}/reviews")
+    public ResponseEntity<?> getMusicalReviews(
+            @PathVariable Long musicalId,
+            @PageableDefault(size = 20) Pageable pageable
+    ) {
+        Page<ReviewListResponseDto> responseDtos = reviewService.getMusicalReviews(musicalId, pageable);
 
         return ResponseEntity.ok(responseDtos);
     }
