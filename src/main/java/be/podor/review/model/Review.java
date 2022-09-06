@@ -2,7 +2,7 @@ package be.podor.review.model;
 
 import be.podor.musical.model.Musical;
 import be.podor.review.dto.ReviewRequestDto;
-import be.podor.review.model.reviewInfo.BriefTag;
+import be.podor.review.model.reviewInfo.Evaluation;
 import be.podor.review.model.reviewfile.ReviewFile;
 import be.podor.review.model.tag.ReviewTag;
 import be.podor.share.Timestamped;
@@ -34,12 +34,15 @@ public class Review extends Timestamped {
 
     @Embedded
     @Column(nullable = false)
-    private BriefTag briefTag;
+    private Evaluation evaluation;
 
-    @Column
+    @Column(nullable = false)
+    private String score;
+
+    @Column(nullable = false)
     private Boolean operaGlass;
 
-    @Column
+    @Column(nullable = false)
     private Boolean block;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -59,7 +62,7 @@ public class Review extends Timestamped {
     private List<ReviewTag> reviewTags = new ArrayList<>();
 
     public static Review of(TheaterSeat theaterSeat, Musical musical, ReviewRequestDto requestDto) {
-        BriefTag briefTag = BriefTag.builder()
+        Evaluation evaluation = Evaluation.builder()
                 .gap(requestDto.getGap())
                 .light(requestDto.getLight())
                 .sight(requestDto.getSight())
@@ -72,7 +75,8 @@ public class Review extends Timestamped {
         return Review.builder()
                 .content(requestDto.getReviewContent())
                 .grade((requestDto.getGrade()))
-                .briefTag(briefTag)
+                .evaluation(evaluation)
+                .score(String.format("%.1f", calculateScore(evaluation)))
                 .operaGlass(operaGlass)
                 .block(blockSight)
                 .musical(musical)
@@ -86,5 +90,19 @@ public class Review extends Timestamped {
 
     public void addTags(List<ReviewTag> tags) {
         this.reviewTags.addAll(tags);
+    }
+
+    private static Double calculateScore(Evaluation evaluation) {
+        Double score = 0.0;
+
+        score += evaluation.getGap().getScore();
+        score += evaluation.getLight().getScore();
+        score += evaluation.getSight().getScore();
+        score += evaluation.getSound().getScore();
+
+        // 0 ~ 10
+        score = (score - 4) / 8 * 10;
+        // 0.5 단위 절삭
+        return score = Math.ceil(score * 2) / 2;
     }
 }

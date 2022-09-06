@@ -7,9 +7,9 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum ScoreEnum {
-    GOOD("상", 3),
-    NORMAL("중", 2),
-    BAD("하", 1);
+    GOOD("좋음", 3),
+    NORMAL("보통", 2),
+    BAD("나쁨", 1);
 
     private final String text;
     private final Integer score;

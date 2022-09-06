@@ -3,6 +3,8 @@ package be.podor.review.service;
 import be.podor.musical.model.Musical;
 import be.podor.musical.repository.MusicalRepository;
 import be.podor.musical.validator.MusicalValidator;
+import be.podor.review.dto.ReviewDetailResponseDto;
+import be.podor.review.dto.ReviewListResponseDto;
 import be.podor.review.dto.ReviewLiveResponseDto;
 import be.podor.review.dto.ReviewRequestDto;
 import be.podor.review.model.Review;
@@ -15,7 +17,10 @@ import be.podor.theater.model.TheaterSeat;
 import be.podor.theater.repository.TheaterSeatRepository;
 import be.podor.theater.validator.TheaterSeatValidator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -70,5 +75,25 @@ public class ReviewService {
         return reviews.stream()
                 .map(ReviewLiveResponseDto::of)
                 .collect(Collectors.toList());
+    }
+
+    // 뮤지컬 선택시 해당 뮤지컬의 전체 리뷰 리스트 조회
+    public Page<ReviewListResponseDto> getMusicalReviews(Long musicalId, Pageable pageable) {
+        Page<Review> reviews = reviewRepository.findByMusical_MusicalIdOrderByCreatedAtDesc(musicalId, pageable);
+
+        List<ReviewListResponseDto> reviewListResponseDtos = reviews.stream()
+                .map(ReviewListResponseDto::of)
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(reviewListResponseDtos, reviews.getPageable(), reviews.getTotalElements());
+    }
+
+    // 리뷰 상세 조회
+    public ReviewDetailResponseDto getReviewDetail(Long musicalId, Long reviewId) {
+        Review review = reviewRepository.findById(reviewId).orElseThrow(
+                () -> new IllegalArgumentException("해당 리뷰가 존재하지 않습니다.")
+        );
+
+        return ReviewDetailResponseDto.of(review);
     }
 }
