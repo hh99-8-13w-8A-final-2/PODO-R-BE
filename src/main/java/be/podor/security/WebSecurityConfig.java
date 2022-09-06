@@ -4,7 +4,6 @@ package be.podor.security;
 import be.podor.security.jwt.JwtConfiguration;
 import be.podor.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,7 +25,6 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class WebSecurityConfig {
 
-    @Autowired
     private final JwtTokenProvider jwtTokenProvider;
 
     @Bean

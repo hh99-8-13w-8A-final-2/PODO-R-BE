@@ -60,7 +60,7 @@ public class KakaoService {
 
     //header 에 Content-type 지정
     //1번
-    private String getKakaoAccessToken(String code) throws IOException {
+    String getKakaoAccessToken(String code) throws IOException {
         // HTTP Header 생성
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
@@ -120,7 +120,7 @@ public class KakaoService {
     }
 
     // 3번
-    private Member signupKakaoUser(KakaoUserInfoDto kakaoUserInfoDto) {
+    Member signupKakaoUser(KakaoUserInfoDto kakaoUserInfoDto) {
         // 재가입 방지
 //        int mannerTemp = userRoleCheckService.userResignCheck(kakaoUserInfoDto.getEmail());
         // DB 에 중복된 Kakao Id 가 있는지 확인
