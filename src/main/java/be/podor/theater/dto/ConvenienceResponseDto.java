@@ -1,7 +1,7 @@
 package be.podor.theater.dto;
 
-import be.podor.theater.model.ConvenienceCode;
-import be.podor.theater.model.ConvenienceType;
+import be.podor.theater.model.type.ConvenienceCode;
+import be.podor.theater.model.type.ConvenienceType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

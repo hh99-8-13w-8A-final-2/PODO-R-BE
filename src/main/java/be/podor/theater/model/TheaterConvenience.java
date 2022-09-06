@@ -1,5 +1,6 @@
 package be.podor.theater.model;
 
+import be.podor.theater.model.type.ConvenienceCode;
 import lombok.*;
 
 import javax.persistence.*;

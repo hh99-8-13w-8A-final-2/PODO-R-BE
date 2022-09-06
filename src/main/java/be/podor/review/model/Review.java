@@ -7,6 +7,7 @@ import be.podor.review.model.reviewfile.ReviewFile;
 import be.podor.review.model.tag.ReviewTag;
 import be.podor.share.Timestamped;
 import be.podor.theater.model.TheaterSeat;
+import be.podor.theater.model.type.GradeType;
 import lombok.*;
 
 import javax.persistence.*;
@@ -27,13 +28,13 @@ public class Review extends Timestamped {
     @Column(nullable = false)
     private String content;
 
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private GradeType grade;
+
     @Embedded
     @Column(nullable = false)
     private BriefTag briefTag;
-
-    // Todo enum
-    @Column
-    private String seatGrade;
 
     @Column
     private Boolean operaGlass;
@@ -70,8 +71,8 @@ public class Review extends Timestamped {
 
         return Review.builder()
                 .content(requestDto.getReviewContent())
+                .grade((requestDto.getGrade()))
                 .briefTag(briefTag)
-                .seatGrade(requestDto.getSeatGrade())
                 .operaGlass(operaGlass)
                 .block(blockSight)
                 .musical(musical)

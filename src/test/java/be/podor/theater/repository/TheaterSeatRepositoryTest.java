@@ -1,6 +1,6 @@
 package be.podor.theater.repository;
 
-import be.podor.theater.model.FloorEnum;
+import be.podor.theater.model.type.FloorType;
 import be.podor.theater.model.Theater;
 import be.podor.theater.model.TheaterSeat;
 import org.assertj.core.api.Assertions;
@@ -43,7 +43,7 @@ class TheaterSeatRepositoryTest {
         List<TheaterSeat> theaterSeats = new ArrayList<>();
 
         // 1층, 2층 3층 각각 [A B C D] 섹션 / [1, 2] row / 2개 좌석
-        for (FloorEnum floor : FloorEnum.values()) {
+        for (FloorType floor : FloorType.values()) {
             for (char c = 'A'; c < 'A' + 4; c++) {
                 for (int i = 1; i < 1 + 2; i++) {
                     theaterSeats.add(
@@ -69,7 +69,7 @@ class TheaterSeatRepositoryTest {
         Long theaterId = theater.getTheaterId();
 
         //when
-        List<FloorEnum> floors = theaterSeatRepository.findFloorEnumsByTheaterIdGroupByFloor(theaterId);
+        List<FloorType> floors = theaterSeatRepository.findFloorEnumsByTheaterIdGroupByFloor(theaterId);
 
         //then
         Assertions.assertThat(floors.size()).isEqualTo(3);
@@ -80,7 +80,7 @@ class TheaterSeatRepositoryTest {
     void findSectionsByTheaterIdAndFloorGroupBySection() {
         //given
         Long theaterId = theater.getTheaterId();
-        FloorEnum floor = FloorEnum.FIRST;
+        FloorType floor = FloorType.FIRST;
 
         //when
         List<String> sections = theaterSeatRepository.findSectionsByTheaterIdAndFloorGroupBySection(theaterId, floor);
@@ -94,7 +94,7 @@ class TheaterSeatRepositoryTest {
     void findRowsByTheaterIdAndFloorAndSectionGroupByRow() {
         //given
         Long theaterId = theater.getTheaterId();
-        FloorEnum floor = FloorEnum.FIRST;
+        FloorType floor = FloorType.FIRST;
         String section = "A";
 
         //when
@@ -108,7 +108,7 @@ class TheaterSeatRepositoryTest {
     @DisplayName("상영관, 층, 섹션, 열, 좌석 정보로 해당 극장에 해당 좌석이 존재하는지 조회")
     void findByFloorAndSectionAndSeatRowAndSeatAndTheater_TheaterId() {
         Long theaterId = theater.getTheaterId();
-        FloorEnum floor = FloorEnum.FIRST;
+        FloorType floor = FloorType.FIRST;
         String section = "A";
         String row = "1";
         Integer seat = 1;
