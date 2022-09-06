@@ -12,7 +12,7 @@ import javax.persistence.Enumerated;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class BriefTag {
+public class Evaluation {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
