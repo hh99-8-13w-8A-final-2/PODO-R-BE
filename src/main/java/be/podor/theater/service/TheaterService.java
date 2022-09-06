@@ -9,6 +9,7 @@ import be.podor.theater.model.TheaterSeat;
 import be.podor.theater.repository.TheaterRepository;
 import be.podor.theater.repository.TheaterSeatRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +38,8 @@ public class TheaterService {
 
     // Todo refactoring
     //극장별 좌석 정보 조회
+    @Transactional(readOnly = true)
+    @Cacheable(value = "seats", key = "#theaterId")
     public List<FloorResponseDto> getTheaterSeats(Long theaterId) {
 
         // 층별 정보 ResponseDto
