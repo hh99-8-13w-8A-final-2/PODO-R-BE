@@ -12,14 +12,12 @@ import java.time.LocalDateTime;
 public class NoticeListResponseDto {
     private Long noticeId;
     private String title;
-    private String content;
     private LocalDateTime createdAt;
 
     public static NoticeListResponseDto of(Notice notice) {
         return NoticeListResponseDto.builder()
                 .noticeId(notice.getNoticeId())
                 .title(notice.getTitle())
-                .content(notice.getContent())
                 .createdAt(notice.getCreatedAt())
                 .build();
     }
