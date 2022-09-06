@@ -36,10 +36,13 @@ public class Review extends Timestamped {
     @Column(nullable = false)
     private Evaluation evaluation;
 
-    @Column
+    @Column(nullable = false)
+    private String score;
+
+    @Column(nullable = false)
     private Boolean operaGlass;
 
-    @Column
+    @Column(nullable = false)
     private Boolean block;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -73,6 +76,7 @@ public class Review extends Timestamped {
                 .content(requestDto.getReviewContent())
                 .grade((requestDto.getGrade()))
                 .evaluation(evaluation)
+                .score(String.format("%.1f", calculateScore(evaluation)))
                 .operaGlass(operaGlass)
                 .block(blockSight)
                 .musical(musical)
@@ -86,5 +90,19 @@ public class Review extends Timestamped {
 
     public void addTags(List<ReviewTag> tags) {
         this.reviewTags.addAll(tags);
+    }
+
+    private static Double calculateScore(Evaluation evaluation) {
+        Double score = 0.0;
+
+        score += evaluation.getGap().getScore();
+        score += evaluation.getLight().getScore();
+        score += evaluation.getSight().getScore();
+        score += evaluation.getSound().getScore();
+
+        // 0 ~ 10
+        score = (score - 4) / 8 * 10;
+        // 0.5 단위 절삭
+        return score = Math.ceil(score * 2) / 2;
     }
 }

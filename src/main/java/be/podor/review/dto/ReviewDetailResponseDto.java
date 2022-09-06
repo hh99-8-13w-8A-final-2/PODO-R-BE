@@ -50,18 +50,6 @@ public class ReviewDetailResponseDto {
 
         TheaterSeat theaterSeat = review.getTheaterSeat();
 
-        Double score = 0.0;
-
-        score += review.getEvaluation().getGap().getScore();
-        score += review.getEvaluation().getLight().getScore();
-        score += review.getEvaluation().getSight().getScore();
-        score += review.getEvaluation().getSound().getScore();
-
-        // 0 ~ 10
-        score = (score - 4) / 8 * 10;
-        // 0.5 단위 절삭
-        score = Math.ceil(score * 2) / 2;
-
         return ReviewDetailResponseDto.builder()
                 .reviewId(review.getReviewId())
                 .reviewContent(review.getContent())
@@ -73,7 +61,7 @@ public class ReviewDetailResponseDto {
                 .row(theaterSeat.getSeatRow())
                 .seat(theaterSeat.getSeat())
                 .evaluation(EvaluationDto.of(review.getEvaluation()))
-                .reviewScore(String.format("%.1f", score))
+                .reviewScore(review.getScore())
                 .operaGrass(review.getOperaGlass())
                 .block(review.getBlock())
                 .tags(reviewTags)
