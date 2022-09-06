@@ -8,17 +8,17 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class EvaluationDto {
-    private String gap;
-    private String sight;
-    private String sound;
-    private String light;
+    private Integer gap;
+    private Integer sight;
+    private Integer sound;
+    private Integer light;
 
     public static EvaluationDto of(Evaluation evaluation) {
         return EvaluationDto.builder()
-                .gap(evaluation.getGap().toString())
-                .sight(evaluation.getSight().toString())
-                .sound(evaluation.getSound().toString())
-                .light(evaluation.getLight().toString())
+                .gap(evaluation.getGap().getScore())
+                .sight(evaluation.getSight().getScore())
+                .sound(evaluation.getSound().getScore())
+                .light(evaluation.getLight().getScore())
                 .build();
     }
 }
