@@ -19,6 +19,7 @@ public class ReviewListResponseDto {
     //    private String memberNickname;
     private String imgUrl;
     //    private String theaterName;
+    private String grade;
     private String floor;
     private String section;
     private String row;
@@ -46,6 +47,7 @@ public class ReviewListResponseDto {
 //                .memberNickname()
                 .imgUrl(review.getReviewFiles().get(0).getFilePath())
 //                .theaterName()
+                .grade(review.getGrade().toString())
                 .floor(theaterSeat.getFloor().getFloor())
                 .section(theaterSeat.getSection())
                 .row(theaterSeat.getSeatRow())

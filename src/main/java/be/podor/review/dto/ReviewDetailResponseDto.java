@@ -24,6 +24,7 @@ public class ReviewDetailResponseDto {
     private List<String> imgurls;
     private Long theaterId;
     private String theaterName;
+    private String grade;
     private String floor;
     private String section;
     private String row;
@@ -56,6 +57,7 @@ public class ReviewDetailResponseDto {
                 .imgurls(imgUrls)
                 .theaterId(theaterSeat.getTheater().getTheaterId())
                 .theaterName(theaterSeat.getTheater().getTheaterName())
+                .grade(review.getGrade().toString())
                 .floor(theaterSeat.getFloor().getFloor())
                 .section(theaterSeat.getSection())
                 .row(theaterSeat.getSeatRow())
