@@ -1,5 +1,6 @@
 package be.podor.theater.model;
 
+import be.podor.theater.model.type.FloorType;
 import lombok.*;
 
 import javax.persistence.*;
@@ -17,7 +18,7 @@ public class TheaterSeat {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private FloorEnum floor;
+    private FloorType floor;
 
     @Column
     private String section;
@@ -32,7 +33,7 @@ public class TheaterSeat {
     @JoinColumn(name = "theater_id", nullable = false)
     private Theater theater;
 
-    public static TheaterSeat of(Theater theater, FloorEnum floor, String section, String row, Integer seat) {
+    public static TheaterSeat of(Theater theater, FloorType floor, String section, String row, Integer seat) {
         return TheaterSeat.builder()
                 .theater(theater)
                 .floor(floor)

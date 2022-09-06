@@ -3,7 +3,7 @@ package be.podor.theater.service;
 import be.podor.theater.dto.TheaterResponseDto;
 import be.podor.theater.dto.seat.FloorResponseDto;
 import be.podor.theater.dto.seat.SectionResponseDto;
-import be.podor.theater.model.FloorEnum;
+import be.podor.theater.model.type.FloorType;
 import be.podor.theater.model.Theater;
 import be.podor.theater.model.TheaterSeat;
 import be.podor.theater.repository.TheaterRepository;
@@ -44,12 +44,12 @@ public class TheaterService {
 
         // 층별 정보 조회
         List<TheaterSeat> theaterFloors = theaterSeatRepository.findByTheaterIdGroupByFloor(theaterId);
-        List<FloorEnum> floors = theaterFloors.stream()
+        List<FloorType> floors = theaterFloors.stream()
                 .map(TheaterSeat::getFloor)
                 .collect(Collectors.toList());
 
         // 층간 섹션 정보 조회
-        for (FloorEnum floor : floors) {
+        for (FloorType floor : floors) {
             List<TheaterSeat> theaterSections = theaterSeatRepository.findByTheaterIdAndFloorGroupBySection(theaterId, floor);
             List<String> sections = theaterSections.stream()
                     .map(TheaterSeat::getSection)

@@ -1,4 +1,4 @@
-package be.podor.theater.model;
+package be.podor.theater.model.type;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.Getter;

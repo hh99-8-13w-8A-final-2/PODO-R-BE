@@ -1,6 +1,6 @@
 package be.podor.theater.repository;
 
-import be.podor.theater.model.FloorEnum;
+import be.podor.theater.model.type.FloorType;
 import be.podor.theater.model.TheaterSeat;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,7 +16,7 @@ public interface TheaterSeatRepository extends JpaRepository<TheaterSeat, Long> 
     List<TheaterSeat> findByTheaterIdGroupByFloor(@Param("theaterId") Long theaterId);
 
     @Query(value = "SELECT ts.floor FROM TheaterSeat ts WHERE ts.theater.theaterId = :theaterId GROUP BY ts.floor")
-    List<FloorEnum> findFloorEnumsByTheaterIdGroupByFloor(@Param("theaterId") Long theaterId);
+    List<FloorType> findFloorEnumsByTheaterIdGroupByFloor(@Param("theaterId") Long theaterId);
 
     // 층별 섹션 정보 조회
     @Query(value =
@@ -27,7 +27,7 @@ public interface TheaterSeatRepository extends JpaRepository<TheaterSeat, Long> 
     )
     List<TheaterSeat> findByTheaterIdAndFloorGroupBySection(
             @Param("theaterId") Long theaterId,
-            @Param("floor") FloorEnum floor
+            @Param("floor") FloorType floor
     );
 
     // 층별 섹션 정보 조회
@@ -39,7 +39,7 @@ public interface TheaterSeatRepository extends JpaRepository<TheaterSeat, Long> 
     )
     List<String> findSectionsByTheaterIdAndFloorGroupBySection(
             @Param("theaterId") Long theaterId,
-            @Param("floor") FloorEnum floor
+            @Param("floor") FloorType floor
     );
 
     // 층간 섹션별 열 정보 조회
@@ -52,7 +52,7 @@ public interface TheaterSeatRepository extends JpaRepository<TheaterSeat, Long> 
     )
     List<TheaterSeat> findByTheaterIdAndFloorAndSectionGroupByRow(
             @Param("theaterId") Long theaterId,
-            @Param("floor") FloorEnum floor,
+            @Param("floor") FloorType floor,
             @Param("section") String section
     );
 
@@ -66,7 +66,7 @@ public interface TheaterSeatRepository extends JpaRepository<TheaterSeat, Long> 
     )
     List<String> findRowsByTheaterIdAndFloorAndSectionGroupByRow(
             @Param("theaterId") Long theaterId,
-            @Param("floor") FloorEnum floor,
+            @Param("floor") FloorType floor,
             @Param("section") String section
     );
 
@@ -80,9 +80,9 @@ public interface TheaterSeatRepository extends JpaRepository<TheaterSeat, Long> 
     )
     List<TheaterSeat> findByTheaterIdAndFloorAndSectionGroupByRowWithoutSection(
             @Param("theaterId") Long theaterId,
-            @Param("floor") FloorEnum floor
+            @Param("floor") FloorType floor
     );
 
     // 상영관, 층, 섹션, 열, 좌석 정보로 조회
-    Optional<TheaterSeat> findByFloorAndSectionAndSeatRowAndSeatAndTheater_TheaterId(FloorEnum floor, String section, String seatRow, Integer Seat, Long theaterId);
+    Optional<TheaterSeat> findByFloorAndSectionAndSeatRowAndSeatAndTheater_TheaterId(FloorType floor, String section, String seatRow, Integer Seat, Long theaterId);
 }
