@@ -24,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,7 +47,9 @@ public class ReviewService {
 
         TheaterSeat theaterSeat = TheaterSeatValidator.validate(theaterSeatRepository, requestDto, musical);
 
-        List<Tag> tags = requestDto.getTags().stream()
+        String[] convertTags = requestDto.getTags().split(", ");
+
+        List<Tag> tags = Arrays.stream(convertTags)
                 .map(Tag::new)
                 .collect(Collectors.toList());
 
