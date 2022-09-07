@@ -25,7 +25,7 @@ public class ReviewRequestDto {
     private ScoreEnum sight;
     private ScoreEnum sound;
     private ScoreEnum light;
-    private String operaGrass;
+    private String operaGlass;
     private String block;
     private List<String> tags;
     // Todo member @CreatedBy
