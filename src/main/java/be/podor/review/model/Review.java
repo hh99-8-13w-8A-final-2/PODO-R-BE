@@ -69,7 +69,7 @@ public class Review extends Timestamped {
                 .sound((requestDto.getSound()))
                 .build();
 
-        boolean operaGlass = requestDto.getOperaGrass() != null && requestDto.getOperaGrass().equals("on");
+        boolean operaGlass = requestDto.getOperaGlass() != null && requestDto.getOperaGlass().equals("on");
         boolean blockSight = requestDto.getBlock() != null && requestDto.getBlock().equals("on");
 
         return Review.builder()

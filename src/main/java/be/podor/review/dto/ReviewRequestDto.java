@@ -13,7 +13,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReviewRequestDto {
-    private Long theaterId;
     private GradeType grade;
     private FloorType floor;
     private String section;
@@ -27,6 +26,6 @@ public class ReviewRequestDto {
     private ScoreEnum light;
     private String operaGlass;
     private String block;
-    private List<String> tags;
+    private String tags;
     // Todo member @CreatedBy
 }

@@ -24,7 +24,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,13 +48,11 @@ public class ReviewService {
 
         TheaterSeat theaterSeat = TheaterSeatValidator.validate(theaterSeatRepository, requestDto, musical);
 
-        List<Tag> tags = requestDto.getTags().stream()
-                .map(Tag::new)
-                .collect(Collectors.toList());
-
-        tags = tagRepository.saveAll(tags);
+        Set<Tag> tags = findExistTagsOrElseCreate(requestDto);
 
         Review review = Review.of(theaterSeat, musical, requestDto);
+
+        reviewRepository.save(review);
 
         List<ReviewFile> reviewFiles = requestDto.getImgUrls().stream()
                 .map(path -> ReviewFile.of(path, review))
@@ -62,10 +62,31 @@ public class ReviewService {
                 .map(tag -> ReviewTag.of(review, tag))
                 .collect(Collectors.toList());
 
+        tags.forEach(tag -> tag.addReviewTags(reviewTags));
+
         review.addFiles(reviewFiles);
         review.addTags(reviewTags);
 
-        return reviewRepository.save(review);
+        return review;
+    }
+
+    @Transactional
+    public Set<Tag> findExistTagsOrElseCreate(ReviewRequestDto requestDto) {
+        List<String> splitTags = Arrays.asList(requestDto.getTags().split(", "));
+
+        Set<Tag> existTags = tagRepository.findByTagIn(splitTags);
+
+        Set<String> existTagNames = existTags.stream()
+                .map(Tag::getTag)
+                .collect(Collectors.toSet());
+
+        for (String splitTag : splitTags) {
+            if (!existTagNames.contains(splitTag)) {
+                existTags.add(tagRepository.save(new Tag(splitTag)));
+            }
+        }
+
+        return existTags;
     }
 
     // 최근 리뷰 가져오기 for live
