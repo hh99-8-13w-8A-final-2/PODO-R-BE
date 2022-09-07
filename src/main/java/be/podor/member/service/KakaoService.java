@@ -1,24 +1,19 @@
 package be.podor.member.service;
 
 
-import be.podor.member.dto.responsedto.KakaoUserInfoDto;
+import be.podor.member.dto.KakaoUserInfoDto;
 import be.podor.member.model.Member;
 import be.podor.member.repository.MemberRepository;
-import be.podor.security.UserDetailsImpl;
 import be.podor.security.jwt.JwtTokenProvider;
 import be.podor.security.jwt.TokenDto;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
@@ -31,14 +26,16 @@ import java.io.IOException;
 @Service
 @RequiredArgsConstructor
 public class KakaoService {
-    @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
+    @Value("${kakao.client-id}")
     String kakaoClientId;
-    @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
-    String RedirectURI;
+    @Value("${kakao.redirect-uri}")
+    String redirectUri;
 
     private final MemberRepository memberRepository;
 
     private final JwtTokenProvider jwtTokenProvider;
+
+    private final MemberService memberService;
 
     @Transactional
     public TokenDto kakaoLogin(String code)
@@ -52,15 +49,12 @@ public class KakaoService {
         // 3. 카카오ID로 회원가입 처리
         Member kakaoUser = signupKakaoUser(kakaoUserInfo);
 
-        //4. 강제 로그인 처리
-        forceLoginKakaoUser(kakaoUser);
-
-        return jwtTokenProvider.createToken(kakaoUser);
+        return memberService.saveToken(kakaoUser);
     }
 
     //header 에 Content-type 지정
     //1번
-    private String getKakaoAccessToken(String code) throws IOException {
+    String getKakaoAccessToken(String code) throws IOException {
         // HTTP Header 생성
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
@@ -69,7 +63,7 @@ public class KakaoService {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
         body.add("client_id", kakaoClientId);
-        body.add("redirect_uri", RedirectURI);
+        body.add("redirect_uri", redirectUri);
         body.add("code", code);
 
         //HTTP 요청 보내기
@@ -120,26 +114,18 @@ public class KakaoService {
     }
 
     // 3번
-    private Member signupKakaoUser(KakaoUserInfoDto kakaoUserInfoDto) {
+    Member signupKakaoUser(KakaoUserInfoDto kakaoUserInfoDto) {
         // 재가입 방지
 //        int mannerTemp = userRoleCheckService.userResignCheck(kakaoUserInfoDto.getEmail());
         // DB 에 중복된 Kakao Id 가 있는지 확인
         Long kakaoId = kakaoUserInfoDto.getKakaoId();
-        Member findKakao = memberRepository.findByKakaoId(kakaoUserInfoDto.getKakaoId())
+        Member findKakao = memberRepository.findByKakaoId(kakaoId)
                 //DB에 중복된 계정이 없으면 회원가입 처리
                 .orElseGet(() -> {
                     Member kakaoUser = Member.of(kakaoUserInfoDto);
                     return memberRepository.save(kakaoUser);
                 });
         return findKakao;
-    }
-
-    // 4번
-    public void forceLoginKakaoUser(Member kakaoUser) {
-        UserDetails userDetails = new UserDetailsImpl(kakaoUser);
-        Authentication authentication =
-                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
 

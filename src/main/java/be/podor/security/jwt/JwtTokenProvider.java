@@ -1,6 +1,9 @@
 package be.podor.security.jwt;
 
 import be.podor.member.model.Member;
+import be.podor.security.UserDetailsImpl;
+import be.podor.security.jwt.refresh.RefreshToken;
+import be.podor.security.jwt.refresh.RefreshTokenRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -8,74 +11,73 @@ import io.jsonwebtoken.security.SecurityException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Optional;
 
-@RequiredArgsConstructor
+
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class JwtTokenProvider {
 
     @Value("${jwt.secretKey}")
     private String secretKey;
     public static String BEARER_PREFIX = "Bearer ";
 
-    // 토큰 유효시간
-    // 프론트엔드와 약속해야 함
     private final Long TokenValidTime = 30 * 60 * 1000L;  // 30분
     private final Long RefreshTokenValidTime = 7 * 24 * 60 * 60 * 1000L;  // 1주일
 
     private final UserDetailsService userDetailsService;
+
 
     private Key key;
 
     @PostConstruct
     protected void init() {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
-        //       아스키코드로 바꿔서 바이트 배열을 생성
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
-//      hmacShaKeyFor 메소드를 이용하여 key 객체로 변경
         key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public Claims claims(String jwt) { // 변수이름 수정 요망
-        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt).getBody();
-    }
 
-    // 토큰 생성 // member ID 수정 // 수정
     public TokenDto createToken(Member member) {
-        Date now = new Date();
+        long now = (new Date().getTime());
+
+        Date accessTokenExpiresIn = new Date(now + TokenValidTime);
+        Date refreshTokenExpiresIn = new Date(now + RefreshTokenValidTime);
+
         String accessToken = Jwts.builder()
                 .setSubject(member.getId().toString())// 유저 정보 Id값 저장
                 .setAudience(member.getNickname()) // 유저 정보 닉네임값 저장
-                .setExpiration(new Date(now.getTime() + TokenValidTime)) // 만료 시간 정보
+                .setExpiration(accessTokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS256) // 키값과 알고리즘 세팅
                 .compact();
-        String refreshToken = createRefreshToken();
+
+        String refreshToken = Jwts.builder()
+                .setExpiration(refreshTokenExpiresIn)
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+
 
         return TokenDto.builder()
                 .accessToken(BEARER_PREFIX + accessToken)
                 .refreshToken(refreshToken)
                 .build();
-    }
 
-    public String createRefreshToken() {
-        Date now = new Date();
-        String refreshToken = Jwts.builder()
-                .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + RefreshTokenValidTime))
-                .signWith(key, SignatureAlgorithm.HS256) // 키값과 알고리즘 세팅
-                .compact();
-        return refreshToken;
     }
 
     // 토큰에서 회원 정보 추출
@@ -85,18 +87,15 @@ public class JwtTokenProvider {
 
     // JWT 토큰에서 인증 정보 조회
     public Authentication getAuthentication(String jwtToken) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserPk(jwtToken));
+        UserDetails userDetails = userDetailsService.loadUserByUsername(getUserPk(jwtToken));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
 
     // 토큰 유효성 확인
-    //    parserbuilder가 어떤 역할인지 알아내야겠음;;; 어려웡
-    public boolean CheckToken(HttpServletRequest request) {
-        String jwtToken = takeToken(request);
+    public boolean validateToken(String jwtToken) {
         try {
-            Jwts
-                    .parserBuilder()
+            Jwts.parserBuilder()
 //                    jwt 서명 검증을 위한 secret key를 들고온다.
                     .setSigningKey(key)
                     .build()
@@ -113,11 +112,5 @@ public class JwtTokenProvider {
         }
         return false;
     }
-
-    // 리퀘스트 헤더에서 토큰값가져오기
-    public String takeToken(HttpServletRequest request) {
-        return request.getHeader("Authorization").substring(7);
-    }
-
 
 }
