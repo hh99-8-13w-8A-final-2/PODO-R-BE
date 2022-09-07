@@ -4,7 +4,6 @@ package be.podor.member.service;
 import be.podor.member.dto.KakaoUserInfoDto;
 import be.podor.member.model.Member;
 import be.podor.member.repository.MemberRepository;
-import be.podor.security.UserDetailsImpl;
 import be.podor.security.jwt.JwtTokenProvider;
 import be.podor.security.jwt.TokenDto;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -15,10 +14,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
@@ -40,6 +35,8 @@ public class KakaoService {
 
     private final JwtTokenProvider jwtTokenProvider;
 
+    private final MemberService memberService;
+
     @Transactional
     public TokenDto kakaoLogin(String code)
             throws IOException {
@@ -52,10 +49,7 @@ public class KakaoService {
         // 3. 카카오ID로 회원가입 처리
         Member kakaoUser = signupKakaoUser(kakaoUserInfo);
 
-        //4. 강제 로그인 처리
-        forceLoginKakaoUser(kakaoUser);
-
-        return jwtTokenProvider.createToken(kakaoUser);
+        return memberService.saveToken(kakaoUser);
     }
 
     //header 에 Content-type 지정
@@ -132,14 +126,6 @@ public class KakaoService {
                     return memberRepository.save(kakaoUser);
                 });
         return findKakao;
-    }
-
-    // 4번
-    public void forceLoginKakaoUser(Member kakaoUser) {
-        UserDetails userDetails = new UserDetailsImpl(kakaoUser);
-        Authentication authentication =
-                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
 

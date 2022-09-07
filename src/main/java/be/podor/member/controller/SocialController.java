@@ -1,11 +1,15 @@
 package be.podor.member.controller;
 
 
+import be.podor.member.model.Member;
 import be.podor.member.service.KakaoService;
 import be.podor.member.service.MemberService;
 import be.podor.member.service.TwitterService;
+import be.podor.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,8 +39,10 @@ public class SocialController {
     }
 
     @PostMapping("/member/logout")
-    public ResponseEntity<?> logout(HttpServletRequest request) {
-        return memberService.logout(request);
+    public ResponseEntity<?> logout(@AuthenticationPrincipal UserDetails userDetails) {
+        Member member = ((UserDetailsImpl) userDetails).getMember();
+        memberService.logout(member);
+        return ResponseEntity.ok().build();
     }
 }
 
