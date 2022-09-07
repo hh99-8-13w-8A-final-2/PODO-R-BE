@@ -13,7 +13,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReviewRequestDto {
-    private Long theaterId;
     private GradeType grade;
     private FloorType floor;
     private String section;
