@@ -23,4 +23,8 @@ public class Tag {
     public Tag(String tagName) {
         this.tag = tagName;
     }
+
+    public void addReviewTags(List<ReviewTag> reviewTags) {
+        this.reviewTags.addAll(reviewTags);
+    }
 }
