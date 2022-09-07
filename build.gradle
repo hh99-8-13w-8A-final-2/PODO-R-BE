@@ -51,6 +51,9 @@ dependencies {
 
     // cache
     implementation 'org.springframework.boot:spring-boot-starter-cache'
+
+    // slack webhook logging
+    implementation("com.github.maricn:logback-slack-appender:1.6.1")
 }
 
 tasks.named('test') {
