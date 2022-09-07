@@ -15,7 +15,7 @@ public class ReviewLiveResponseDto {
 
     private String reviewContent;
 
-    private Double reviewScore;
+    private String reviewScore;
 
     private EvaluationDto evaluation;
 
@@ -24,7 +24,7 @@ public class ReviewLiveResponseDto {
                 .reviewId(review.getReviewId())
                 .musicalName(review.getMusical().getMusicalName())
                 .reviewContent(review.getContent())
-                .reviewScore(Double.parseDouble(review.getScore()))
+                .reviewScore(review.getScore())
                 .evaluation(EvaluationDto.of(review.getEvaluation()))
                 .build();
     }

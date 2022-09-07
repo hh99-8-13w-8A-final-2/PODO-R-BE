@@ -25,7 +25,7 @@ public class ReviewListResponseDto {
     private String row;
     private Integer seat;
     private EvaluationDto evaluation;
-    private Double reviewScore;
+    private String reviewScore;
     private Boolean operaGrass;
     private Boolean block;
     private List<String> tags;
@@ -53,7 +53,7 @@ public class ReviewListResponseDto {
                 .row(theaterSeat.getSeatRow())
                 .seat(theaterSeat.getSeat())
                 .evaluation(EvaluationDto.of(review.getEvaluation()))
-                .reviewScore(Double.parseDouble(review.getScore()))
+                .reviewScore(review.getScore())
                 .operaGrass(review.getOperaGlass())
                 .block(review.getBlock())
                 .tags(reviewTags)
