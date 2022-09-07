@@ -31,7 +31,7 @@ public class ReviewDetailResponseDto {
     private Integer seat;
     private EvaluationDto evaluation;
     private String reviewScore;
-    private Boolean operaGrass;
+    private Boolean operaGlass;
     private Boolean block;
     private List<String> tags;
     private LocalDateTime createdAt;
@@ -64,7 +64,7 @@ public class ReviewDetailResponseDto {
                 .seat(theaterSeat.getSeat())
                 .evaluation(EvaluationDto.of(review.getEvaluation()))
                 .reviewScore(review.getScore())
-                .operaGrass(review.getOperaGlass())
+                .operaGlass(review.getOperaGlass())
                 .block(review.getBlock())
                 .tags(reviewTags)
                 .createdAt(review.getCreatedAt())
