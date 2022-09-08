@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
-    //    @EntityGraph(attributePaths = {"theaterSeat", "reviewFiles", "reviewTags"}, type = EntityGraph.EntityGraphType.LOAD)
     @EntityGraph(attributePaths = {"theaterSeat"}, type = EntityGraph.EntityGraphType.LOAD)
     Page<Review> findByMusical_MusicalIdOrderByCreatedAtDesc(Long musicalId, Pageable pageable);
 }
