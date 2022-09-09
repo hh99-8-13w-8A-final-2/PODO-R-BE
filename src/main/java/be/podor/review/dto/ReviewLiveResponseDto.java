@@ -31,8 +31,8 @@ public class ReviewLiveResponseDto {
 
         return ReviewLiveResponseDto.builder()
                 .reviewId(review.getReviewId())
-                .imgUrl(review.getReviewFiles().get(0).getFilePath())
-                .floor(theaterSeat.getFloor().toString())
+                .imgUrl(review.getMusical().getMusicalPoster())
+                .floor(theaterSeat.getFloor().getFloor())
                 .section(theaterSeat.getSection())
                 .row(theaterSeat.getSeatRow())
                 .seat(theaterSeat.getSeat())

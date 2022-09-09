@@ -7,9 +7,9 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum FloorType {
-    FIRST("1F", 1),
-    SECOND("2F", 2),
-    THIRD("3F", 3);
+    FIRST("1층", 1),
+    SECOND("2층", 2),
+    THIRD("3층", 3);
 
     private final String floor;
     private final int num;
