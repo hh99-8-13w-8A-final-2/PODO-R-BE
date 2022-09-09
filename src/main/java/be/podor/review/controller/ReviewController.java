@@ -13,8 +13,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,8 +23,6 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
-    private final SimpMessagingTemplate template;
-
     // 리뷰 작성
     @PostMapping("/api/musicals/{musicalId}/reviews")
     public ResponseEntity<?> createReview(
@@ -34,9 +30,6 @@ public class ReviewController {
             @RequestBody ReviewRequestDto requestDto
     ) {
         Review review = reviewService.createReview(musicalId, requestDto);
-
-        // 소켓에 쏘기
-//        liveReview(review);
 
         return ResponseEntity.ok().build();
     }
@@ -75,13 +68,5 @@ public class ReviewController {
         ReviewDetailResponseDto responseDto = reviewService.getReviewDetail(musicalId, reviewId);
 
         return ResponseEntity.ok(responseDto);
-    }
-
-    // 라이브 리뷰
-    @MessageMapping("/reviews")
-    public void liveReview(Review review) {
-        ReviewLiveResponseDto response = ReviewLiveResponseDto.of(review);
-
-        template.convertAndSend("/sub/reviews", response);
     }
 }
