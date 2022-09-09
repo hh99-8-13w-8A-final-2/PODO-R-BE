@@ -50,7 +50,7 @@ public class Member {
                 .build();
     }
 
-    public static Member ofs(TwitterUserInfoDto twitterUserInfoDto) {
+    public static Member of(TwitterUserInfoDto twitterUserInfoDto) {
 
         return Member.builder()
                 .nickname(twitterUserInfoDto.getNickname())

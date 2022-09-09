@@ -8,12 +8,15 @@ import be.podor.security.jwt.refresh.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 @RequiredArgsConstructor
 @Service
 public class MemberService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
+    @Transactional
     public void logout(Member member) {
         refreshTokenRepository.deleteByMember(member);
     }
@@ -25,6 +28,7 @@ public class MemberService {
         RefreshToken refreshTokenObject = RefreshToken.builder()
                 .id(member.getId())
                 .member(member)
+                .tokenValue(tokenDto.getRefreshToken())
                 .build();
 
         refreshTokenRepository.save(refreshTokenObject);

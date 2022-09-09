@@ -1,18 +1,20 @@
 package be.podor.member.controller;
 
 
+import be.podor.member.dto.SocialUserDto;
 import be.podor.member.model.Member;
 import be.podor.member.service.KakaoService;
 import be.podor.member.service.MemberService;
 import be.podor.member.service.TwitterService;
 import be.podor.security.UserDetailsImpl;
+import be.podor.security.jwt.JwtFilter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -29,7 +31,11 @@ public class SocialController {
     @GetMapping("/oauth/kakao")
     public ResponseEntity<?> kakaoLogin(
             @RequestParam(value = "code") String code) throws IOException {
-        return ResponseEntity.ok(kakaoService.kakaoLogin(code));
+        SocialUserDto socialUserDto = kakaoService.kakaoLogin(code);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(JwtFilter.AUTHORIZATION_HEADER, socialUserDto.getTokenDto().getAccessToken());
+        headers.add("RefreshToken", socialUserDto.getTokenDto().getRefreshToken());
+        return ResponseEntity.ok().headers(headers).body(socialUserDto.getMemberDto());
     }
 
     @GetMapping("/oauth/twitter")
