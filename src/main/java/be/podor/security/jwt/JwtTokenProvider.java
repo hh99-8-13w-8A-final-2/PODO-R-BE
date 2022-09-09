@@ -62,7 +62,7 @@ public class JwtTokenProvider {
 
         String accessToken = Jwts.builder()
                 .setSubject(member.getId().toString())// 유저 정보 Id값 저장
-                .setAudience(member.getNickname()) // 유저 정보 닉네임값 저장
+                .setIssuer(member.getNickname()) // 유저 정보 닉네임값 저장
                 .setExpiration(accessTokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS256) // 키값과 알고리즘 세팅
                 .compact();

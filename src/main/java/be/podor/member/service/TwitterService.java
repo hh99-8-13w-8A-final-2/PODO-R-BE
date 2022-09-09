@@ -192,7 +192,7 @@ public class TwitterService {
         Member findTwitter = memberRepository.findByTwitterId(twitterId)
                 //DB에 중복된 계정이 없으면 회원가입 처리
                 .orElseGet(() -> {
-                    Member twitterUser = Member.ofs(twitterUserInfoDto);
+                    Member twitterUser = Member.of(twitterUserInfoDto);
                     return memberRepository.save(twitterUser);
                 });
         return findTwitter;

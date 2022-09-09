@@ -2,9 +2,10 @@ package be.podor.member.service;
 
 
 import be.podor.member.dto.KakaoUserInfoDto;
+import be.podor.member.dto.MemberDto;
+import be.podor.member.dto.SocialUserDto;
 import be.podor.member.model.Member;
 import be.podor.member.repository.MemberRepository;
-import be.podor.security.jwt.JwtTokenProvider;
 import be.podor.security.jwt.TokenDto;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,12 +34,11 @@ public class KakaoService {
 
     private final MemberRepository memberRepository;
 
-    private final JwtTokenProvider jwtTokenProvider;
 
     private final MemberService memberService;
 
     @Transactional
-    public TokenDto kakaoLogin(String code)
+    public SocialUserDto kakaoLogin(String code)
             throws IOException {
         // 1. "인가코드" 로 "액세스 토큰" 요청
         String accessToken = getKakaoAccessToken(code);
@@ -49,7 +49,10 @@ public class KakaoService {
         // 3. 카카오ID로 회원가입 처리
         Member kakaoUser = signupKakaoUser(kakaoUserInfo);
 
-        return memberService.saveToken(kakaoUser);
+        TokenDto tokenDto = memberService.saveToken(kakaoUser);
+        MemberDto memberDto = new MemberDto(kakaoUser.getId(),kakaoUser.getNickname(),kakaoUser.getProfilePic());
+        SocialUserDto socialUserDto = new SocialUserDto(memberDto, tokenDto);
+        return socialUserDto;
     }
 
     //header 에 Content-type 지정
@@ -115,8 +118,6 @@ public class KakaoService {
 
     // 3번
     Member signupKakaoUser(KakaoUserInfoDto kakaoUserInfoDto) {
-        // 재가입 방지
-//        int mannerTemp = userRoleCheckService.userResignCheck(kakaoUserInfoDto.getEmail());
         // DB 에 중복된 Kakao Id 가 있는지 확인
         Long kakaoId = kakaoUserInfoDto.getKakaoId();
         Member findKakao = memberRepository.findByKakaoId(kakaoId)

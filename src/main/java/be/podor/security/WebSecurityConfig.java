@@ -69,7 +69,7 @@ public class WebSecurityConfig {
 // header
         configuration.setAllowedHeaders(Arrays.asList("*"));
 // Authorization, Refresh-Token 헤더 설정
-        configuration.setExposedHeaders(Arrays.asList("Authorization", "Refresh-Token"));
+        configuration.setExposedHeaders(Arrays.asList("Authorization", "RefreshToken"));
 
         configuration.setAllowCredentials(true);
 
