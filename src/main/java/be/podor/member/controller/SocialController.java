@@ -14,12 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import twitter4j.JSONException;
 import twitter4j.TwitterException;
 
 import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 
 
 @RestController
@@ -49,8 +46,14 @@ public class SocialController {
     // 트위터 로그인 수행
     @GetMapping("/oauth/twitter")
     public ResponseEntity<?> twitterLogin(
-            @RequestParam(value = "code") String code) throws IOException, NoSuchAlgorithmException, InvalidKeyException {
-        return ResponseEntity.ok(twitterService.twitterLogin(code));
+            @RequestParam("oauth_token") String oauthToken,
+            @RequestParam("oauth_verifier") String oauthVerifier
+    ) throws TwitterException {
+        SocialUserDto socialUserDto = twitterService.twitterLogin(oauthToken, oauthVerifier);
+
+        return ResponseEntity.ok()
+                .headers(socialUserDto.getTokenHeaders())
+                .body(socialUserDto.getMemberDto());
     }
 
     @PostMapping("/member/logout")
