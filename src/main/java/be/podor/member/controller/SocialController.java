@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import twitter4j.JSONException;
+import twitter4j.TwitterException;
 
 import java.io.IOException;
 import java.security.InvalidKeyException;
@@ -38,6 +40,13 @@ public class SocialController {
         return ResponseEntity.ok().headers(headers).body(socialUserDto.getMemberDto());
     }
 
+    // 트위터 로그인 url 전달
+    @GetMapping("/twitter/login")
+    public ResponseEntity<?> getTwitterToken() throws TwitterException {
+        return ResponseEntity.ok(twitterService.getTwitterAuthorizationURL());
+    }
+
+    // 트위터 로그인 수행
     @GetMapping("/oauth/twitter")
     public ResponseEntity<?> twitterLogin(
             @RequestParam(value = "code") String code) throws IOException, NoSuchAlgorithmException, InvalidKeyException {

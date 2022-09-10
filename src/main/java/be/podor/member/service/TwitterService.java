@@ -17,23 +17,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
-
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.time.Instant;
-import java.util.Base64;
-import java.util.Random;
-
-import static org.hibernate.cfg.AvailableSettings.URL;
+import twitter4j.*;
+import twitter4j.auth.RequestToken;
+import twitter4j.conf.ConfigurationBuilder;
 
 @Service
 @RequiredArgsConstructor
@@ -44,34 +30,22 @@ public class TwitterService {
     @Value("${twitter.redirect-uri}")
     String twitterRedirectUri;
 
-    @Value("${twitter.consumer-secretkey}")
-    String consumer_secret;
-
-    @Value("${twitter.token}")
-    String token;
-
-    @Value("${twitter.token-secret}")
-    String tokenSecret;
-
     private final MemberRepository memberRepository;
+
     private final JwtTokenProvider jwtTokenProvider;
 
-    @Transactional
-    public TokenDto twitterLogin(String code)
-            throws IOException, NoSuchAlgorithmException, InvalidKeyException {
-        // 1. "인가코드" 로 "액세스 토큰" 요청
-        String accessToken = getTwitterAccessToken(code);
+    // 로그인 url 리턴
+    public String getTwitterAuthorizationURL() throws TwitterException {
+        ConfigurationBuilder twitterConf = new ConfigurationBuilder();
+        twitterConf.setDebugEnabled(true);
+        twitterConf.setOAuthConsumerKey(consumerKey);
+        twitterConf.setOAuthConsumerSecret(consumerSecret);
 
-        // 2. 토큰으로 트위터 API 호출
-        TwitterUserInfoDto twitterUserInfoDto = getTwitterUserInfo(accessToken);
+        Twitter twitter = new TwitterFactory(twitterConf.build()).getInstance();
 
-        // 3. 트위터ID로 회원가입 처리
-        Member twitterUser = signupTwitterUser(twitterUserInfoDto);
+        RequestToken requestToken = twitter.getOAuthRequestToken(twitterRedirectUri);
 
-        //4. 강제 로그인 처리
-        forceLoginTwitterUser(twitterUser);
-
-        return jwtTokenProvider.createToken(twitterUser);
+        return requestToken.getAuthorizationURL();
     }
 
     private HttpHeaders getHeaders() throws IOException, NoSuchAlgorithmException, InvalidKeyException {
@@ -197,12 +171,4 @@ public class TwitterService {
                 });
         return findTwitter;
     }
-
-    public void forceLoginTwitterUser(Member twitterUser) {
-        UserDetails userDetails = new UserDetailsImpl(twitterUser);
-        Authentication authentication =
-                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-    }
-
 }
