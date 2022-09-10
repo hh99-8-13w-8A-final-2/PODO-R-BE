@@ -18,6 +18,7 @@ import java.io.IOException;
 public class JwtFilter extends OncePerRequestFilter {
 
     public static String AUTHORIZATION_HEADER = "Authorization";
+    public static String REFRESH_TOKEN_HEADER = "Refresh-Token";
     public static String BEARER_PREFIX = "Bearer ";
     private final JwtTokenProvider jwtTokenProvider;
 //    ---------------------------------------------------------------------
