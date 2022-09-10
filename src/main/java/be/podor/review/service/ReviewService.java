@@ -91,7 +91,7 @@ public class ReviewService {
 
     // 최근 리뷰 가져오기 for live
     public List<ReviewLiveResponseDto> getRecentReviews(PageRequest pageRequest) {
-        List<Review> reviews = reviewRepository.findAll(pageRequest).toList();
+        List<Review> reviews = reviewRepository.findTop10ByOrderByCreatedAtDesc();
 
         return reviews.stream()
                 .map(ReviewLiveResponseDto::of)
