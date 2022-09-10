@@ -30,6 +30,8 @@ public class TwitterService {
 
     private final JwtTokenProvider jwtTokenProvider;
 
+    private final String ACCESS_TOKEN_URL = "https://api.twitter.com/oauth/access_token";
+
     // 로그인 url 리턴
     public String getTwitterAuthorizationURL() throws TwitterException {
         ConfigurationBuilder twitterConf = new ConfigurationBuilder();
@@ -46,28 +48,14 @@ public class TwitterService {
 
     // 트위터 로그인
     public SocialUserDto twitterLogin(String oauthToken, String oauthVerifier) throws TwitterException {
-        HttpParameter[] httpParameters = {
-                new HttpParameter("oauth_token", oauthToken),
-                new HttpParameter("oauth_verifier", oauthVerifier)
-        };
-
-        HttpResponse response = HttpClientFactory.getInstance().post("https://api.twitter.com/oauth/access_token",
-                httpParameters,
-                null,
-                null);
-
-        String tokenString = response.asString();
-
-        String[] split = tokenString.split("&");
-        String token = split[0].split("=")[1];
-        String tokenSecret = split[1].split("=")[1];
+        RequestToken requestToken = getTwitterRequestToken(oauthToken, oauthVerifier);
 
         ConfigurationBuilder twitterConf = new ConfigurationBuilder();
         twitterConf.setDebugEnabled(true);
         twitterConf.setOAuthConsumerKey(consumerKey);
         twitterConf.setOAuthConsumerSecret(consumerSecret);
-        twitterConf.setOAuthAccessToken(token);
-        twitterConf.setOAuthAccessTokenSecret(tokenSecret);
+        twitterConf.setOAuthAccessToken(requestToken.getToken());
+        twitterConf.setOAuthAccessTokenSecret(requestToken.getTokenSecret());
 
         User twitterUser = new TwitterFactory(twitterConf.build())
                 .getInstance()
@@ -76,12 +64,33 @@ public class TwitterService {
         Member twitterMember = signupTwitterUser(TwitterUserInfoDto.of(twitterUser));
 
         TokenDto tokenDto = jwtTokenProvider.createToken(twitterMember);
+        MemberDto memberDto = MemberDto.of(twitterMember);
 
-        MemberDto memberDto = new MemberDto(twitterMember.getId(), twitterMember.getNickname(), twitterMember.getProfilePic());
+        return new SocialUserDto(memberDto, tokenDto);
+    }
 
-        SocialUserDto socialUserDto = new SocialUserDto(memberDto, tokenDto);
+    // 트위터 토큰 요청
+    private RequestToken getTwitterRequestToken(String oauthToken, String oauthVerifier) throws TwitterException {
+        HttpParameter[] httpParameters = {
+                new HttpParameter("oauth_token", oauthToken),
+                new HttpParameter("oauth_verifier", oauthVerifier)
+        };
 
-        return socialUserDto;
+        HttpResponse response = HttpClientFactory.getInstance()
+                .post(
+                        ACCESS_TOKEN_URL,
+                        httpParameters,
+                        null,
+                        null
+                );
+
+        String tokenString = response.asString();
+        String[] split = tokenString.split("&");
+
+        String token = split[0].split("=")[1];
+        String tokenSecret = split[1].split("=")[1];
+
+        return new RequestToken(token, tokenSecret);
     }
 
     Member signupTwitterUser(TwitterUserInfoDto twitterUserInfoDto) {
