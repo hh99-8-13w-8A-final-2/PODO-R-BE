@@ -1,6 +1,6 @@
 package be.podor.notice.model;
 
-import be.podor.share.Timestamped;
+import be.podor.share.BaseEntity;
 import lombok.*;
 
 import javax.persistence.*;
@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class Notice extends Timestamped {
+public class Notice extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

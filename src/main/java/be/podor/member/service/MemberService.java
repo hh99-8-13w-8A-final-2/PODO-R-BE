@@ -1,6 +1,7 @@
 package be.podor.member.service;
 
 import be.podor.member.model.Member;
+import be.podor.security.UserDetailsImpl;
 import be.podor.security.jwt.JwtTokenProvider;
 import be.podor.security.jwt.TokenDto;
 import be.podor.security.jwt.refresh.RefreshToken;
@@ -17,8 +18,8 @@ public class MemberService {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional
-    public void logout(Member member) {
-        refreshTokenRepository.deleteByMember(member);
+    public void logout(UserDetailsImpl userDetails) {
+        refreshTokenRepository.deleteByMember_Id(userDetails.getMemberId());
     }
 
     public TokenDto saveToken(Member member) {
