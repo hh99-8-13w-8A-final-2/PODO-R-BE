@@ -2,6 +2,7 @@ package be.podor.security;
 
 
 import be.podor.security.jwt.JwtConfiguration;
+import be.podor.security.jwt.JwtFilter;
 import be.podor.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
@@ -62,14 +63,17 @@ public class WebSecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-// origin
+        // origin
         configuration.setAllowedOriginPatterns(Arrays.asList("*"));
-// method
+        // method
         configuration.setAllowedMethods(Arrays.asList("*"));
-// header
+        // header
         configuration.setAllowedHeaders(Arrays.asList("*"));
-// Authorization, Refresh-Token 헤더 설정
-        configuration.setExposedHeaders(Arrays.asList("Authorization", "RefreshToken"));
+        // Authorization, Refresh-Token 헤더 설정
+        configuration.setExposedHeaders(Arrays.asList(
+                JwtFilter.AUTHORIZATION_HEADER,
+                JwtFilter.REFRESH_TOKEN_HEADER
+        ));
 
         configuration.setAllowCredentials(true);
 

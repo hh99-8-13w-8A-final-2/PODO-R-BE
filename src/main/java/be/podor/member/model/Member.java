@@ -25,7 +25,7 @@ public class Member {
     private Long kakaoId;
 
     @Column(unique = true)
-    private String twitterId;
+    private Long twitterId;
 
     @Column
     private String password;
