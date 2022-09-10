@@ -94,12 +94,10 @@ public class TwitterService {
     }
 
     Member signupTwitterUser(TwitterUserInfoDto twitterUserInfoDto) {
-        Long twitterId = twitterUserInfoDto.getTwitterId();
-        Member findKakao = memberRepository.findByTwitterId(twitterId.toString())
-                .orElseGet(() -> {
-                    Member kakaoUser = Member.of(twitterUserInfoDto);
-                    return memberRepository.save(kakaoUser);
-                });
-        return findKakao;
+        Member twitterUser = memberRepository.findByTwitterId(twitterUserInfoDto.getTwitterId())
+                .orElseGet(
+                        () -> memberRepository.save(Member.of(twitterUserInfoDto))
+                );
+        return twitterUser;
     }
 }
