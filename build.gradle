@@ -49,6 +49,9 @@ dependencies {
 
     // slack webhook logging
     implementation("com.github.maricn:logback-slack-appender:1.6.1")
+
+    // twitter4j
+    implementation 'org.twitter4j:twitter4j-core:4.0.4'
 }
 
 tasks.named('test') {
