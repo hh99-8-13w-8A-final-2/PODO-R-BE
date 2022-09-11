@@ -16,10 +16,9 @@ public class MusicalService {
 
     private final MusicalRepository musicalRepository;
 
-    // 상영중 뮤지컬 가져오기
-    @Transactional(readOnly = true)
+    // 메인화면 상영중 뮤지컬 가져오기
     public List<MusicalListResponseDto> getOpenMusical() {
-        List<Musical> musicals = musicalRepository.findAll();
+        List<Musical> musicals = musicalRepository.findTop10ByOrderByOpenDateDesc();
 
         return musicals.stream()
                 .map(MusicalListResponseDto::of)

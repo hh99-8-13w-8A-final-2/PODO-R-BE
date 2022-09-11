@@ -15,9 +15,9 @@ public class MusicalController {
 
     private final MusicalService musicalService;
 
+    // 메인화면 상영중 뮤지컬 가져오기
     @GetMapping("/api/musicals/open")
     public ResponseEntity<?> getOpenMusical() {
-
         List<MusicalListResponseDto> responseDto = musicalService.getOpenMusical();
 
         return ResponseEntity.ok(responseDto);
