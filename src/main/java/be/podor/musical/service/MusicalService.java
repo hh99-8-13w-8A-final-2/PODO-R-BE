@@ -1,6 +1,7 @@
 package be.podor.musical.service;
 
 import be.podor.musical.dto.MusicalListResponseDto;
+import be.podor.musical.dto.MusicalResponseDto;
 import be.podor.musical.model.Musical;
 import be.podor.musical.repository.MusicalRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,5 +24,14 @@ public class MusicalService {
         return musicals.stream()
                 .map(MusicalListResponseDto::of)
                 .collect(Collectors.toList());
+    }
+
+    // 선택된 뮤지컬 가져오기
+    public MusicalResponseDto getMusical(Long musicalId) {
+        Musical musical = musicalRepository.findByMusicalId(musicalId).orElseThrow(
+                () -> new IllegalArgumentException("존재하지 않는 뮤지컬입니다.")
+        );
+
+        return MusicalResponseDto.of(musical);
     }
 }
