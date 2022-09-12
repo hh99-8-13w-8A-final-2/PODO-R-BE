@@ -20,10 +20,7 @@ public class CommentResponseDto {
 
     private LocalDateTime createdAt;
 
-    public static CommentResponseDto of(CommentQueryDto commentQueryDto) {
-        Member member = commentQueryDto.getMember();
-        Comment comment = commentQueryDto.getComment();
-
+    public static CommentResponseDto of(Member member, Comment comment) {
         return CommentResponseDto.builder()
                 .memberId(member.getId())
                 .nickname(member.getNickname())

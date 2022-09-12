@@ -1,6 +1,5 @@
 package be.podor.comment.repository;
 
-import be.podor.comment.dto.CommentQueryDto;
 import be.podor.comment.model.Comment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -15,5 +14,5 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
             "LEFT OUTER JOIN Member m ON m.id = c.createdBy " +
             "WHERE c.review.reviewId = :reviewId " +
             "ORDER BY c.createdAt")
-    List<CommentQueryDto> findCommentsByReviewId(Long reviewId);
+    List<Object[]> findCommentsByReviewId(Long reviewId);
 }
