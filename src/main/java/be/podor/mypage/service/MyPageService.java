@@ -5,7 +5,7 @@ import be.podor.review.model.Review;
 import be.podor.review.repository.ReviewRepository;
 import be.podor.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,13 +18,14 @@ public class MyPageService {
 
     private final ReviewRepository reviewRepository;
 
-    public ResponseEntity<?> getMyReviews(UserDetailsImpl userDetails) {
+    public List<ReviewListResponseDto> getMyReviews(Pageable pageable,
+                                                    UserDetailsImpl userDetails) {
 
-        List<Review> myReviewList = reviewRepository.findByCreatedByOrderByCreatedAtDesc(userDetails.getMemberId());
+        List<Review> myReviewList = reviewRepository.findByCreatedByOrderByCreatedAtDesc(userDetails.getMemberId(), pageable);
         List<ReviewListResponseDto> reviewListResponseDtos = myReviewList.stream()
                 .map(ReviewListResponseDto::of)
                 .collect(Collectors.toList());
-        return ResponseEntity.ok().body(reviewListResponseDtos);
+        return reviewListResponseDtos;
     }
 
 }

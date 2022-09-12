@@ -17,7 +17,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     @EntityGraph(attributePaths = {"musical", "theaterSeat"}, type = EntityGraph.EntityGraphType.LOAD)
     List<Review> findTop10ByOrderByCreatedAtDesc();
 
-    List<Review> findByCreatedByOrderByCreatedAtDesc(Long createdBy);
+    List<Review> findByCreatedByOrderByCreatedAtDesc(Long createdBy, Pageable pageable);
 
     void deleteByReviewIdAndCreatedBy(Long reviewId, Long memberId);
 }
