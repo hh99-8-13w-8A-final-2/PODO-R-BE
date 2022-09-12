@@ -49,4 +49,15 @@ public class CommentController {
 
         return ResponseEntity.ok(responseDto);
     }
+
+    // 리뷰 댓글 수정
+    @DeleteMapping("/api/comments/{commentId}")
+    public ResponseEntity<?> UpdateReviewComment(
+            @PathVariable Long commentId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        commentService.deleteReviewComment(commentId, userDetails);
+
+        return ResponseEntity.ok().build();
+    }
 }

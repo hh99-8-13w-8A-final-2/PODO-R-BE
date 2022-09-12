@@ -15,4 +15,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
             "WHERE c.review.reviewId = :reviewId " +
             "ORDER BY c.createdAt")
     List<Object[]> findCommentsByReviewId(Long reviewId);
+
+    // 삭제
+    void deleteByCommentIdAndCreatedBy(Long commentId, Long createdBy);
 }

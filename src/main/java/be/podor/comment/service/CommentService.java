@@ -60,4 +60,10 @@ public class CommentService {
 
         return CommentResponseDto.of(member, comment);
     }
+
+    // 리뷰 댓글 삭제
+    @Transactional
+    public void deleteReviewComment(Long commentId, UserDetailsImpl userDetails) {
+        commentRepository.deleteByCommentIdAndCreatedBy(commentId, userDetails.getMemberId());
+    }
 }
