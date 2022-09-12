@@ -13,6 +13,7 @@ import be.podor.review.model.tag.ReviewTag;
 import be.podor.review.model.tag.Tag;
 import be.podor.review.repository.ReviewRepository;
 import be.podor.review.repository.TagRepository;
+import be.podor.security.UserDetailsImpl;
 import be.podor.theater.model.TheaterSeat;
 import be.podor.theater.repository.TheaterSeatRepository;
 import be.podor.theater.validator.TheaterSeatValidator;
@@ -114,6 +115,41 @@ public class ReviewService {
         Review review = reviewRepository.findById(reviewId).orElseThrow(
                 () -> new IllegalArgumentException("해당 리뷰가 존재하지 않습니다.")
         );
+
+        return ReviewDetailResponseDto.of(review);
+    }
+
+    // 리뷰 수정
+    @Transactional
+    public ReviewDetailResponseDto updateReview(Long musicalId, Long reviewId, ReviewRequestDto requestDto, UserDetailsImpl userDetails) {
+        Review review = reviewRepository.findById(reviewId).orElseThrow(
+                () -> new IllegalArgumentException(reviewId + "번 리뷰가 존재하지 않습니다.")
+        );
+
+        if (!review.getCreatedBy().equals(userDetails.getMemberId())) {
+            throw new IllegalArgumentException("다른 사용자의 리뷰를 삭제할 수 없습니다.");
+        }
+
+        Musical musical = MusicalValidator.validate(musicalRepository, musicalId);
+
+        TheaterSeat theaterSeat = TheaterSeatValidator.validate(theaterSeatRepository, requestDto, musical);
+
+        Set<Tag> tags = findExistTagsOrElseCreate(requestDto);
+
+        review.update(theaterSeat, musical, requestDto);
+
+        List<ReviewFile> reviewFiles = requestDto.getImgUrls().stream()
+                .map(path -> ReviewFile.of(path, review))
+                .collect(Collectors.toList());
+
+        List<ReviewTag> reviewTags = tags.stream()
+                .map(tag -> ReviewTag.of(review, tag))
+                .collect(Collectors.toList());
+
+        tags.forEach(tag -> tag.addReviewTags(reviewTags));
+
+        review.addFiles(reviewFiles);
+        review.addTags(reviewTags);
 
         return ReviewDetailResponseDto.of(review);
     }

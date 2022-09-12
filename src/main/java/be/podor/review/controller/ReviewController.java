@@ -6,6 +6,7 @@ import be.podor.review.dto.ReviewLiveResponseDto;
 import be.podor.review.dto.ReviewRequestDto;
 import be.podor.review.model.Review;
 import be.podor.review.service.ReviewService;
+import be.podor.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -66,6 +68,19 @@ public class ReviewController {
             @PathVariable Long reviewId
     ) {
         ReviewDetailResponseDto responseDto = reviewService.getReviewDetail(musicalId, reviewId);
+
+        return ResponseEntity.ok(responseDto);
+    }
+
+    // 리뷰 수정
+    @PutMapping("/api/musicals/{musicalId}/reviews/{reviewId}")
+    public ResponseEntity<?> updateReview(
+            @PathVariable Long musicalId,
+            @PathVariable Long reviewId,
+            @RequestBody ReviewRequestDto requestDto,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        ReviewDetailResponseDto responseDto = reviewService.updateReview(musicalId, reviewId, requestDto, userDetails);
 
         return ResponseEntity.ok(responseDto);
     }
