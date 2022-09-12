@@ -15,8 +15,6 @@ public class Musical {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
-    @Column(nullable = false)
     private Long musicalId;
 
     @Column(nullable = false)
