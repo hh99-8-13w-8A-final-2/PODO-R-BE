@@ -5,7 +5,7 @@ import be.podor.review.dto.ReviewRequestDto;
 import be.podor.review.model.reviewInfo.Evaluation;
 import be.podor.review.model.reviewfile.ReviewFile;
 import be.podor.review.model.tag.ReviewTag;
-import be.podor.share.Timestamped;
+import be.podor.share.BaseEntity;
 import be.podor.theater.model.TheaterSeat;
 import be.podor.theater.model.type.GradeType;
 import lombok.*;
@@ -19,7 +19,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class Review extends Timestamped {
+public class Review extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

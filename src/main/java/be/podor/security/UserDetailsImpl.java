@@ -1,6 +1,5 @@
 package be.podor.security;
 
-import be.podor.member.model.Member;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,23 +14,25 @@ import java.util.Collections;
 @AllArgsConstructor
 public class UserDetailsImpl implements UserDetails {
 
-    private Member member;
-
+    private Long memberId;
 
     @Override // 인가를 해주는 부분
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.emptyList();
     }
 
+    public Long getMemberId() {
+        return this.memberId;
+    }
 
     @Override
     public String getPassword() {
-        return member.getPassword();
+        return null;
     }
 
     @Override
     public String getUsername() {
-        return member.getNickname();
+        return null;
     }
 
     @Override

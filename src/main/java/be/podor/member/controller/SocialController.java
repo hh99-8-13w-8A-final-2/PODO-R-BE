@@ -2,17 +2,16 @@ package be.podor.member.controller;
 
 
 import be.podor.member.dto.SocialUserDto;
-import be.podor.member.model.Member;
 import be.podor.member.service.KakaoService;
 import be.podor.member.service.MemberService;
 import be.podor.member.service.TwitterService;
 import be.podor.security.UserDetailsImpl;
 import be.podor.security.jwt.JwtFilter;
+import be.podor.security.jwt.refresh.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import twitter4j.TwitterException;
 
@@ -26,6 +25,7 @@ public class SocialController {
     private final KakaoService kakaoService;
     private final TwitterService twitterService;
     private final MemberService memberService;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @GetMapping("/oauth/kakao")
     public ResponseEntity<?> kakaoLogin(
@@ -57,9 +57,8 @@ public class SocialController {
     }
 
     @PostMapping("/member/logout")
-    public ResponseEntity<?> logout(@AuthenticationPrincipal UserDetails userDetails) {
-        Member member = ((UserDetailsImpl) userDetails).getMember();
-        memberService.logout(member);
+    public ResponseEntity<?> logout(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        memberService.logout(userDetails);
         return ResponseEntity.ok().build();
     }
 }
