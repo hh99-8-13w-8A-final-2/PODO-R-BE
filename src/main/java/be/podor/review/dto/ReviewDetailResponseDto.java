@@ -1,5 +1,6 @@
 package be.podor.review.dto;
 
+import be.podor.member.dto.MemberDto;
 import be.podor.review.model.Review;
 import be.podor.review.model.reviewfile.ReviewFile;
 import be.podor.review.model.tag.ReviewTag;
@@ -17,9 +18,8 @@ import java.util.stream.Collectors;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ReviewDetailResponseDto {
 
+    private MemberDto member;
     private Long reviewId;
-//    private Long memberId;
-//    private String memberNickname;
     private String reviewContent;
     private List<String> imgurls;
     private Long theaterId;
@@ -39,7 +39,7 @@ public class ReviewDetailResponseDto {
 //    private String reviewHearts;
     private Integer commentCount;
 
-    public static ReviewDetailResponseDto of(Review review) {
+    public static ReviewDetailResponseDto of(Review review, MemberDto member) {
         List<String> imgUrls = review.getReviewFiles().stream()
                 .map(ReviewFile::getFilePath)
                 .collect(Collectors.toList());
@@ -52,6 +52,7 @@ public class ReviewDetailResponseDto {
         TheaterSeat theaterSeat = review.getTheaterSeat();
 
         return ReviewDetailResponseDto.builder()
+                .member(member)
                 .reviewId(review.getReviewId())
                 .reviewContent(review.getContent())
                 .imgurls(imgUrls)

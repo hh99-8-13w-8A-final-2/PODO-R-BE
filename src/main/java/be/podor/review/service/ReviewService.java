@@ -1,5 +1,8 @@
 package be.podor.review.service;
 
+import be.podor.member.dto.MemberDto;
+import be.podor.member.model.Member;
+import be.podor.member.repository.MemberRepository;
 import be.podor.musical.model.Musical;
 import be.podor.musical.repository.MusicalRepository;
 import be.podor.musical.validator.MusicalValidator;
@@ -41,6 +44,8 @@ public class ReviewService {
     private final TheaterSeatRepository theaterSeatRepository;
 
     private final TagRepository tagRepository;
+
+    private final MemberRepository memberRepository;
 
     // 리뷰 작성
     @Transactional
@@ -117,7 +122,11 @@ public class ReviewService {
                 () -> new IllegalArgumentException("해당 리뷰가 존재하지 않습니다.")
         );
 
-        return ReviewDetailResponseDto.of(review);
+        Member member = memberRepository.findById(review.getCreatedBy()).orElseThrow(
+                () -> new IllegalArgumentException("존재하지 않는 작성자입니다.")
+        );
+
+        return ReviewDetailResponseDto.of(review, MemberDto.of(member));
     }
 
     // 리뷰 수정
@@ -128,7 +137,7 @@ public class ReviewService {
         );
 
         if (!review.getCreatedBy().equals(userDetails.getMemberId())) {
-            throw new IllegalArgumentException("다른 사용자의 리뷰를 삭제할 수 없습니다.");
+            throw new IllegalArgumentException("다른 사용자의 리뷰를 수정할 수 없습니다.");
         }
 
         Musical musical = MusicalValidator.validate(musicalRepository, musicalId);
@@ -152,7 +161,11 @@ public class ReviewService {
         review.addFiles(reviewFiles);
         review.addTags(reviewTags);
 
-        return ReviewDetailResponseDto.of(review);
+        Member member = memberRepository.findById(review.getCreatedBy()).orElseThrow(
+                () -> new IllegalArgumentException("존재하지 않는 작성자입니다.")
+        );
+
+        return ReviewDetailResponseDto.of(review, MemberDto.of(member));
     }
 
     // 리뷰 삭제
