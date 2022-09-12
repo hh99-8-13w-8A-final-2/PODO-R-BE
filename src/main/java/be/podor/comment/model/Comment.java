@@ -1,5 +1,6 @@
 package be.podor.comment.model;
 
+import be.podor.review.model.Review;
 import be.podor.share.BaseEntity;
 import lombok.*;
 
@@ -18,4 +19,8 @@ public class Comment extends BaseEntity {
 
     @Column(nullable = false)
     private String content;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "review_id")
+    private Review review;
 }
