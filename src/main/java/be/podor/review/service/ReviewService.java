@@ -71,6 +71,7 @@ public class ReviewService {
         return review;
     }
 
+    // 리뷰 삭제
     @Transactional
     public Set<Tag> findExistTagsOrElseCreate(ReviewRequestDto requestDto) {
         List<String> splitTags = Arrays.asList(requestDto.getTags().split(", "));
@@ -152,5 +153,11 @@ public class ReviewService {
         review.addTags(reviewTags);
 
         return ReviewDetailResponseDto.of(review);
+    }
+
+    // 리뷰 삭제
+    @Transactional
+    public void deleteReview(Long reviewId, UserDetailsImpl userDetails) {
+        reviewRepository.deleteByReviewIdAndCreatedBy(reviewId, userDetails.getMemberId());
     }
 }

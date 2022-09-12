@@ -84,4 +84,16 @@ public class ReviewController {
 
         return ResponseEntity.ok(responseDto);
     }
+
+    // 리뷰 삭제
+    @DeleteMapping("/api/musicals/{musicalId}/reviews/{reviewId}")
+    public ResponseEntity<?> deleteReview(
+            @PathVariable Long musicalId,
+            @PathVariable Long reviewId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        reviewService.deleteReview(reviewId, userDetails);
+
+        return ResponseEntity.ok().build();
+    }
 }
