@@ -11,6 +11,7 @@ import be.podor.review.repository.ReviewRepository;
 import be.podor.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,6 +44,19 @@ public class CommentService {
 
         Member member = memberRepository.findById(userDetails.getMemberId()).orElseThrow();
         Comment comment = commentRepository.save(Comment.of(requestDto, review));
+
+        return CommentResponseDto.of(member, comment);
+    }
+
+    // 리뷰 댓글 수정
+    @Transactional
+    public CommentResponseDto updateReviewComment(Long commentId, CommentRequestDto requestDto, UserDetailsImpl userDetails) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow(
+                () -> new IllegalArgumentException(commentId + "번에 해당하는 댓글이 존재하지 않습니다.")
+        );
+
+        comment.update(requestDto);
+        Member member = memberRepository.findById(userDetails.getMemberId()).orElseThrow();
 
         return CommentResponseDto.of(member, comment);
     }

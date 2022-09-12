@@ -37,4 +37,16 @@ public class CommentController {
 
         return ResponseEntity.ok(responseDto);
     }
+
+    // 리뷰 댓글 수정
+    @PutMapping("/api/comments/{commentId}")
+    public ResponseEntity<?> UpdateReviewComment(
+            @PathVariable Long commentId,
+            @RequestBody CommentRequestDto requestDto,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        CommentResponseDto responseDto = commentService.updateReviewComment(commentId, requestDto, userDetails);
+
+        return ResponseEntity.ok(responseDto);
+    }
 }

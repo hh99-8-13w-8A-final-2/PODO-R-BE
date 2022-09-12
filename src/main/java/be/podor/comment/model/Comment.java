@@ -31,4 +31,8 @@ public class Comment extends BaseEntity {
                 .review(review)
                 .build();
     }
+
+    public void update(CommentRequestDto requestDto) {
+        this.content = requestDto.getContent();
+    }
 }
