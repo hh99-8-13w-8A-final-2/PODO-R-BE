@@ -37,7 +37,7 @@ public class ReviewDetailResponseDto {
     private LocalDateTime createdAt;
 //    private String reviewHits;
 //    private String reviewHearts;
-//    private List<CommentDto> comments;
+    private Integer commentCount;
 
     public static ReviewDetailResponseDto of(Review review) {
         List<String> imgUrls = review.getReviewFiles().stream()
@@ -68,6 +68,7 @@ public class ReviewDetailResponseDto {
                 .block(review.getBlock())
                 .tags(reviewTags)
                 .createdAt(review.getCreatedAt())
+                .commentCount(review.getComments().size())
                 .build();
     }
 }

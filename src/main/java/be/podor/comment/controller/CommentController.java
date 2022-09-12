@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.PostConstruct;
 import java.util.List;
 
 @RestController
@@ -32,7 +31,7 @@ public class CommentController {
             @RequestParam("reviewId") Long reviewId,
             @RequestBody CommentRequestDto requestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails
-            ) {
+    ) {
         CommentResponseDto responseDto = commentService.createReviewComment(reviewId, requestDto, userDetails);
 
         return ResponseEntity.ok(responseDto);
