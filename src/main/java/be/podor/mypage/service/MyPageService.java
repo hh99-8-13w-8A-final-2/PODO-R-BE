@@ -40,4 +40,13 @@ public class MyPageService {
                 .collect(Collectors.toList());
         return new PageImpl<>(musicalListResponseDtos, myMusicalList.getPageable(), myMusicalList.getTotalElements());
     }
+    public Page<ReviewListResponseDto> getMyMusicalReviews(Pageable pageable,
+                                                           Long musicalId,
+                                                           Long memberId){
+        Page<Review> myMusicalReviewList = reviewRepository.findByMusical_MusicalIdAndCreatedBy(musicalId,memberId, pageable);
+        List<ReviewListResponseDto> reviewListResponseDtos = myMusicalReviewList.stream()
+                .map(ReviewListResponseDto::of)
+                .collect(Collectors.toList());
+        return new PageImpl<>(reviewListResponseDtos, myMusicalReviewList.getPageable(), myMusicalReviewList.getTotalElements());
+    }
 }

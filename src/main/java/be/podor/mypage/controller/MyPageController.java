@@ -13,6 +13,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -44,4 +45,13 @@ public class MyPageController {
         return ResponseEntity.ok(responseDto);
     }
 
+    @GetMapping("/mypage/{musicalId}/reviews")
+    public ResponseEntity<?> getMyMusicalReviews(@PageableDefault(size = 20, page = 1) Pageable pageable,
+                                                 @PathVariable Long musicalId,
+                                                 @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        PageRequest request = PageRequest.of(pageable.getPageNumber() - 1, pageable.getPageSize());
+        Page<ReviewListResponseDto> responseDto = mypageService.getMyMusicalReviews(request, musicalId, userDetails.getMemberId());
+        return ResponseEntity.ok(responseDto);
+    }
 }
