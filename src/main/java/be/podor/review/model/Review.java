@@ -90,10 +90,12 @@ public class Review extends BaseEntity {
     }
 
     public void addFiles(List<ReviewFile> files) {
+        this.reviewFiles.clear();
         this.reviewFiles.addAll(files);
     }
 
     public void addTags(List<ReviewTag> tags) {
+        this.reviewTags.clear();
         this.reviewTags.addAll(tags);
     }
 
@@ -109,5 +111,26 @@ public class Review extends BaseEntity {
         score = (score - 4) / 8 * 10;
         // 0.5 단위 절삭
         return score = Math.ceil(score * 2) / 2;
+    }
+
+    public void update(TheaterSeat theaterSeat, Musical musical, ReviewRequestDto requestDto) {
+        Evaluation evaluation = Evaluation.builder()
+                .gap(requestDto.getGap())
+                .light(requestDto.getLight())
+                .sight(requestDto.getSight())
+                .sound((requestDto.getSound()))
+                .build();
+
+        boolean operaGlass = requestDto.getOperaGlass() != null && requestDto.getOperaGlass().equals("on");
+        boolean blockSight = requestDto.getBlock() != null && requestDto.getBlock().equals("on");
+
+        this.content = requestDto.getReviewContent();
+        this.grade = (requestDto.getGrade());
+        this.evaluation = evaluation;
+        this.score = String.format("%.1f", calculateScore(evaluation));
+        this.operaGlass = operaGlass;
+        this.block = blockSight;
+        this.musical = musical;
+        this.theaterSeat = theaterSeat;
     }
 }

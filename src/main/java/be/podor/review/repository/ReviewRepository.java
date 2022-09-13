@@ -18,4 +18,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     List<Review> findTop10ByOrderByCreatedAtDesc();
 
     List<Review> findByCreatedByOrderByCreatedAtDesc(Long createdBy);
+
+    void deleteByReviewIdAndCreatedBy(Long reviewId, Long memberId);
 }
