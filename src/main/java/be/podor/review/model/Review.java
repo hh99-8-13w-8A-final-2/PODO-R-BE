@@ -6,6 +6,7 @@ import be.podor.review.dto.ReviewRequestDto;
 import be.podor.review.model.reviewInfo.Evaluation;
 import be.podor.review.model.reviewfile.ReviewFile;
 import be.podor.review.model.tag.ReviewTag;
+import be.podor.reviewheart.model.ReviewHeart;
 import be.podor.share.BaseEntity;
 import be.podor.theater.model.TheaterSeat;
 import be.podor.theater.model.type.GradeType;
@@ -61,6 +62,10 @@ public class Review extends BaseEntity {
     @Builder.Default
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReviewTag> reviewTags = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ReviewHeart> reviewHearts = new ArrayList<>();
 
     @Builder.Default
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
