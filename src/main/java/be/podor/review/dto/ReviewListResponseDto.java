@@ -55,7 +55,7 @@ public class ReviewListResponseDto {
                 .row(theaterSeat.getSeatRow())
                 .seat(theaterSeat.getSeat())
                 .evaluation(EvaluationDto.of(review.getEvaluation()))
-                .reviewScore(Double.parseDouble(review.getScore()))
+                .reviewScore(review.getScore())
                 .operaGlass(review.getOperaGlass())
                 .block(review.getBlock())
                 .tags(reviewTags)

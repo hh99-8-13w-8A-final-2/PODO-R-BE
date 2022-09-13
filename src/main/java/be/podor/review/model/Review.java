@@ -39,7 +39,7 @@ public class Review extends BaseEntity {
     private Evaluation evaluation;
 
     @Column(nullable = false)
-    private String score;
+    private Double score;
 
     @Column(nullable = false)
     private Boolean operaGlass;
@@ -86,7 +86,7 @@ public class Review extends BaseEntity {
                 .content(requestDto.getReviewContent())
                 .grade((requestDto.getGrade()))
                 .evaluation(evaluation)
-                .score(String.format("%.1f", calculateScore(evaluation)))
+                .score(calculateScore(evaluation))
                 .operaGlass(operaGlass)
                 .block(blockSight)
                 .musical(musical)
@@ -132,7 +132,7 @@ public class Review extends BaseEntity {
         this.content = requestDto.getReviewContent();
         this.grade = (requestDto.getGrade());
         this.evaluation = evaluation;
-        this.score = String.format("%.1f", calculateScore(evaluation));
+        this.score = calculateScore(evaluation);
         this.operaGlass = operaGlass;
         this.block = blockSight;
         this.musical = musical;

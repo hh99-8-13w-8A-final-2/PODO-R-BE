@@ -30,7 +30,7 @@ public class ReviewDetailResponseDto {
     private String row;
     private Integer seat;
     private EvaluationDto evaluation;
-    private String reviewScore;
+    private Double reviewScore;
     private Boolean operaGlass;
     private Boolean block;
     private List<String> tags;
