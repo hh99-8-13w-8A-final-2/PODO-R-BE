@@ -1,9 +1,6 @@
 package be.podor.review.controller;
 
-import be.podor.review.dto.ReviewDetailResponseDto;
-import be.podor.review.dto.ReviewListResponseDto;
-import be.podor.review.dto.ReviewLiveResponseDto;
-import be.podor.review.dto.ReviewRequestDto;
+import be.podor.review.dto.*;
 import be.podor.review.model.Review;
 import be.podor.review.service.ReviewService;
 import be.podor.security.UserDetailsImpl;
@@ -24,6 +21,8 @@ import java.util.List;
 public class ReviewController {
 
     private final ReviewService reviewService;
+
+    private final SearchRequestParam SEARCH_NONE = new SearchRequestParam();
 
     // 리뷰 작성
     @PostMapping("/api/musicals/{musicalId}/reviews")
@@ -50,15 +49,20 @@ public class ReviewController {
     // 뮤지컬 선택시 해당 뮤지컬의 전체 리뷰 리스트 조회
     @GetMapping("/api/musicals/{musicalId}/reviews")
     public ResponseEntity<?> getMusicalReviews(
+            SearchRequestParam searchRequestParam,
             @PathVariable Long musicalId,
-            @PageableDefault(size = 20, page = 1) Pageable pageable
+            @PageableDefault(size = 20, page = 1, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
         // 페이지번호 -1 처리, 1 2 3 4 -> 0, 1, 2, 3
-        PageRequest pageRequest = PageRequest.of(pageable.getPageNumber() - 1, pageable.getPageSize());
+        PageRequest pageRequest = PageRequest.of(pageable.getPageNumber() - 1, pageable.getPageSize(), pageable.getSort());
+        // 검색 객체 처리
+        if (searchRequestParam == null) {
+            searchRequestParam = SEARCH_NONE;
+        }
 
-        Page<ReviewListResponseDto> responseDtos = reviewService.getMusicalReviews(musicalId, pageRequest);
+        Page<ReviewListResponseDto> responseDto = reviewService.getMusicalReviews(musicalId, SearchDto.of(searchRequestParam), pageRequest);
 
-        return ResponseEntity.ok(responseDtos);
+        return ResponseEntity.ok(responseDto);
     }
 
     // 리뷰 상세 조회

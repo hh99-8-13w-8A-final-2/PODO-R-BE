@@ -36,7 +36,7 @@ public class ReviewLiveResponseDto {
                 .section(theaterSeat.getSection())
                 .row(theaterSeat.getSeatRow())
                 .seat(theaterSeat.getSeat())
-                .reviewScore(Double.parseDouble(review.getScore()))
+                .reviewScore(review.getScore())
                 .evaluation(EvaluationDto.of(review.getEvaluation()))
                 .build();
     }
