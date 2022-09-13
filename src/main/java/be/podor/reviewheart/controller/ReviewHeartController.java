@@ -5,6 +5,7 @@ import be.podor.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,4 +28,13 @@ public class ReviewHeartController {
     }
 
     // 삭제
+    @DeleteMapping("/api/hearts")
+    public ResponseEntity<?> unHeartReview(
+            @RequestParam("reviewId") Long reviewId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        reviewHeartService.unHeartReview(reviewId, userDetails);
+
+        return ResponseEntity.ok().build();
+    }
 }
