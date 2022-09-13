@@ -50,7 +50,9 @@ public class WebSecurityConfig {
 //                api 허용 목록!
                 .and()
                 .authorizeRequests()
-                .anyRequest().permitAll()
+                .antMatchers("/api/oauth/**","/api/twitter/**","/api/member/**").permitAll()
+                .antMatchers("/api/reviews/**","/api/musicals/**","/api/theaters/**").permitAll()
+                .anyRequest().authenticated()
                 .and()
 
 
