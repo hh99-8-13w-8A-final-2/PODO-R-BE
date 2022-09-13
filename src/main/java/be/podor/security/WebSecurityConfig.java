@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -51,8 +52,8 @@ public class WebSecurityConfig {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/api/oauth/**","/api/twitter/**","/api/member/**").permitAll()
-                .antMatchers("/api/reviews/**","/api/musicals/**","/api/theaters/**").permitAll()
-                .anyRequest().permitAll()
+                .antMatchers(HttpMethod.GET,"/api/reviews/**","/api/musicals/**","/api/theaters/**","/api/comments/**").permitAll()
+                .anyRequest().authenticated()
                 .and()
 
 
