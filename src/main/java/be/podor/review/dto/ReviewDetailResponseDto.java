@@ -1,6 +1,8 @@
 package be.podor.review.dto;
 
 import be.podor.member.dto.MemberDto;
+import be.podor.musical.dto.MusicalResponseDto;
+import be.podor.musical.model.Musical;
 import be.podor.review.model.Review;
 import be.podor.review.model.reviewfile.ReviewFile;
 import be.podor.review.model.tag.ReviewTag;
@@ -17,13 +19,11 @@ import java.util.stream.Collectors;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ReviewDetailResponseDto {
-
+    private MusicalResponseDto musical;
     private MemberDto member;
     private Long reviewId;
     private String reviewContent;
     private List<String> imgurls;
-    private Long theaterId;
-    private String theaterName;
     private String grade;
     private String floor;
     private String section;
@@ -52,12 +52,11 @@ public class ReviewDetailResponseDto {
         TheaterSeat theaterSeat = review.getTheaterSeat();
 
         return ReviewDetailResponseDto.builder()
+                .musical(MusicalResponseDto.of(review.getMusical()))
                 .member(member)
                 .reviewId(review.getReviewId())
                 .reviewContent(review.getContent())
                 .imgurls(imgUrls)
-                .theaterId(theaterSeat.getTheater().getTheaterId())
-                .theaterName(theaterSeat.getTheater().getTheaterName())
                 .grade(review.getGrade().toString())
                 .floor(theaterSeat.getFloor().getFloor())
                 .section(theaterSeat.getSection())
