@@ -6,15 +6,13 @@ import be.podor.member.repository.MemberRepository;
 import be.podor.musical.model.Musical;
 import be.podor.musical.repository.MusicalRepository;
 import be.podor.musical.validator.MusicalValidator;
-import be.podor.review.dto.ReviewDetailResponseDto;
-import be.podor.review.dto.ReviewListResponseDto;
-import be.podor.review.dto.ReviewLiveResponseDto;
-import be.podor.review.dto.ReviewRequestDto;
+import be.podor.review.dto.*;
 import be.podor.review.model.Review;
 import be.podor.review.model.reviewfile.ReviewFile;
 import be.podor.review.model.tag.ReviewTag;
 import be.podor.review.model.tag.Tag;
 import be.podor.review.repository.ReviewRepository;
+import be.podor.review.repository.ReviewSearchRepository;
 import be.podor.review.repository.TagRepository;
 import be.podor.security.UserDetailsImpl;
 import be.podor.theater.model.TheaterSeat;
@@ -36,6 +34,8 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ReviewService {
+
+    private final ReviewSearchRepository reviewSearchRepository;
 
     private final ReviewRepository reviewRepository;
 
@@ -106,8 +106,8 @@ public class ReviewService {
     }
 
     // 뮤지컬 선택시 해당 뮤지컬의 전체 리뷰 리스트 조회
-    public Page<ReviewListResponseDto> getMusicalReviews(Long musicalId, Pageable pageable) {
-        Page<Review> reviews = reviewRepository.findByMusical_MusicalIdOrderByCreatedAtDesc(musicalId, pageable);
+    public Page<ReviewListResponseDto> getMusicalReviews(Long musicalId, SearchDto searchDto, Pageable pageable) {
+        Page<Review> reviews = reviewSearchRepository.findReviewSearch(musicalId, searchDto, pageable);
 
         List<ReviewListResponseDto> reviewListResponseDtos = reviews.stream()
                 .map(ReviewListResponseDto::of)
