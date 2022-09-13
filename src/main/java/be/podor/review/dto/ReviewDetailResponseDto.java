@@ -35,9 +35,8 @@ public class ReviewDetailResponseDto {
     private Boolean block;
     private List<String> tags;
     private LocalDateTime createdAt;
-//    private String reviewHits;
-//    private String reviewHearts;
     private Integer commentCount;
+    private Integer heartCount;
 
     public static ReviewDetailResponseDto of(Review review, MemberDto member) {
         List<String> imgUrls = review.getReviewFiles().stream()
@@ -69,6 +68,7 @@ public class ReviewDetailResponseDto {
                 .tags(reviewTags)
                 .createdAt(review.getCreatedAt())
                 .commentCount(review.getComments().size())
+                .heartCount(review.getReviewHearts().size())
                 .build();
     }
 }

@@ -33,6 +33,7 @@ public class ReviewListResponseDto {
 //    private String reviewHearts;
     private LocalDateTime createdAt;
     private Integer commentCount;
+    private Integer heartCount;
 
     // 불 필요한 정보들 뷰 완성되면 덜어내기
     public static ReviewListResponseDto of(Review review) {
@@ -62,6 +63,7 @@ public class ReviewListResponseDto {
 //                .reviewHearts()
                 .createdAt(review.getCreatedAt())
                 .commentCount(review.getComments().size())
+                .heartCount(review.getReviewHearts().size())
                 .build();
     }
 }
