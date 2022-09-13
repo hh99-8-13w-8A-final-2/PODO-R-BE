@@ -1,7 +1,10 @@
 package be.podor.mypage.service;
 
+import be.podor.member.model.Member;
+import be.podor.member.repository.MemberRepository;
 import be.podor.musical.dto.MusicalListResponseDto;
 import be.podor.musical.model.Musical;
+import be.podor.mypage.dto.MyPageRequestDto;
 import be.podor.review.dto.ReviewListResponseDto;
 import be.podor.review.model.Review;
 import be.podor.review.repository.ReviewRepository;
@@ -11,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,6 +25,7 @@ import java.util.stream.Collectors;
 public class MyPageService {
 
     private final ReviewRepository reviewRepository;
+    private final MemberRepository memberRepository;
 
     public Page<ReviewListResponseDto> getMyReviews(Pageable pageable,
                                                     UserDetailsImpl userDetails) {
@@ -40,13 +45,21 @@ public class MyPageService {
                 .collect(Collectors.toList());
         return new PageImpl<>(musicalListResponseDtos, myMusicalList.getPageable(), myMusicalList.getTotalElements());
     }
+
     public Page<ReviewListResponseDto> getMyMusicalReviews(Pageable pageable,
                                                            Long musicalId,
-                                                           Long memberId){
-        Page<Review> myMusicalReviewList = reviewRepository.findByMusical_MusicalIdAndCreatedBy(musicalId,memberId, pageable);
+                                                           Long memberId) {
+        Page<Review> myMusicalReviewList = reviewRepository.findByMusical_MusicalIdAndCreatedBy(musicalId, memberId, pageable);
         List<ReviewListResponseDto> reviewListResponseDtos = myMusicalReviewList.stream()
                 .map(ReviewListResponseDto::of)
                 .collect(Collectors.toList());
         return new PageImpl<>(reviewListResponseDtos, myMusicalReviewList.getPageable(), myMusicalReviewList.getTotalElements());
+    }
+
+    @Transactional
+    public void updateMemberInfo(Long memberId, MyPageRequestDto requestDto) {
+        Member member = memberRepository.findById(memberId).orElseThrow(
+                () -> new IllegalArgumentException("아이디가 없습니다."));
+        member.updateMember(requestDto);
     }
 }
