@@ -72,12 +72,7 @@ public class Review extends BaseEntity {
     private List<Comment> comments = new ArrayList<>();
 
     public static Review of(TheaterSeat theaterSeat, Musical musical, ReviewRequestDto requestDto) {
-        Evaluation evaluation = Evaluation.builder()
-                .gap(requestDto.getGap())
-                .light(requestDto.getLight())
-                .sight(requestDto.getSight())
-                .sound((requestDto.getSound()))
-                .build();
+        Evaluation evaluation = Evaluation.of(requestDto);
 
         boolean operaGlass = requestDto.getOperaGlass() != null && requestDto.getOperaGlass().equals("on");
         boolean blockSight = requestDto.getBlock() != null && requestDto.getBlock().equals("on");
@@ -119,12 +114,7 @@ public class Review extends BaseEntity {
     }
 
     public void update(TheaterSeat theaterSeat, Musical musical, ReviewRequestDto requestDto) {
-        Evaluation evaluation = Evaluation.builder()
-                .gap(requestDto.getGap())
-                .light(requestDto.getLight())
-                .sight(requestDto.getSight())
-                .sound((requestDto.getSound()))
-                .build();
+        Evaluation evaluation = Evaluation.of(requestDto);
 
         boolean operaGlass = requestDto.getOperaGlass() != null && requestDto.getOperaGlass().equals("on");
         boolean blockSight = requestDto.getBlock() != null && requestDto.getBlock().equals("on");

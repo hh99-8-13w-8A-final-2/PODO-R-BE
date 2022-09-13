@@ -1,5 +1,6 @@
 package be.podor.review.model.reviewInfo;
 
+import be.podor.review.dto.ReviewRequestDto;
 import lombok.*;
 
 import javax.persistence.Column;
@@ -29,5 +30,14 @@ public class Evaluation {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private ScoreEnum sound;
+
+    public static Evaluation of(ReviewRequestDto requestDto) {
+        return Evaluation.builder()
+                .gap(requestDto.getGap())
+                .light(requestDto.getLight())
+                .sight(requestDto.getSight())
+                .sound((requestDto.getSound()))
+                .build();
+    }
 }
 
