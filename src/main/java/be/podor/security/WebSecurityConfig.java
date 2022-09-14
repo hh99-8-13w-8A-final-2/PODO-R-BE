@@ -51,8 +51,14 @@ public class WebSecurityConfig {
 //                api 허용 목록!
                 .and()
                 .authorizeRequests()
-                .antMatchers("/api/oauth/**","/api/twitter/**","/api/member/**").permitAll()
-                .antMatchers(HttpMethod.GET,"/api/reviews/**","/api/musicals/**","/api/theaters/**","/api/comments/**").permitAll()
+                .antMatchers("/api/oauth/**", "/api/twitter/**", "/api/member/**").permitAll()
+                .antMatchers(HttpMethod.GET,
+                        "/api/reviews/**",
+                        "/api/musicals/**",
+                        "/api/theaters/**",
+                        "/api/comments/**",
+                        "/api/notices/**"
+                ).permitAll()
                 .anyRequest().authenticated()
                 .and()
 

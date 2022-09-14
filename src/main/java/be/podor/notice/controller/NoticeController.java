@@ -1,4 +1,4 @@
-package be.podor.notice.model.controller;
+package be.podor.notice.controller;
 
 import be.podor.notice.dto.NoticeListResponseDto;
 import be.podor.notice.service.NoticeService;
