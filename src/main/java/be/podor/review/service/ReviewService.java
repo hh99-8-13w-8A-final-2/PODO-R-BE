@@ -109,11 +109,16 @@ public class ReviewService {
     }
 
     // 뮤지컬 선택시 해당 뮤지컬의 전체 리뷰 리스트 조회
-    public Page<ReviewListResponseDto> getMusicalReviews(Long musicalId, SearchDto searchDto, Pageable pageable) {
+    public Page<ReviewListResponseDto> getMusicalReviews(
+            Long musicalId, SearchDto searchDto, Pageable pageable, UserDetailsImpl userDetails
+    ) {
         Page<Review> reviews = reviewSearchRepository.findReviewSearch(musicalId, searchDto, pageable);
 
         List<ReviewListResponseDto> reviewListResponseDtos = reviews.stream()
-                .map(ReviewListResponseDto::of)
+                .map(review -> {
+                    Boolean heartChecked = userDetails != null && reviewHeartRepository.existsByReviewAndCreatedBy(review, userDetails.getMemberId());
+                    return ReviewListResponseDto.of(review, heartChecked);
+                })
                 .collect(Collectors.toList());
 
         return new PageImpl<>(reviewListResponseDtos, reviews.getPageable(), reviews.getTotalElements());

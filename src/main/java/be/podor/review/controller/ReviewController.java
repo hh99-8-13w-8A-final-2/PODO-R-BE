@@ -51,7 +51,8 @@ public class ReviewController {
     public ResponseEntity<?> getMusicalReviews(
             SearchRequestParam searchRequestParam,
             @PathVariable Long musicalId,
-            @PageableDefault(size = 20, page = 1, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+            @PageableDefault(size = 20, page = 1, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         // 페이지번호 -1 처리, 1 2 3 4 -> 0, 1, 2, 3
         PageRequest pageRequest = PageRequest.of(pageable.getPageNumber() - 1, pageable.getPageSize(), pageable.getSort());
@@ -60,7 +61,12 @@ public class ReviewController {
             searchRequestParam = SEARCH_NONE;
         }
 
-        Page<ReviewListResponseDto> responseDto = reviewService.getMusicalReviews(musicalId, SearchDto.of(searchRequestParam), pageRequest);
+        Page<ReviewListResponseDto> responseDto = reviewService.getMusicalReviews(
+                musicalId,
+                SearchDto.of(searchRequestParam),
+                pageRequest,
+                userDetails
+        );
 
         return ResponseEntity.ok(responseDto);
     }
