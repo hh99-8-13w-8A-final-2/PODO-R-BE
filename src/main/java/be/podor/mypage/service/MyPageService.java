@@ -37,9 +37,9 @@ public class MyPageService {
         return new PageImpl<>(reviewListResponseDtos, myReviewList.getPageable(), myReviewList.getTotalElements());
     }
 
-    public Page<MusicalListResponseDto> getMyMusicals(Long memberId,
+    public Page<MusicalListResponseDto> getMyMusicals(UserDetailsImpl userDetails,
                                                       Pageable pageable) {
-        Page<Musical> myMusicalList = reviewRepository.findByReviewIdGroupByMusical(memberId, pageable);
+        Page<Musical> myMusicalList = reviewRepository.findByReviewIdGroupByMusical(userDetails.getMemberId(), pageable);
         List<MusicalListResponseDto> musicalListResponseDtos = myMusicalList.stream()
                 .map(MusicalListResponseDto::of)
                 .collect(Collectors.toList());
@@ -48,8 +48,8 @@ public class MyPageService {
 
     public Page<ReviewListResponseDto> getMyMusicalReviews(Pageable pageable,
                                                            Long musicalId,
-                                                           Long memberId) {
-        Page<Review> myMusicalReviewList = reviewRepository.findByMusical_MusicalIdAndCreatedBy(musicalId, memberId, pageable);
+                                                           UserDetailsImpl userDetails) {
+        Page<Review> myMusicalReviewList = reviewRepository.findByMusical_MusicalIdAndCreatedBy(musicalId, userDetails.getMemberId(), pageable);
         List<ReviewListResponseDto> reviewListResponseDtos = myMusicalReviewList.stream()
                 .map(ReviewListResponseDto::of)
                 .collect(Collectors.toList());
@@ -57,8 +57,8 @@ public class MyPageService {
     }
 
     @Transactional
-    public void updateMemberInfo(Long memberId, MyPageRequestDto requestDto) {
-        Member member = memberRepository.findById(memberId).orElseThrow(
+    public void updateMemberInfo(UserDetailsImpl userDetails, MyPageRequestDto requestDto) {
+        Member member = memberRepository.findById(userDetails.getMemberId()).orElseThrow(
                 () -> new IllegalArgumentException("아이디가 없습니다."));
         member.updateMember(requestDto);
     }
