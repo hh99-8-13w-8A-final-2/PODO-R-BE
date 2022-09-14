@@ -15,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
@@ -38,7 +40,7 @@ public class MyPageController {
                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         PageRequest request = PageRequest.of(pageable.getPageNumber() - 1, pageable.getPageSize());
-        Page<MusicalListResponseDto> responseDto = mypageService.getMyMusicals(userDetails.getMemberId(), request);
+        Page<MusicalListResponseDto> responseDto = mypageService.getMyMusicals(userDetails, request);
 
         return ResponseEntity.ok(responseDto);
     }
@@ -49,14 +51,14 @@ public class MyPageController {
                                                  @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         PageRequest request = PageRequest.of(pageable.getPageNumber() - 1, pageable.getPageSize());
-        Page<ReviewListResponseDto> responseDto = mypageService.getMyMusicalReviews(request, musicalId, userDetails.getMemberId());
+        Page<ReviewListResponseDto> responseDto = mypageService.getMyMusicalReviews(request, musicalId, userDetails);
         return ResponseEntity.ok(responseDto);
     }
 
     @PutMapping("/mypage/update")
     public ResponseEntity<?> updateMemberInfo(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                              @RequestBody MyPageRequestDto requestDto) {
-        mypageService.updateMemberInfo(userDetails.getMemberId(), requestDto);
+                                              @Valid @RequestBody MyPageRequestDto requestDto) {
+        mypageService.updateMemberInfo(userDetails, requestDto);
         return ResponseEntity.ok().build();
     }
 }
