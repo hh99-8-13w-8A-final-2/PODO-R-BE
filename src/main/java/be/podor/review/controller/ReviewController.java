@@ -69,9 +69,10 @@ public class ReviewController {
     @GetMapping("/api/musicals/{musicalId}/reviews/{reviewId}")
     public ResponseEntity<?> getMusicalReview(
             @PathVariable Long musicalId,
-            @PathVariable Long reviewId
+            @PathVariable Long reviewId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        ReviewDetailResponseDto responseDto = reviewService.getReviewDetail(musicalId, reviewId);
+        ReviewDetailResponseDto responseDto = reviewService.getReviewDetail(musicalId, reviewId, userDetails);
 
         return ResponseEntity.ok(responseDto);
     }
