@@ -10,6 +10,9 @@ import be.podor.review.model.Review;
 import be.podor.review.repository.ReviewRepository;
 import be.podor.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,12 +30,14 @@ public class CommentService {
     private final MemberRepository memberRepository;
 
     // 리뷰에 달린 댓글들 조회
-    public List<CommentResponseDto> findReviewComments(Long reviewId) {
-        List<Object[]> queryResult = commentRepository.findCommentsByReviewId(reviewId);
+    public Page<CommentResponseDto> findReviewComments(Long reviewId, Pageable pageable) {
+        Page<Object[]> queryResult = commentRepository.findCommentsByReviewId(reviewId, pageable);
 
-        return queryResult.stream()
+        List<CommentResponseDto> responseDto = queryResult.stream()
                 .map(obj -> CommentResponseDto.of((Member) obj[0], (Comment) obj[1]))
                 .collect(Collectors.toList());
+
+        return new PageImpl<>(responseDto, queryResult.getPageable(), queryResult.getTotalElements());
     }
 
     // 리뷰 댓글 작성

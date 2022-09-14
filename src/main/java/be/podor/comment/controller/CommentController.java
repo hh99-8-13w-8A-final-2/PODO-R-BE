@@ -5,11 +5,13 @@ import be.podor.comment.dto.CommentResponseDto;
 import be.podor.comment.service.CommentService;
 import be.podor.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,8 +21,12 @@ public class CommentController {
 
     // 리뷰에 달린 댓글들 조회
     @GetMapping("/api/comments")
-    public ResponseEntity<?> getReviewComments(@RequestParam("reviewId") Long reviewId) {
-        List<CommentResponseDto> responseDto = commentService.findReviewComments(reviewId);
+    public ResponseEntity<?> getReviewComments(
+            @RequestParam("reviewId") Long reviewId,
+            @PageableDefault(size = 20, page = 1) Pageable pageable
+    ) {
+        PageRequest pageRequest = PageRequest.of(pageable.getPageNumber() - 1, pageable.getPageSize());
+        Page<CommentResponseDto> responseDto = commentService.findReviewComments(reviewId, pageRequest);
 
         return ResponseEntity.ok(responseDto);
     }
