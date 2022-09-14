@@ -9,5 +9,4 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MyPageRequestDto {
     private String nickname;
-    private String profilePic;
 }
