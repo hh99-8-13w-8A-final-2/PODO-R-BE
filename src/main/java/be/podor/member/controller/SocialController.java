@@ -33,7 +33,7 @@ public class SocialController {
         SocialUserDto socialUserDto = kakaoService.kakaoLogin(code);
         HttpHeaders headers = new HttpHeaders();
         headers.add(JwtFilter.AUTHORIZATION_HEADER, socialUserDto.getTokenDto().getAccessToken());
-        headers.add("RefreshToken", socialUserDto.getTokenDto().getRefreshToken());
+        headers.add(JwtFilter.REFRESH_TOKEN_HEADER, socialUserDto.getTokenDto().getRefreshToken());
         return ResponseEntity.ok().headers(headers).body(socialUserDto.getMemberDto());
     }
 
