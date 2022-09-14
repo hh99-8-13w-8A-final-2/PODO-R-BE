@@ -65,6 +65,9 @@ dependencies {
     // query DSL
     implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
     annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}"
+
+    // img resize
+    implementation 'org.imgscalr:imgscalr-lib:4.2'
 }
 
 // querydsl setting
