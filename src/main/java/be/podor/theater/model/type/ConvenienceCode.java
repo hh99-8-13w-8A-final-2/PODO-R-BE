@@ -9,13 +9,17 @@ import lombok.RequiredArgsConstructor;
 public enum ConvenienceCode {
     CAFE("카페", ConvenienceType.CONVENIENCE),
     RESTAURANT("레스토랑", ConvenienceType.CONVENIENCE),
+    PLAY_ROOM("놀이방", ConvenienceType.CONVENIENCE),
+    NURSING_ROOM("수유실", ConvenienceType.CONVENIENCE),
+    CONVENIENCE_STORE("편의점", ConvenienceType.CONVENIENCE),
 
     DIS_PARK("주차장", ConvenienceType.DISABLED),
     DIS_BATH("화장실", ConvenienceType.DISABLED),
     DIS_SLOPE("경사로", ConvenienceType.DISABLED),
     DIS_ELEVATOR("전용엘리베이터", ConvenienceType.DISABLED),
 
-    PARK("주차장", ConvenienceType.PARK);
+    PARK("주차장", ConvenienceType.PARK),
+    PUBLIC_PARK("공영", ConvenienceType.PARK);
 
     private final String value;
     private final ConvenienceType type;
