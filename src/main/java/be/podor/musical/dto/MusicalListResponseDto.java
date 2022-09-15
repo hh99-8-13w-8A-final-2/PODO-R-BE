@@ -18,6 +18,7 @@ public class MusicalListResponseDto {
     private String musicalRegion;
     private String musicalTheater;
     private String musicalPoster;
+    private String musicalPosterWide;
     private LocalDate openDate;
     private LocalDate closeDate;
 
@@ -28,6 +29,7 @@ public class MusicalListResponseDto {
                 .musicalRegion(musical.getTheater().getTheaterAddr())
                 .musicalTheater(musical.getTheater().getTheaterName())
                 .musicalPoster(musical.getMusicalPoster())
+                .musicalPosterWide(musical.getMusicalPosterWide())
                 .openDate(musical.getOpenDate())
                 .closeDate(musical.getCloseDate())
                 .build();

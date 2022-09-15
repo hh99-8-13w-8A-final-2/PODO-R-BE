@@ -26,6 +26,9 @@ public class Musical {
     @Column(nullable = false)
     private String musicalPoster;
 
+    @Column
+    private String musicalPosterWide;
+
     @Column(nullable = false)
     private LocalDate openDate;
 
