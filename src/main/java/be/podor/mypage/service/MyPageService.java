@@ -8,6 +8,7 @@ import be.podor.mypage.dto.MyPageRequestDto;
 import be.podor.review.dto.ReviewListResponseDto;
 import be.podor.review.model.Review;
 import be.podor.review.repository.ReviewRepository;
+import be.podor.reviewheart.repository.ReviewHeartRepository;
 import be.podor.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,12 +28,17 @@ public class MyPageService {
     private final ReviewRepository reviewRepository;
     private final MemberRepository memberRepository;
 
+    private final ReviewHeartRepository reviewHeartRepository;
+
     public Page<ReviewListResponseDto> getMyReviews(Pageable pageable,
                                                     UserDetailsImpl userDetails) {
 
         Page<Review> myReviewList = reviewRepository.findByCreatedByOrderByCreatedAtDesc(userDetails.getMemberId(), pageable);
         List<ReviewListResponseDto> reviewListResponseDtos = myReviewList.stream()
-                .map(ReviewListResponseDto::of)
+                .map(review -> {
+                    Boolean heartChecked = userDetails != null && reviewHeartRepository.existsByReviewAndCreatedBy(review, userDetails.getMemberId());
+                    return ReviewListResponseDto.of(review, heartChecked);
+                })
                 .collect(Collectors.toList());
         return new PageImpl<>(reviewListResponseDtos, myReviewList.getPageable(), myReviewList.getTotalElements());
     }
@@ -51,7 +57,10 @@ public class MyPageService {
                                                            UserDetailsImpl userDetails) {
         Page<Review> myMusicalReviewList = reviewRepository.findByMusical_MusicalIdAndCreatedBy(musicalId, userDetails.getMemberId(), pageable);
         List<ReviewListResponseDto> reviewListResponseDtos = myMusicalReviewList.stream()
-                .map(ReviewListResponseDto::of)
+                .map(review -> {
+                    Boolean heartChecked = reviewHeartRepository.existsByReviewAndCreatedBy(review, memberId);
+                    return ReviewListResponseDto.of(review, heartChecked);
+                })
                 .collect(Collectors.toList());
         return new PageImpl<>(reviewListResponseDtos, myMusicalReviewList.getPageable(), myMusicalReviewList.getTotalElements());
     }

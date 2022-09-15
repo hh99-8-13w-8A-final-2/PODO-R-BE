@@ -2,7 +2,6 @@ package be.podor.review.dto;
 
 import be.podor.member.dto.MemberDto;
 import be.podor.musical.dto.MusicalResponseDto;
-import be.podor.musical.model.Musical;
 import be.podor.review.model.Review;
 import be.podor.review.model.reviewfile.ReviewFile;
 import be.podor.review.model.tag.ReviewTag;
@@ -37,8 +36,9 @@ public class ReviewDetailResponseDto {
     private LocalDateTime createdAt;
     private Integer commentCount;
     private Integer heartCount;
+    private Boolean heartChecked;
 
-    public static ReviewDetailResponseDto of(Review review, MemberDto member) {
+    public static ReviewDetailResponseDto of(Review review, MemberDto member, Boolean heartChecked) {
         List<String> imgUrls = review.getReviewFiles().stream()
                 .map(ReviewFile::getFilePath)
                 .collect(Collectors.toList());
@@ -69,6 +69,7 @@ public class ReviewDetailResponseDto {
                 .createdAt(review.getCreatedAt())
                 .commentCount(review.getComments().size())
                 .heartCount(review.getReviewHearts().size())
+                .heartChecked(heartChecked)
                 .build();
     }
 }

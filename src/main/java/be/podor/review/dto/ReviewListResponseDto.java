@@ -34,9 +34,10 @@ public class ReviewListResponseDto {
     private LocalDateTime createdAt;
     private Integer commentCount;
     private Integer heartCount;
+    private Boolean heartChecked;
 
     // 불 필요한 정보들 뷰 완성되면 덜어내기
-    public static ReviewListResponseDto of(Review review) {
+    public static ReviewListResponseDto of(Review review, Boolean heartChecked) {
         TheaterSeat theaterSeat = review.getTheaterSeat();
 
         List<String> reviewTags = review.getReviewTags().stream()
@@ -64,6 +65,7 @@ public class ReviewListResponseDto {
                 .createdAt(review.getCreatedAt())
                 .commentCount(review.getComments().size())
                 .heartCount(review.getReviewHearts().size())
+                .heartChecked(heartChecked)
                 .build();
     }
 }

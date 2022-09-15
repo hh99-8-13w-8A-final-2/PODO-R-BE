@@ -14,6 +14,7 @@ import be.podor.review.model.tag.Tag;
 import be.podor.review.repository.ReviewRepository;
 import be.podor.review.repository.ReviewSearchRepository;
 import be.podor.review.repository.TagRepository;
+import be.podor.reviewheart.repository.ReviewHeartRepository;
 import be.podor.security.UserDetailsImpl;
 import be.podor.theater.model.TheaterSeat;
 import be.podor.theater.repository.TheaterSeatRepository;
@@ -46,6 +47,8 @@ public class ReviewService {
     private final TagRepository tagRepository;
 
     private final MemberRepository memberRepository;
+
+    private final ReviewHeartRepository reviewHeartRepository;
 
     // 리뷰 작성
     @Transactional
@@ -106,18 +109,23 @@ public class ReviewService {
     }
 
     // 뮤지컬 선택시 해당 뮤지컬의 전체 리뷰 리스트 조회
-    public Page<ReviewListResponseDto> getMusicalReviews(Long musicalId, SearchDto searchDto, Pageable pageable) {
+    public Page<ReviewListResponseDto> getMusicalReviews(
+            Long musicalId, SearchDto searchDto, Pageable pageable, UserDetailsImpl userDetails
+    ) {
         Page<Review> reviews = reviewSearchRepository.findReviewSearch(musicalId, searchDto, pageable);
 
         List<ReviewListResponseDto> reviewListResponseDtos = reviews.stream()
-                .map(ReviewListResponseDto::of)
+                .map(review -> {
+                    Boolean heartChecked = userDetails != null && reviewHeartRepository.existsByReviewAndCreatedBy(review, userDetails.getMemberId());
+                    return ReviewListResponseDto.of(review, heartChecked);
+                })
                 .collect(Collectors.toList());
 
         return new PageImpl<>(reviewListResponseDtos, reviews.getPageable(), reviews.getTotalElements());
     }
 
     // 리뷰 상세 조회
-    public ReviewDetailResponseDto getReviewDetail(Long musicalId, Long reviewId) {
+    public ReviewDetailResponseDto getReviewDetail(Long musicalId, Long reviewId, UserDetailsImpl userDetails) {
         Review review = reviewRepository.findById(reviewId).orElseThrow(
                 () -> new IllegalArgumentException("해당 리뷰가 존재하지 않습니다.")
         );
@@ -126,7 +134,9 @@ public class ReviewService {
                 () -> new IllegalArgumentException("존재하지 않는 작성자입니다.")
         );
 
-        return ReviewDetailResponseDto.of(review, MemberDto.of(member));
+        Boolean heartChecked = userDetails != null && reviewHeartRepository.existsByReviewAndCreatedBy(review, userDetails.getMemberId());
+
+        return ReviewDetailResponseDto.of(review, MemberDto.of(member), heartChecked);
     }
 
     // 리뷰 수정
@@ -165,7 +175,9 @@ public class ReviewService {
                 () -> new IllegalArgumentException("존재하지 않는 작성자입니다.")
         );
 
-        return ReviewDetailResponseDto.of(review, MemberDto.of(member));
+        Boolean heartChecked = reviewHeartRepository.existsByReviewAndCreatedBy(review, userDetails.getMemberId());
+
+        return ReviewDetailResponseDto.of(review, MemberDto.of(member), heartChecked);
     }
 
     // 리뷰 삭제
