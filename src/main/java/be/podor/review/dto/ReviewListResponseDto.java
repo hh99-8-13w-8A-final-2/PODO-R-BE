@@ -15,10 +15,9 @@ import java.util.stream.Collectors;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ReviewListResponseDto {
+    private Long musicalId;
     private Long reviewId;
-    //    private String memberNickname;
     private String imgUrl;
-    //    private String theaterName;
     private String grade;
     private String floor;
     private String section;
@@ -29,14 +28,11 @@ public class ReviewListResponseDto {
     private Boolean operaGlass;
     private Boolean block;
     private List<String> tags;
-    //    private String reviewReads;
-//    private String reviewHearts;
     private LocalDateTime createdAt;
     private Integer commentCount;
     private Integer heartCount;
     private Boolean heartChecked;
 
-    // 불 필요한 정보들 뷰 완성되면 덜어내기
     public static ReviewListResponseDto of(Review review, Boolean heartChecked) {
         TheaterSeat theaterSeat = review.getTheaterSeat();
 
@@ -46,10 +42,9 @@ public class ReviewListResponseDto {
                 .collect(Collectors.toList());
 
         return ReviewListResponseDto.builder()
+                .musicalId(review.getMusical().getMusicalId())
                 .reviewId(review.getReviewId())
-//                .memberNickname()
                 .imgUrl(review.getReviewFiles().get(0).getFilePath())
-//                .theaterName()
                 .grade(review.getGrade().toString())
                 .floor(theaterSeat.getFloor().getFloor())
                 .section(theaterSeat.getSection())
@@ -60,8 +55,6 @@ public class ReviewListResponseDto {
                 .operaGlass(review.getOperaGlass())
                 .block(review.getBlock())
                 .tags(reviewTags)
-//                .reviewReads()
-//                .reviewHearts()
                 .createdAt(review.getCreatedAt())
                 .commentCount(review.getComments().size())
                 .heartCount(review.getReviewHearts().size())

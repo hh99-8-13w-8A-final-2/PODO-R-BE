@@ -58,7 +58,7 @@ public class MyPageService {
         Page<Review> myMusicalReviewList = reviewRepository.findByMusical_MusicalIdAndCreatedBy(musicalId, userDetails.getMemberId(), pageable);
         List<ReviewListResponseDto> reviewListResponseDtos = myMusicalReviewList.stream()
                 .map(review -> {
-                    Boolean heartChecked = reviewHeartRepository.existsByReviewAndCreatedBy(review, memberId);
+                    Boolean heartChecked = reviewHeartRepository.existsByReviewAndCreatedBy(review, userDetails.getMemberId());
                     return ReviewListResponseDto.of(review, heartChecked);
                 })
                 .collect(Collectors.toList());
