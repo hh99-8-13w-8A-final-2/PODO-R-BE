@@ -46,33 +46,23 @@ public class TheaterService {
         List<FloorResponseDto> floorResponseDtos = new ArrayList<>();
 
         // 층별 정보 조회
-        List<TheaterSeat> theaterFloors = theaterSeatRepository.findByTheaterIdGroupByFloor(theaterId);
-        List<FloorType> floors = theaterFloors.stream()
-                .map(TheaterSeat::getFloor)
-                .collect(Collectors.toList());
+        List<FloorType> floors = theaterSeatRepository.findFloorEnumsByTheaterIdGroupByFloor(theaterId);
 
         // 층간 섹션 정보 조회
         for (FloorType floor : floors) {
-            List<TheaterSeat> theaterSections = theaterSeatRepository.findByTheaterIdAndFloorGroupBySection(theaterId, floor);
-            List<String> sections = theaterSections.stream()
-                    .map(TheaterSeat::getSection)
-                    .collect(Collectors.toList());
+            List<String> sections = theaterSeatRepository.findSectionsByTheaterIdAndFloorGroupBySection(theaterId, floor);
 
             // 섹션별 정보 ResponseDto
             List<SectionResponseDto> sectionResponseDtos = new ArrayList<>();
 
             for (String section : sections) {
-                List<TheaterSeat> theaterRows;
+                List<String> rows;
                 // 섹션별 열 정보 조회
                 if (section == null) {
-                    theaterRows = theaterSeatRepository.findByTheaterIdAndFloorAndSectionGroupByRowWithoutSection(theaterId, floor);
+                    rows = theaterSeatRepository.findRowsByTheaterIdAndFloorAndSectionGroupByRowWithoutSection(theaterId, floor);
                 } else {
-                    theaterRows = theaterSeatRepository.findByTheaterIdAndFloorAndSectionGroupByRow(theaterId, floor, section);
+                    rows = theaterSeatRepository.findRowsByTheaterIdAndFloorAndSectionGroupByRow(theaterId, floor, section);
                 }
-                List<String> rows = theaterRows.stream()
-                        .map(TheaterSeat::getSeatRow)
-                        .collect(Collectors.toList());
-
                 sectionResponseDtos.add(new SectionResponseDto(section, rows));
             }
 
