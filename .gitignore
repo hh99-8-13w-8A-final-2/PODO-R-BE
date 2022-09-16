@@ -29,6 +29,7 @@ out/
 application-*.properties
 application-*.yml
 application-*.yaml
+!application-h2.yaml
 
 ### NetBeans ###
 /nbproject/private/

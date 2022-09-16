@@ -31,6 +31,9 @@ env:
   S3_REGION: ${{ secrets.S3_REGION }}
   # SLACK WEBHOOK
   SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+  # CODE_DEPLOY
+  APPLICATION_NAME: ${{ secrets.APPLICATION_NAME }}
+  DEPLOY_GROUP_NAME: ${{ secrets.DEPLOY_GROUP_NAME }}
 
 jobs:
   build:
@@ -49,22 +52,22 @@ jobs:
       - name: Generate Environment Variables File for Properties
         uses: microsoft/variable-substitution@v1
         with:
-          files: $RESOURCE_PATH
+          files: ${{ env.RESOURCE_PATH }}
         env:
-          spring.datasource.url: $DB_URL
-          spring.datasource.username: $DB_USERNAME
-          spring.datasource.password: $DB_PASSWORD
-          jwt.secretKey: $JWT_SECRET_KEY
-          kakao.client-id: $KAKAO_CLIENT_ID
-          kakao.redirect-uri: $KAKAO_REDIRECT_URL
-          twitter.consumer-id: $TWITTER_CONSUMER_ID
-          twitter.consumer-secretkey: $TWITTER_CONSUMER_SECRET_KEY
-          twitter.redirect-uri: $TWITTER_REDIRECT_URL
-          cloud.aws.credentials.access-key: $AWS_ACCESS_KEY_ID
-          cloud.aws.credentials.secret-key: $AWS_SECRET_ACCESS_KEY
-          cloud.aws.s3.bucket: $S3_BUCKET_NAME
-          cloud.aws.region.static: $S3_REGION
-          logging.slack.webhook-uri: $SLACK_WEBHOOK_URL
+          spring.datasource.url: ${{ env.DB_URL }}
+          spring.datasource.username: ${{ env.DB_USERNAME }}
+          spring.datasource.password: ${{ env.DB_PASSWORD }}
+          jwt.secretKey: ${{ env.JWT_SECRET_KEY }}
+          kakao.client-id: ${{ env.KAKAO_CLIENT_ID }}
+          kakao.redirect-uri: ${{ env.KAKAO_REDIRECT_URL }}
+          twitter.consumer-id: ${{ env.TWITTER_CONSUMER_ID }}
+          twitter.consumer-secretkey: ${{ env.TWITTER_CONSUMER_SECRET_KEY }}
+          twitter.redirect-uri: ${{ env.TWITTER_REDIRECT_URL }}
+          cloud.aws.credentials.access-key: ${{ env.AWS_ACCESS_KEY_ID }}
+          cloud.aws.credentials.secret-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+          cloud.aws.s3.bucket: ${{ env.S3_BUCKET_NAME }}
+          cloud.aws.region.static: ${{ env.S3_REGION }}
+          logging.slack.webhook-uri: ${{ env.SLACK_WEBHOOK_URL }}
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
@@ -96,13 +99,13 @@ jobs:
       # S3 Bucket으로 copy
       - name: Deliver to AWS S3
         env:
-          AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
-          AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+          AWS_ACCESS_KEY_ID: ${{ env.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ env.AWS_SECRET_ACCESS_KEY }}
         run: aws s3 cp --region $S3_REGION --acl private ./$PROJECT_NAME.zip s3://$S3_BUCKET_NAME/
 
       # Deploy
       - name: Deploy
         env:
-          AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
-          AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
-        run: aws deploy create-deployment --application-name podor --deployment-group-name podor-be --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=$PROJECT_NAME.zip --region $S3_REGION
+          AWS_ACCESS_KEY_ID: ${{ env.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ env.AWS_SECRET_ACCESS_KEY }}
+        run: aws deploy create-deployment --application-name $APPLICATION_NAME --deployment-group-name $DEPLOY_GROUP_NAME --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=$PROJECT_NAME.zip --region $S3_REGION
