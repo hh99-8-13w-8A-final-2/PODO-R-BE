@@ -5,22 +5,54 @@ server:
       enabled: true
       force: true
 
----
-
 spring:
-  config:
-    activate:
-      on-profile: h2
-
-  datasource:
-    driver-class-name: org.h2.Driver
-    username: sa
-    url: jdbc:h2:mem:testdb;MODE=MYSQL;
-
   jpa:
-    hibernate:
-      ddl-auto: create-drop
-
+    properties:
+      hibernate:
+        default_batch_fetch_size: 100
   jackson:
     serialization:
       FAIL_ON_EMPTY_BEANS: false
+  datasource:
+    url:
+    username:
+    password:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 20MB
+
+jwt:
+  secretKey:
+
+kakao:
+  client-id:
+  redirect-uri:
+
+twitter:
+  consumer-id:
+  consumer-secretkey:
+  redirect-uri:
+
+cloud:
+  aws:
+    s3:
+      bucket:
+    credentials:
+      access-key:
+      secret-key:
+    region:
+      static:
+    stack:
+      auto: false
+
+logging:
+  slack:
+    webhook-uri:
+  level:
+    com:
+      amazonaws:
+        util:
+          EC2MetadataUtils: error
+  config: classpath:logback-spring.xml
