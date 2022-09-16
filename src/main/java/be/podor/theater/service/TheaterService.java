@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,7 +47,9 @@ public class TheaterService {
         List<FloorResponseDto> floorResponseDtos = new ArrayList<>();
 
         // 층별 정보 조회
-        List<FloorType> floors = theaterSeatRepository.findFloorEnumsByTheaterIdGroupByFloor(theaterId);
+        List<FloorType> floors = theaterSeatRepository.findFloorEnumsByTheaterIdGroupByFloor(theaterId).stream()
+                .sorted()
+                .collect(Collectors.toList());
 
         // 층간 섹션 정보 조회
         for (FloorType floor : floors) {
