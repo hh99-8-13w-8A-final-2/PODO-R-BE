@@ -73,7 +73,10 @@ public class WebSecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         // origin
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "https://d1gvw0xrbyoxjq.cloudfront.net"));
+        configuration.setAllowedOrigins(Arrays.asList(
+                "http://localhost:3000",
+                "http://127.0.0.1:3000",
+                "https://d1gvw0xrbyoxjq.cloudfront.net"));
         // method
         configuration.setAllowedMethods(Arrays.asList("*"));
         // header
