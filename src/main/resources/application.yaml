@@ -56,3 +56,23 @@ logging:
         util:
           EC2MetadataUtils: error
   config: classpath:logback-spring.xml
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: h2
+
+  datasource:
+    driver-class-name: org.h2.Driver
+    username: sa
+    url: jdbc:h2:mem:testdb;MODE=MYSQL;
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+
+  jackson:
+    serialization:
+      FAIL_ON_EMPTY_BEANS: false
