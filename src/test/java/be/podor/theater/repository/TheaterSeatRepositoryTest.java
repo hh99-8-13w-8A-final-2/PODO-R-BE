@@ -72,7 +72,7 @@ class TheaterSeatRepositoryTest {
         List<FloorType> floors = theaterSeatRepository.findFloorEnumsByTheaterIdGroupByFloor(theaterId);
 
         //then
-        Assertions.assertThat(floors.size()).isEqualTo(3);
+        Assertions.assertThat(floors.size()).isEqualTo(FloorType.values().length);
     }
 
     @Test

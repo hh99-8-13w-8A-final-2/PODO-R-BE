@@ -9,7 +9,8 @@ import lombok.RequiredArgsConstructor;
 public enum FloorType {
     FIRST("1층", 1),
     SECOND("2층", 2),
-    THIRD("3층", 3);
+    THIRD("3층", 3),
+    BALCONY("발코니", 4);
 
     private final String floor;
     private final int num;
