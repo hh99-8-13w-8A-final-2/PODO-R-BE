@@ -46,7 +46,6 @@ public class ReviewSearchRepository {
                 .fetch();
 
         long total = jpaQueryFactory.select(Wildcard.count).from(review)
-                .innerJoin(review.theaterSeat, theaterSeat)
                 .where(
                         review.musical.musicalId.eq(musicalId),
                         gapEq(searchDto.getGap()),
