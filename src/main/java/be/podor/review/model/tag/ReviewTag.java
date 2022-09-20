@@ -1,6 +1,7 @@
 package be.podor.review.model.tag;
 
 import be.podor.review.model.Review;
+import be.podor.tag.model.Tag;
 import lombok.*;
 
 import javax.persistence.*;

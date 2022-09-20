@@ -37,18 +37,14 @@ public class WebSecurityConfig {
     @Bean
     @Order(SecurityProperties.BASIC_AUTH_ORDER)
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-//        cors 사용
+        // cors 사용
         http.cors().configurationSource(corsConfigurationSource());
-
-//        csrf 비활성화
+        //  csrf 비활성화
         http.csrf().disable()
-
-
-//                세션 미사용 설정
+                //  세션 미사용 설정
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-
-//                api 허용 목록!
+                //  api 허용 목록
                 .and()
                 .authorizeRequests()
                 .antMatchers("/api/oauth/**", "/api/twitter/**", "/api/member/**").permitAll()
@@ -57,13 +53,12 @@ public class WebSecurityConfig {
                         "/api/musicals/**",
                         "/api/theaters/**",
                         "/api/comments/**",
-                        "/api/notices/**"
+                        "/api/notices/**",
+                        "/api/tags/**"
                 ).permitAll()
                 .anyRequest().authenticated()
                 .and()
-
-
-//                필터 적용
+                // 필터 적용
                 .apply(new JwtConfiguration(jwtTokenProvider));
 
         return http.build();

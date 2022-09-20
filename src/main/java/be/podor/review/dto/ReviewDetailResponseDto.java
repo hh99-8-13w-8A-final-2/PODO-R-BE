@@ -5,7 +5,7 @@ import be.podor.musical.dto.MusicalResponseDto;
 import be.podor.review.model.Review;
 import be.podor.review.model.reviewfile.ReviewFile;
 import be.podor.review.model.tag.ReviewTag;
-import be.podor.review.model.tag.Tag;
+import be.podor.tag.model.Tag;
 import be.podor.theater.model.TheaterSeat;
 import lombok.*;
 
