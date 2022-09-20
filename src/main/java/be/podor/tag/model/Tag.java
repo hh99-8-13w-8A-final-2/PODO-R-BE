@@ -1,5 +1,6 @@
-package be.podor.review.model.tag;
+package be.podor.tag.model;
 
+import be.podor.review.model.tag.ReviewTag;
 import lombok.*;
 
 import javax.persistence.CascadeType;

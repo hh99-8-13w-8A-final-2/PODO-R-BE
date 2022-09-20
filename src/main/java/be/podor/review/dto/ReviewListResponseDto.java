@@ -2,7 +2,7 @@ package be.podor.review.dto;
 
 import be.podor.review.model.Review;
 import be.podor.review.model.tag.ReviewTag;
-import be.podor.review.model.tag.Tag;
+import be.podor.tag.model.Tag;
 import be.podor.theater.model.TheaterSeat;
 import lombok.*;
 

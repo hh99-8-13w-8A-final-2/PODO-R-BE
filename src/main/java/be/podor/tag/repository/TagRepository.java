@@ -1,6 +1,6 @@
-package be.podor.review.repository;
+package be.podor.tag.repository;
 
-import be.podor.review.model.tag.Tag;
+import be.podor.tag.model.Tag;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
