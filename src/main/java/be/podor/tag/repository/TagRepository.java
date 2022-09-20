@@ -11,4 +11,6 @@ public interface TagRepository extends JpaRepository<Tag, String> {
 
     @EntityGraph(attributePaths = {"reviewTags"}, type = EntityGraph.EntityGraphType.LOAD)
     Set<Tag> findByTagIn(List<String> tags);
+
+    List<Tag> findTop10ByTagStartsWith(String tag);
 }
