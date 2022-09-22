@@ -2,31 +2,22 @@ package be.podor.security.jwt;
 
 import be.podor.member.model.Member;
 import be.podor.security.UserDetailsImpl;
-import be.podor.security.jwt.refresh.RefreshToken;
-import be.podor.security.jwt.refresh.RefreshTokenRepository;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.security.SecurityException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
-import java.util.Optional;
 
 
 @Component
@@ -62,7 +53,6 @@ public class JwtTokenProvider {
 
         String accessToken = Jwts.builder()
                 .setSubject(member.getId().toString())// 유저 정보 Id값 저장
-                .setIssuer(member.getNickname()) // 유저 정보 닉네임값 저장
                 .setExpiration(accessTokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS256) // 키값과 알고리즘 세팅
                 .compact();
@@ -92,25 +82,12 @@ public class JwtTokenProvider {
     }
 
 
-    // 토큰 유효성 확인
     public boolean validateToken(String jwtToken) {
-        try {
-            Jwts.parserBuilder()
-//                    jwt 서명 검증을 위한 secret key를 들고온다.
-                    .setSigningKey(key)
-                    .build()
-                    .parseClaimsJws(jwtToken);
-            return true;
-        } catch (SecurityException | MalformedJwtException e) {
-            log.info("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
-        } catch (ExpiredJwtException e) {
-            log.info("Expired JWT token, 만료된 JWT token 입니다.");
-        } catch (UnsupportedJwtException e) {
-            log.info("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.");
-        } catch (IllegalArgumentException e) {
-            log.info("JWT claims is empty, 잘못된 JWT 토큰 입니다.");
-        }
-        return false;
+        Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(jwtToken);
+        return true;
     }
 
 }
