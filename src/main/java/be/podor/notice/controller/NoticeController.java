@@ -1,6 +1,7 @@
 package be.podor.notice.controller;
 
 import be.podor.notice.dto.NoticeListResponseDto;
+import be.podor.notice.dto.NoticeResponseDto;
 import be.podor.notice.service.NoticeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -9,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -25,6 +27,12 @@ public class NoticeController {
 
         Page<NoticeListResponseDto> responseDto = noticeService.getNotices(pageRequest);
 
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @GetMapping("/api/notices/{noticeId}")
+    public ResponseEntity<?> getNoticeDetail(@PathVariable Long noticeId) {
+        NoticeResponseDto responseDto = noticeService.getNoticeDetail(noticeId);
         return ResponseEntity.ok(responseDto);
     }
 }
