@@ -1,5 +1,6 @@
 package be.podor.notice.model;
 
+import be.podor.notice.dto.NoticeRequestDto;
 import be.podor.share.BaseEntity;
 import lombok.*;
 
@@ -21,4 +22,11 @@ public class Notice extends BaseEntity {
 
     @Column(nullable = false)
     private String content;
+
+    public static Notice of(NoticeRequestDto requestDto) {
+        return Notice.builder()
+                .title(requestDto.getTitle())
+                .content(requestDto.getContent())
+                .build();
+    }
 }

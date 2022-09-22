@@ -4,6 +4,7 @@ import be.podor.member.dto.MemberDto;
 import be.podor.member.model.Member;
 import be.podor.member.repository.MemberRepository;
 import be.podor.notice.dto.NoticeListResponseDto;
+import be.podor.notice.dto.NoticeRequestDto;
 import be.podor.notice.dto.NoticeResponseDto;
 import be.podor.notice.model.Notice;
 import be.podor.notice.repository.NoticeRepository;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,9 +38,16 @@ public class NoticeService {
     public NoticeResponseDto getNoticeDetail(Long noticeId) {
         Notice notice = noticeRepository.findById(noticeId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지않는 게시글 입니다."));
-        Member member = memberRepository.findById(notice.getCreatedBy()).orElseThrow(
-                () -> new IllegalArgumentException("존재하지 않는 작성자입니다.")
-        );
+        Member member = memberRepository.findById(notice.getCreatedBy())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 작성자입니다.")
+                );
         return NoticeResponseDto.of(notice, MemberDto.of(member));
+    }
+
+    @Transactional
+    public Notice createNotice(NoticeRequestDto requestDto) {
+        Notice notice = Notice.of(requestDto);
+        noticeRepository.save(notice);
+        return notice;
     }
 }
