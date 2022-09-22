@@ -5,7 +5,9 @@ import be.podor.member.dto.SocialUserDto;
 import be.podor.member.service.KakaoService;
 import be.podor.member.service.MemberService;
 import be.podor.member.service.TwitterService;
+import be.podor.member.util.MemberUtil;
 import be.podor.security.UserDetailsImpl;
+import be.podor.security.jwt.TokenDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -29,7 +31,7 @@ public class SocialController {
             @RequestParam(value = "code") String code) throws IOException {
         SocialUserDto socialUserDto = kakaoService.kakaoLogin(code);
         return ResponseEntity.ok()
-                .headers(socialUserDto.getTokenHeaders())
+                .headers(MemberUtil.getTokenHeaders(socialUserDto.getTokenDto()))
                 .body(socialUserDto.getMemberDto());
     }
 
@@ -48,7 +50,7 @@ public class SocialController {
         SocialUserDto socialUserDto = twitterService.twitterLogin(oauthToken, oauthVerifier);
 
         return ResponseEntity.ok()
-                .headers(socialUserDto.getTokenHeaders())
+                .headers(MemberUtil.getTokenHeaders(socialUserDto.getTokenDto()))
                 .body(socialUserDto.getMemberDto());
     }
 
@@ -60,7 +62,10 @@ public class SocialController {
 
     @PostMapping("/reissue")
     public ResponseEntity<?> reissue(HttpServletRequest request) {
-        return ResponseEntity.ok(memberService.reissue(request));
+        TokenDto tokenDto = memberService.reissue(request);
+        return ResponseEntity.ok()
+                .headers(MemberUtil.getTokenHeaders(tokenDto))
+                .build();
     }
 }
 
