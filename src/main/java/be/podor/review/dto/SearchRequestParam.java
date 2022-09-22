@@ -8,9 +8,6 @@ import java.util.Set;
 @Getter
 @Setter
 public class SearchRequestParam {
-    private Integer gap;
-    private Integer sight;
-    private Integer sound;
-    private Integer light;
+    private Set<String> evaluation;
     private Set<String> tag;
 }
