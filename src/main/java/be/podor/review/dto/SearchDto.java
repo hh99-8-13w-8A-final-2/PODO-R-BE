@@ -14,6 +14,7 @@ public class SearchDto {
     private ScoreEnum light;
     private Boolean block;
     private Boolean operaGlass;
+    private String[] tags;
 
     public static SearchDto of(SearchRequestParam requestParam) {
         return SearchDto.builder()
@@ -23,6 +24,7 @@ public class SearchDto {
                 .light(ScoreEnum.from(requestParam.getLight()))
                 .block(parseBooleanValue(requestParam.getBlock()))
                 .operaGlass(parseBooleanValue(requestParam.getOperaGlass()))
+                .tags(requestParam.getTag())
                 .build();
     }
 

@@ -12,4 +12,5 @@ public class SearchRequestParam {
     private Integer light;
     private Integer block;
     private Integer operaGlass;
+    private String[] tag;
 }
