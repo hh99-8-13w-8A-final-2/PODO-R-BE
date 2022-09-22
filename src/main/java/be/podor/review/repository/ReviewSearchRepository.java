@@ -19,6 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 import static be.podor.review.model.QReview.review;
 import static be.podor.review.model.tag.QReviewTag.reviewTag;
@@ -153,16 +154,16 @@ public class ReviewSearchRepository {
         return null;
     }
 
-    private BooleanExpression reviewTagIn(String[] tags) {
+    private BooleanExpression reviewTagIn(Set<String> tags) {
         if (tags != null) {
             return reviewTag.tag.tag.in(tags);
         }
         return null;
     }
 
-    private BooleanExpression reviewIdHaving(String[] tags) {
+    private BooleanExpression reviewIdHaving(Set<String> tags) {
         if (tags != null) {
-            return Wildcard.count.eq((long) tags.length);
+            return Wildcard.count.eq((long) tags.size());
         }
         return null;
     }
