@@ -47,7 +47,7 @@ public class WebSecurityConfig {
                 //  api 허용 목록
                 .and()
                 .authorizeRequests()
-                .antMatchers("/api/oauth/**", "/api/twitter/**", "/api/member/**").permitAll()
+                .antMatchers("/api/oauth/**", "/api/twitter/**", "/api/member/**", "/api/reissue/**").permitAll()
                 .antMatchers(HttpMethod.GET,
                         "/api/reviews/**",
                         "/api/musicals/**",
@@ -71,7 +71,8 @@ public class WebSecurityConfig {
         configuration.setAllowedOrigins(Arrays.asList(
                 "http://localhost:3000",
                 "http://127.0.0.1:3000",
-                "https://d1gvw0xrbyoxjq.cloudfront.net"));
+                "https://d1gvw0xrbyoxjq.cloudfront.net",
+                "https://podoal.net"));
         // method
         configuration.setAllowedMethods(Arrays.asList("*"));
         // header

@@ -15,7 +15,9 @@ public class JwtConfiguration extends SecurityConfigurerAdapter<DefaultSecurityF
     public void configure(HttpSecurity httpSecurity) {
 //        필터 객체 생성
         JwtFilter customJwtFilter = new JwtFilter(jwtTokenProvider);
+        JwtExceptionFilter jwtExceptionFilter = new JwtExceptionFilter();
 //      usernamepassword 필터보다 먼저 실행.
         httpSecurity.addFilterBefore(customJwtFilter, UsernamePasswordAuthenticationFilter.class);
+        httpSecurity.addFilterBefore(jwtExceptionFilter, JwtFilter.class);
     }
 }
