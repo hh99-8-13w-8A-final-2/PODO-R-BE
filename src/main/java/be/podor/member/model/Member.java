@@ -2,7 +2,7 @@ package be.podor.member.model;
 
 import be.podor.member.dto.KakaoUserInfoDto;
 import be.podor.member.dto.TwitterUserInfoDto;
-import be.podor.mypage.dto.MyPageRequestDto;
+import be.podor.member.dto.MemberInfoRequestDto;
 import be.podor.share.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,7 +36,7 @@ public class Member extends BaseEntity {
     private String profilePic;
 
 
-    public void updateMember(MyPageRequestDto requestDto) {
+    public void updateMember(MemberInfoRequestDto requestDto) {
         this.nickname = requestDto.getNickname();
         this.profilePic = requestDto.getProfilePic();
     }

@@ -2,7 +2,6 @@ package be.podor.mypage.controller;
 
 
 import be.podor.musical.dto.MusicalListResponseDto;
-import be.podor.mypage.dto.MyPageRequestDto;
 import be.podor.mypage.service.MyPageService;
 import be.podor.review.dto.ReviewListResponseDto;
 import be.podor.security.UserDetailsImpl;
@@ -14,8 +13,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
@@ -53,12 +50,5 @@ public class MyPageController {
         PageRequest request = PageRequest.of(pageable.getPageNumber() - 1, pageable.getPageSize());
         Page<ReviewListResponseDto> responseDto = mypageService.getMyMusicalReviews(request, musicalId, userDetails);
         return ResponseEntity.ok(responseDto);
-    }
-
-    @PutMapping("/mypage/update")
-    public ResponseEntity<?> updateMemberInfo(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                              @Valid @RequestBody MyPageRequestDto requestDto) {
-        mypageService.updateMemberInfo(userDetails, requestDto);
-        return ResponseEntity.ok().build();
     }
 }

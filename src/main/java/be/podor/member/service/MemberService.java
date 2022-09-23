@@ -1,7 +1,9 @@
 package be.podor.member.service;
 
+import be.podor.member.dto.MemberDto;
 import be.podor.member.model.Member;
 import be.podor.member.repository.MemberRepository;
+import be.podor.member.dto.MemberInfoRequestDto;
 import be.podor.security.UserDetailsImpl;
 import be.podor.security.jwt.JwtTokenProvider;
 import be.podor.security.jwt.TokenDto;
@@ -54,5 +56,13 @@ public class MemberService {
         refreshToken.updateToken(newToken.getRefreshToken());
 
         return newToken;
+    }
+
+    @Transactional
+    public MemberDto updateMemberInfo(UserDetailsImpl userDetails, MemberInfoRequestDto requestDto) {
+        Member member = memberRepository.findById(userDetails.getMemberId())
+                .orElseThrow(() -> new IllegalArgumentException("아이디가 없습니다."));
+        member.updateMember(requestDto);
+        return MemberDto.of(member);
     }
 }
