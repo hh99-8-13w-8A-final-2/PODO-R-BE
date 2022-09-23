@@ -5,11 +5,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Optional;
-
 public interface NoticeRepository extends JpaRepository<Notice, Long> {
 
     Page<Notice> findByOrderByCreatedAtDesc(PageRequest pageRequest);
 
-    Optional<Notice> findById(Long noticeId);
+    void deleteByNoticeIdAndCreatedBy(Long noticeId, Long memberId);
 }

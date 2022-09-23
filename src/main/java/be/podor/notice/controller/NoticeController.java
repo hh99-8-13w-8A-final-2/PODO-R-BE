@@ -44,11 +44,18 @@ public class NoticeController {
         return ResponseEntity.ok(notice);
     }
 
-    @PutMapping("api/notices/update/{noticeId}")
+    @PutMapping("/api/notices/update/{noticeId}")
     public ResponseEntity<?> updateNotice(@PathVariable Long noticeId,
                                           @RequestBody NoticeRequestDto requestDto,
                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
         NoticeResponseDto responseDto = noticeService.updateNotice(noticeId, requestDto, userDetails);
         return ResponseEntity.ok(responseDto);
+    }
+
+    @DeleteMapping("/api/notices/update/{noticeId}")
+    public ResponseEntity<?> deleteNotice(@PathVariable Long noticeId,
+                                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        noticeService.deleteNotice(noticeId, userDetails);
+        return ResponseEntity.ok().build();
     }
 }

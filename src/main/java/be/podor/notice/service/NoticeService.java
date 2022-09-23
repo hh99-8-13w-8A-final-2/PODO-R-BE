@@ -64,4 +64,11 @@ public class NoticeService {
         );
         return NoticeResponseDto.of(notice, MemberDto.of(member));
     }
+
+    @Transactional
+    public void deleteNotice(Long noticeId, UserDetailsImpl userDetails) {
+        Notice notice = noticeRepository.findById(userDetails.getMemberId())
+                .orElseThrow(() -> new IllegalArgumentException("관리자권한이 없습니다."));
+        noticeRepository.deleteByNoticeIdAndCreatedBy(noticeId, userDetails.getMemberId());
+    }
 }
