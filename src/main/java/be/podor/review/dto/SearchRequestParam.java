@@ -3,13 +3,11 @@ package be.podor.review.dto;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Set;
+
 @Getter
 @Setter
 public class SearchRequestParam {
-    private Integer gap;
-    private Integer sight;
-    private Integer sound;
-    private Integer light;
-    private Integer block;
-    private Integer operaGlass;
+    private Set<String> evaluation;
+    private Set<String> tag;
 }

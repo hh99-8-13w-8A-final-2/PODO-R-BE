@@ -10,12 +10,13 @@ import be.podor.review.dto.*;
 import be.podor.review.model.Review;
 import be.podor.review.model.reviewfile.ReviewFile;
 import be.podor.review.model.tag.ReviewTag;
-import be.podor.tag.model.Tag;
 import be.podor.review.repository.ReviewRepository;
 import be.podor.review.repository.ReviewSearchRepository;
-import be.podor.tag.repository.TagRepository;
+import be.podor.review.repository.ReviewTagRepository;
 import be.podor.reviewheart.repository.ReviewHeartRepository;
 import be.podor.security.UserDetailsImpl;
+import be.podor.tag.model.Tag;
+import be.podor.tag.repository.TagRepository;
 import be.podor.theater.model.TheaterSeat;
 import be.podor.theater.repository.TheaterSeatRepository;
 import be.podor.theater.validator.TheaterSeatValidator;
@@ -48,6 +49,8 @@ public class ReviewService {
 
     private final MemberRepository memberRepository;
 
+    private final ReviewTagRepository reviewTagRepository;
+
     private final ReviewHeartRepository reviewHeartRepository;
 
     // 리뷰 작성
@@ -77,26 +80,6 @@ public class ReviewService {
         review.addTags(reviewTags);
 
         return review;
-    }
-
-    // 리뷰 삭제
-    @Transactional
-    public Set<Tag> findExistTagsOrElseCreate(ReviewRequestDto requestDto) {
-        List<String> splitTags = Arrays.asList(requestDto.getTags().split(", "));
-
-        Set<Tag> existTags = tagRepository.findByTagIn(splitTags);
-
-        Set<String> existTagNames = existTags.stream()
-                .map(Tag::getTag)
-                .collect(Collectors.toSet());
-
-        for (String splitTag : splitTags) {
-            if (!existTagNames.contains(splitTag)) {
-                existTags.add(tagRepository.save(new Tag(splitTag)));
-            }
-        }
-
-        return existTags;
     }
 
     // 최근 리뷰 가져오기 for live
@@ -169,6 +152,9 @@ public class ReviewService {
         tags.forEach(tag -> tag.addReviewTags(reviewTags));
 
         review.addFiles(reviewFiles);
+
+        // OneToMany ManyToOne 관계 정리
+        reviewTagRepository.deleteAllByIdInBatch(review.getReviewTags().stream().map(ReviewTag::getReviewTagId).collect(Collectors.toList()));
         review.addTags(reviewTags);
 
         Member member = memberRepository.findById(review.getCreatedBy()).orElseThrow(
@@ -178,6 +164,26 @@ public class ReviewService {
         Boolean heartChecked = reviewHeartRepository.existsByReviewAndCreatedBy(review, userDetails.getMemberId());
 
         return ReviewDetailResponseDto.of(review, MemberDto.of(member), heartChecked);
+    }
+
+    // 태그 가져오기
+    public Set<Tag> findExistTagsOrElseCreate(ReviewRequestDto requestDto) {
+        List<String> splitTags = Arrays.asList(requestDto.getTags().split(",\\s*"));
+
+        Set<Tag> existTags = tagRepository.findByTagIn(splitTags);
+
+        Set<String> existTagNames = existTags.stream()
+                .map(Tag::getTag)
+                .collect(Collectors.toSet());
+
+        for (String splitTag : splitTags) {
+            splitTag = splitTag.trim();
+            if (!existTagNames.contains(splitTag)) {
+                existTags.add(tagRepository.save(new Tag(splitTag)));
+            }
+        }
+
+        return existTags;
     }
 
     // 리뷰 삭제

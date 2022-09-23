@@ -15,8 +15,8 @@ public class TagService {
 
     private final TagRepository tagRepository;
 
-    public TagsResponseDto getAllTags() {
-        List<Tag> tags = tagRepository.findAll();
+    public TagsResponseDto getTagsStartWith(String tag) {
+        List<Tag> tags = tagRepository.findTop10ByTagStartsWith(tag);
 
         return new TagsResponseDto(tags.stream()
                 .map(Tag::getTag)

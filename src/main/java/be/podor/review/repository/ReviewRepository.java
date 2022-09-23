@@ -26,5 +26,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     //리뷰에 들어있는 생성자를 통해 뮤지컬 조회
     @Query(value = "SELECT ri.musical FROM Review ri WHERE ri.createdBy = :createdBy GROUP BY ri.musical.musicalId")
     Page<Musical> findByReviewIdGroupByMusical(Long createdBy, Pageable pageable);
-    Page<Review> findByMusical_MusicalIdAndCreatedBy(Long createdBy,Long musicalId,Pageable pageable);
+
+    Page<Review> findByMusical_MusicalIdAndCreatedBy(Long createdBy, Long musicalId, Pageable pageable);
 }
