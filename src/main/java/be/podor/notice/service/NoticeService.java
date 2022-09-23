@@ -38,7 +38,7 @@ public class NoticeService {
 
     public NoticeResponseDto getNoticeDetail(Long noticeId) {
         Notice notice = noticeRepository.findById(noticeId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지않는 게시글 입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
         Member member = memberRepository.findById(notice.getCreatedBy())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 작성자입니다."));
         return NoticeResponseDto.of(notice, MemberDto.of(member));
@@ -54,7 +54,7 @@ public class NoticeService {
     @Transactional
     public NoticeResponseDto updateNotice(Long noticeId, NoticeRequestDto requestDto, UserDetailsImpl userDetails) {
         Notice notice = noticeRepository.findById(noticeId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지않는 게시글 입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
         if (!notice.getCreatedBy().equals(userDetails.getMemberId())) {
             throw new IllegalArgumentException("공지사항을 수정할 수 없습니다.");
         }
@@ -68,7 +68,7 @@ public class NoticeService {
     @Transactional
     public void deleteNotice(Long noticeId, UserDetailsImpl userDetails) {
         Notice notice = noticeRepository.findByNoticeIdAndCreatedBy(noticeId, userDetails.getMemberId())
-                .orElseThrow(() -> new IllegalArgumentException("관리자권한이 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 작성자입니다."));
         noticeRepository.delete(notice);
     }
 }
