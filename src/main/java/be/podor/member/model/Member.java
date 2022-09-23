@@ -38,6 +38,7 @@ public class Member extends BaseEntity {
 
     public void updateMember(MyPageRequestDto requestDto) {
         this.nickname = requestDto.getNickname();
+        this.profilePic = requestDto.getProfilePic();
     }
 
     public static Member of(KakaoUserInfoDto kakaoUserInfoDto) {
