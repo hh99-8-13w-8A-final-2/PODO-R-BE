@@ -1,5 +1,6 @@
 package be.podor.aws.service;
 
+import be.podor.aws.dto.ImageUrlDto;
 import be.podor.aws.dto.S3Dto;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
@@ -15,7 +16,6 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -58,12 +58,18 @@ public class S3Service {
             imgurls.add(amazonS3.getUrl(bucket, fileName).toString());
         }
 
-
         return new S3Dto(imgurls);
     }
 
+    public void s3FileDelete(ImageUrlDto requestBody) {
+        String[] split = requestBody.getImageUrl().split("/");
+        String key = split[split.length - 1].trim();
+
+        amazonS3.deleteObject(bucket, key);
+    }
+
     // image resize
-    BufferedImage resizeImage(MultipartFile multipartFile, int targetWidth) throws IOException {
+    private BufferedImage resizeImage(MultipartFile multipartFile, int targetWidth) throws IOException {
         BufferedImage bufferedImage = ImageIO.read(multipartFile.getInputStream());
 
         if (bufferedImage.getWidth() < targetWidth) {
@@ -74,7 +80,7 @@ public class S3Service {
     }
 
     // image to InputStream
-    ByteArrayInputStream imageToInputStream(BufferedImage bufferedImage, String contentType, ObjectMetadata objectMetadata) throws IOException {
+    private ByteArrayInputStream imageToInputStream(BufferedImage bufferedImage, String contentType, ObjectMetadata objectMetadata) throws IOException {
         String fileExtension = contentType.split("/")[1];
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
