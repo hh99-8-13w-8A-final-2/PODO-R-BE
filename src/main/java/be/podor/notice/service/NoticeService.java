@@ -8,6 +8,7 @@ import be.podor.notice.dto.NoticeRequestDto;
 import be.podor.notice.dto.NoticeResponseDto;
 import be.podor.notice.model.Notice;
 import be.podor.notice.repository.NoticeRepository;
+import be.podor.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -39,8 +40,7 @@ public class NoticeService {
         Notice notice = noticeRepository.findById(noticeId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지않는 게시글 입니다."));
         Member member = memberRepository.findById(notice.getCreatedBy())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 작성자입니다.")
-                );
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 작성자입니다."));
         return NoticeResponseDto.of(notice, MemberDto.of(member));
     }
 
@@ -49,5 +49,19 @@ public class NoticeService {
         Notice notice = Notice.of(requestDto);
         noticeRepository.save(notice);
         return notice;
+    }
+
+    @Transactional
+    public NoticeResponseDto updateNotice(Long noticeId, NoticeRequestDto requestDto, UserDetailsImpl userDetails) {
+        Notice notice = noticeRepository.findById(noticeId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지않는 게시글 입니다."));
+        if (!notice.getCreatedBy().equals(userDetails.getMemberId())) {
+            throw new IllegalArgumentException("공지사항을 수정할 수 없습니다.");
+        }
+        notice.update(requestDto);
+        Member member = memberRepository.findById(notice.getCreatedBy()).orElseThrow(
+                () -> new IllegalArgumentException("존재하지 않는 작성자입니다.")
+        );
+        return NoticeResponseDto.of(notice, MemberDto.of(member));
     }
 }

@@ -5,12 +5,14 @@ import be.podor.notice.dto.NoticeRequestDto;
 import be.podor.notice.dto.NoticeResponseDto;
 import be.podor.notice.model.Notice;
 import be.podor.notice.service.NoticeService;
+import be.podor.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -42,4 +44,11 @@ public class NoticeController {
         return ResponseEntity.ok(notice);
     }
 
+    @PutMapping("api/notices/update/{noticeId}")
+    public ResponseEntity<?> updateNotice(@PathVariable Long noticeId,
+                                          @RequestBody NoticeRequestDto requestDto,
+                                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        NoticeResponseDto responseDto = noticeService.updateNotice(noticeId, requestDto, userDetails);
+        return ResponseEntity.ok(responseDto);
+    }
 }

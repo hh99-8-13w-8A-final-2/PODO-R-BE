@@ -29,4 +29,9 @@ public class Notice extends BaseEntity {
                 .content(requestDto.getContent())
                 .build();
     }
+
+    public void update(NoticeRequestDto requestDto) {
+        this.title = requestDto.getTitle();
+        this.content = requestDto.getContent();
+    }
 }
