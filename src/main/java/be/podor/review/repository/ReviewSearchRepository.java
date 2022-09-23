@@ -3,7 +3,6 @@ package be.podor.review.repository;
 import be.podor.review.dto.SearchDto;
 import be.podor.review.model.Review;
 import be.podor.review.model.reviewInfo.ScoreEnum;
-import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Path;
@@ -32,7 +31,7 @@ public class ReviewSearchRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     public Page<Review> findReviewSearch(Long musicalId, SearchDto searchDto, Pageable pageable) {
-        if (searchDto.getTags() != null) {
+        if (searchDto.getTags() != null && !searchDto.getTags().isEmpty()) {
             return findReviewSearchWithTags(musicalId, searchDto, pageable);
         }
         return findReviewSearchWithoutTags(musicalId, searchDto, pageable);
