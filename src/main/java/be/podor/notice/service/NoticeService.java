@@ -59,16 +59,16 @@ public class NoticeService {
             throw new IllegalArgumentException("공지사항을 수정할 수 없습니다.");
         }
         notice.update(requestDto);
-        Member member = memberRepository.findById(notice.getCreatedBy()).orElseThrow(
-                () -> new IllegalArgumentException("존재하지 않는 작성자입니다.")
+        Member member = memberRepository.findById(notice.getCreatedBy())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 작성자입니다.")
         );
         return NoticeResponseDto.of(notice, MemberDto.of(member));
     }
 
     @Transactional
     public void deleteNotice(Long noticeId, UserDetailsImpl userDetails) {
-        Notice notice = noticeRepository.findById(userDetails.getMemberId())
+        Notice notice = noticeRepository.findByNoticeIdAndCreatedBy(noticeId, userDetails.getMemberId())
                 .orElseThrow(() -> new IllegalArgumentException("관리자권한이 없습니다."));
-        noticeRepository.deleteByNoticeIdAndCreatedBy(noticeId, userDetails.getMemberId());
+        noticeRepository.delete(notice);
     }
 }

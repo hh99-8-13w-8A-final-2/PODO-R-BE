@@ -38,13 +38,13 @@ public class NoticeController {
         return ResponseEntity.ok(responseDto);
     }
 
-    @PostMapping("/api/notices/create")
+    @PostMapping("/api/notices")
     public ResponseEntity<?> createNotice(@RequestBody NoticeRequestDto requestDto) {
         Notice notice = noticeService.createNotice(requestDto);
         return ResponseEntity.ok(notice);
     }
 
-    @PutMapping("/api/notices/update/{noticeId}")
+    @PutMapping("/api/notices/{noticeId}")
     public ResponseEntity<?> updateNotice(@PathVariable Long noticeId,
                                           @RequestBody NoticeRequestDto requestDto,
                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -52,7 +52,7 @@ public class NoticeController {
         return ResponseEntity.ok(responseDto);
     }
 
-    @DeleteMapping("/api/notices/update/{noticeId}")
+    @DeleteMapping("/api/notices/{noticeId}")
     public ResponseEntity<?> deleteNotice(@PathVariable Long noticeId,
                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
         noticeService.deleteNotice(noticeId, userDetails);
