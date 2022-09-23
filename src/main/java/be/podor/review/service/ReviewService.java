@@ -168,7 +168,7 @@ public class ReviewService {
 
     // 태그 가져오기
     public Set<Tag> findExistTagsOrElseCreate(ReviewRequestDto requestDto) {
-        List<String> splitTags = Arrays.asList(requestDto.getTags().split(", "));
+        List<String> splitTags = Arrays.asList(requestDto.getTags().split(",\\s*"));
 
         Set<Tag> existTags = tagRepository.findByTagIn(splitTags);
 
@@ -177,6 +177,7 @@ public class ReviewService {
                 .collect(Collectors.toSet());
 
         for (String splitTag : splitTags) {
+            splitTag = splitTag.trim();
             if (!existTagNames.contains(splitTag)) {
                 existTags.add(tagRepository.save(new Tag(splitTag)));
             }
