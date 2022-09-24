@@ -2,7 +2,6 @@ package be.podor.review.repository;
 
 import be.podor.review.dto.SearchDto;
 import be.podor.review.model.Review;
-import be.podor.review.model.reviewInfo.ScoreEnum;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
@@ -91,6 +90,21 @@ public class ReviewSearchRepository {
     private BooleanBuilder searchBase(SearchDto searchDto, Long musicalId) {
         BooleanBuilder booleanBuilder = new BooleanBuilder(review.musical.musicalId.eq(musicalId));
 
+        if (searchDto.getGrade() != null) {
+            booleanBuilder.and(review.grade.eq(searchDto.getGrade()));
+        }
+        if (searchDto.getFloor() != null) {
+            booleanBuilder.and(review.theaterSeat.floor.eq(searchDto.getFloor()));
+        }
+        if (searchDto.getSection() != null) {
+            booleanBuilder.and(review.theaterSeat.section.eq(searchDto.getSection()));
+        }
+        if (searchDto.getRow() != null) {
+            booleanBuilder.and(review.theaterSeat.seatRow.eq(searchDto.getRow()));
+        }
+        if (searchDto.getSeat() != null) {
+            booleanBuilder.and(review.theaterSeat.seat.eq(searchDto.getSeat()));
+        }
         if (searchDto.getGap() != null) {
             booleanBuilder.and(review.evaluation.gap.eq(searchDto.getGap()));
         }

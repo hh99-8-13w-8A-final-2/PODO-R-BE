@@ -37,7 +37,7 @@ public class SearchDto {
                 .grade(GradeType.from(requestParam.getGrade()))
                 .floor(FloorType.from(requestParam.getFloor()))
                 .section(requestParam.getSection())
-                .row(requestParam.getGrade())
+                .row(requestParam.getRow())
                 .seat(requestParam.getSeat())
                 .gap(parseScoreEnum(evaluationSet, "단차좋음"))
                 .sight(parseScoreEnum(evaluationSet, "시야좋음"))
