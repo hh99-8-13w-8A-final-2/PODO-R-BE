@@ -1,4 +1,4 @@
-package be.podor.review.dto;
+package be.podor.review.dto.search;
 
 import lombok.Getter;
 import lombok.Setter;

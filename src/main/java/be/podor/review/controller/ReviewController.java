@@ -1,6 +1,8 @@
 package be.podor.review.controller;
 
 import be.podor.review.dto.*;
+import be.podor.review.dto.search.SearchDto;
+import be.podor.review.dto.search.SearchRequestParam;
 import be.podor.review.model.Review;
 import be.podor.review.service.ReviewService;
 import be.podor.security.UserDetailsImpl;

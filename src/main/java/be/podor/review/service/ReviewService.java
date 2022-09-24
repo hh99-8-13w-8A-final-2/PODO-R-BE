@@ -7,6 +7,7 @@ import be.podor.musical.model.Musical;
 import be.podor.musical.repository.MusicalRepository;
 import be.podor.musical.validator.MusicalValidator;
 import be.podor.review.dto.*;
+import be.podor.review.dto.search.SearchDto;
 import be.podor.review.model.Review;
 import be.podor.review.model.reviewfile.ReviewFile;
 import be.podor.review.model.tag.ReviewTag;

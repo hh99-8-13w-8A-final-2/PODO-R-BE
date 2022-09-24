@@ -1,4 +1,4 @@
-package be.podor.review.dto;
+package be.podor.review.dto.search;
 
 import be.podor.review.model.reviewInfo.ScoreEnum;
 import be.podor.theater.model.type.FloorType;

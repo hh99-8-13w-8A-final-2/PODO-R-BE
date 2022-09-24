@@ -1,6 +1,6 @@
 package be.podor.review.repository;
 
-import be.podor.review.dto.SearchDto;
+import be.podor.review.dto.search.SearchDto;
 import be.podor.review.model.Review;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Order;
@@ -93,33 +93,43 @@ public class ReviewSearchRepository {
         if (searchDto.getGrade() != null) {
             booleanBuilder.and(review.grade.eq(searchDto.getGrade()));
         }
+
         if (searchDto.getFloor() != null) {
             booleanBuilder.and(review.theaterSeat.floor.eq(searchDto.getFloor()));
         }
+
         if (searchDto.getSection() != null) {
             booleanBuilder.and(review.theaterSeat.section.eq(searchDto.getSection()));
         }
+
         if (searchDto.getRow() != null) {
             booleanBuilder.and(review.theaterSeat.seatRow.eq(searchDto.getRow()));
         }
+
         if (searchDto.getSeat() != null) {
             booleanBuilder.and(review.theaterSeat.seat.eq(searchDto.getSeat()));
         }
+
         if (searchDto.getGap() != null) {
             booleanBuilder.and(review.evaluation.gap.eq(searchDto.getGap()));
         }
+
         if (searchDto.getSight() != null) {
             booleanBuilder.and(review.evaluation.sight.eq(searchDto.getSight()));
         }
+
         if (searchDto.getSound() != null) {
             booleanBuilder.and(review.evaluation.sound.eq(searchDto.getSound()));
         }
+
         if (searchDto.getLight() != null) {
             booleanBuilder.and(review.evaluation.light.eq(searchDto.getLight()));
         }
+
         if (searchDto.getBlock() != null) {
             booleanBuilder.and(review.block.eq(searchDto.getBlock()));
         }
+
         if (searchDto.getOperaGlass() != null) {
             booleanBuilder.and(review.operaGlass.eq(searchDto.getOperaGlass()));
         }
