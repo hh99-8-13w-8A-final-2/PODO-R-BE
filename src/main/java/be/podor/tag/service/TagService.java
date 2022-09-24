@@ -9,6 +9,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,7 +31,11 @@ public class TagService {
 
     @Cacheable(value = "popularTags", key = "#musicalId")
     public TagsResponseDto getPopularTags(Long musicalId, Pageable pageable) {
-        List<String> tags = reviewTagRepository.findPopularTags(musicalId, pageable);
+        List<String> tags = new ArrayList<>();
+
+        tags.add("#시야방해있음");
+        tags.add("#오페라글라스필수");
+        tags.addAll(reviewTagRepository.findPopularTags(musicalId, pageable));
 
         return new TagsResponseDto(tags);
     }
