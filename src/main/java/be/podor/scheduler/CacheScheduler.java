@@ -1,6 +1,5 @@
 package be.podor.scheduler;
 
-import be.podor.musical.service.MusicalService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
@@ -12,10 +11,8 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class CacheScheduler {
 
-    private final MusicalService musicalService;
-
-    // 매 시 0분, 30분
-    @Scheduled(cron = "0 0/30 * * * *")
+    // 30분마다
+    @Scheduled(cron = "0 */30 * * * *")
     @CacheEvict(value = "musicals", key = "'popular'")
     public void refreshPopularMusicals() {
         log.info("popular musical cache refresh");
@@ -23,14 +20,8 @@ public class CacheScheduler {
 
     // 10분마다
     @Scheduled(cron = "0 */10 * * * *")
+    @CacheEvict(value = "popularTags", allEntries = true)
     public void refreshPopularTags() {
         log.info("open musical popular tag cache refresh");
-
-        musicalService.getOpenMusical().forEach(musical -> evictPopularTagCache(musical.getMusicalId()));
-    }
-
-    @CacheEvict(value = "popularTags", key = "#musicalId")
-    public void evictPopularTagCache(Long musicalId) {
-
     }
 }
