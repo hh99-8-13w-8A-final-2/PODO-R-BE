@@ -3,6 +3,7 @@ package be.podor.review.repository;
 import be.podor.review.dto.SearchDto;
 import be.podor.review.model.Review;
 import be.podor.review.model.reviewInfo.ScoreEnum;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Path;
@@ -42,13 +43,7 @@ public class ReviewSearchRepository {
                 .innerJoin(review.theaterSeat, theaterSeat).fetchJoin()
                 .leftJoin(review.reviewTags, reviewTag)
                 .where(
-                        review.musical.musicalId.eq(musicalId),
-                        gapEq(searchDto.getGap()),
-                        sightEq(searchDto.getSight()),
-                        soundEq(searchDto.getSound()),
-                        lightEq(searchDto.getLight()),
-                        blockEq(searchDto.getBlock()),
-                        operaGlassEq(searchDto.getOperaGlass()),
+                        searchBase(searchDto, musicalId),
                         reviewTagIn(searchDto.getTags())
                 )
                 .groupBy(review.reviewId)
@@ -61,13 +56,7 @@ public class ReviewSearchRepository {
         List<Long> fetch = jpaQueryFactory.select(review.reviewId).from(review)
                 .leftJoin(review.reviewTags, reviewTag)
                 .where(
-                        review.musical.musicalId.eq(musicalId),
-                        gapEq(searchDto.getGap()),
-                        sightEq(searchDto.getSight()),
-                        soundEq(searchDto.getSound()),
-                        lightEq(searchDto.getLight()),
-                        blockEq(searchDto.getBlock()),
-                        operaGlassEq(searchDto.getOperaGlass()),
+                        searchBase(searchDto, musicalId),
                         reviewTagIn(searchDto.getTags())
                 )
                 .groupBy(review.reviewId)
@@ -83,13 +72,7 @@ public class ReviewSearchRepository {
         List<Review> result = jpaQueryFactory.selectFrom(review)
                 .innerJoin(review.theaterSeat, theaterSeat).fetchJoin()
                 .where(
-                        review.musical.musicalId.eq(musicalId),
-                        gapEq(searchDto.getGap()),
-                        sightEq(searchDto.getSight()),
-                        soundEq(searchDto.getSound()),
-                        lightEq(searchDto.getLight()),
-                        blockEq(searchDto.getBlock()),
-                        operaGlassEq(searchDto.getOperaGlass())
+                        searchBase(searchDto, musicalId)
                 )
                 .orderBy(getOrderSpecifier(pageable))
                 .offset(pageable.getOffset())
@@ -98,59 +81,36 @@ public class ReviewSearchRepository {
 
         long total = jpaQueryFactory.select(Wildcard.count).from(review)
                 .where(
-                        review.musical.musicalId.eq(musicalId),
-                        gapEq(searchDto.getGap()),
-                        sightEq(searchDto.getSight()),
-                        soundEq(searchDto.getSound()),
-                        lightEq(searchDto.getLight()),
-                        blockEq(searchDto.getBlock()),
-                        operaGlassEq(searchDto.getOperaGlass())
+                        searchBase(searchDto, musicalId)
                 )
                 .fetchFirst();
 
         return new PageImpl<>(result, pageable, total);
     }
 
-    private BooleanExpression gapEq(ScoreEnum gap) {
-        if (gap != null) {
-            return review.evaluation.gap.eq(gap);
-        }
-        return null;
-    }
+    private BooleanBuilder searchBase(SearchDto searchDto, Long musicalId) {
+        BooleanBuilder booleanBuilder = new BooleanBuilder(review.musical.musicalId.eq(musicalId));
 
-    private BooleanExpression sightEq(ScoreEnum sight) {
-        if (sight != null) {
-            return review.evaluation.sight.eq(sight);
+        if (searchDto.getGap() != null) {
+            booleanBuilder.and(review.evaluation.gap.eq(searchDto.getGap()));
         }
-        return null;
-    }
+        if (searchDto.getSight() != null) {
+            booleanBuilder.and(review.evaluation.sight.eq(searchDto.getSight()));
+        }
+        if (searchDto.getSound() != null) {
+            booleanBuilder.and(review.evaluation.sound.eq(searchDto.getSound()));
+        }
+        if (searchDto.getLight() != null) {
+            booleanBuilder.and(review.evaluation.light.eq(searchDto.getLight()));
+        }
+        if (searchDto.getBlock() != null) {
+            booleanBuilder.and(review.block.eq(searchDto.getBlock()));
+        }
+        if (searchDto.getOperaGlass() != null) {
+            booleanBuilder.and(review.operaGlass.eq(searchDto.getOperaGlass()));
+        }
 
-    private BooleanExpression soundEq(ScoreEnum sound) {
-        if (sound != null) {
-            return review.evaluation.sound.eq(sound);
-        }
-        return null;
-    }
-
-    private BooleanExpression lightEq(ScoreEnum light) {
-        if (light != null) {
-            return review.evaluation.light.eq(light);
-        }
-        return null;
-    }
-
-    private BooleanExpression blockEq(Boolean block) {
-        if (block != null) {
-            return review.block.eq(block);
-        }
-        return null;
-    }
-
-    private BooleanExpression operaGlassEq(Boolean operaGlass) {
-        if (operaGlass != null) {
-            return review.operaGlass.eq(operaGlass);
-        }
-        return null;
+        return booleanBuilder;
     }
 
     private BooleanExpression reviewTagIn(Set<String> tags) {
