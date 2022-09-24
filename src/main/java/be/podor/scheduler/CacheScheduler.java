@@ -14,6 +14,13 @@ public class CacheScheduler {
 
     private final MusicalService musicalService;
 
+    // 매 시 0분, 30분
+    @Scheduled(cron = "0 0/30 * * * *")
+    @CacheEvict(value = "musicals", key = "'popular'")
+    public void refreshPopularMusicals() {
+        log.info("popular musical cache refresh");
+    }
+
     // 10분마다
     @Scheduled(cron = "0 */10 * * * *")
     public void refreshPopularTags() {
