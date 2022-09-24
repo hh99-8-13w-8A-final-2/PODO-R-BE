@@ -24,6 +24,8 @@ public class SearchDto {
     private ScoreEnum sound;
     private ScoreEnum light;
 
+    private String search;
+
     private Boolean block;
     private Boolean operaGlass;
 
@@ -35,16 +37,22 @@ public class SearchDto {
 
         return SearchDto.builder()
                 .grade(GradeType.from(requestParam.getGrade()))
+
                 .floor(FloorType.from(requestParam.getFloor()))
                 .section(requestParam.getSection())
                 .row(requestParam.getRow())
                 .seat(requestParam.getSeat())
+
                 .gap(parseScoreEnum(evaluationSet, "단차좋음"))
                 .sight(parseScoreEnum(evaluationSet, "시야좋음"))
                 .sound(parseScoreEnum(evaluationSet, "음향좋음"))
                 .light(parseScoreEnum(evaluationSet, "조명좋음"))
+
+                .search(requestParam.getSearch())
+
                 .block(parseBooleanValue(tagSet, "#시야방해있음"))
                 .operaGlass(parseBooleanValue(tagSet, "#오페라글라스필수"))
+
                 .tags(tagSet)
                 .build();
     }

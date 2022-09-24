@@ -134,6 +134,10 @@ public class ReviewSearchRepository {
             booleanBuilder.and(review.operaGlass.eq(searchDto.getOperaGlass()));
         }
 
+        if (searchDto.getSearch() != null) {
+            booleanBuilder.and(review.content.contains(searchDto.getSearch()));
+        }
+
         return booleanBuilder;
     }
 
