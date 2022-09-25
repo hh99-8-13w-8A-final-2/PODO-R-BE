@@ -28,7 +28,7 @@ public class TwitterService {
 
     private final MemberRepository memberRepository;
 
-    private final JwtTokenProvider jwtTokenProvider;
+    private final MemberService memberService;
 
     private final String ACCESS_TOKEN_URL = "https://api.twitter.com/oauth/access_token";
 
@@ -63,7 +63,7 @@ public class TwitterService {
 
         Member twitterMember = signupTwitterUser(TwitterUserInfoDto.of(twitterUser));
 
-        TokenDto tokenDto = jwtTokenProvider.createToken(twitterMember);
+        TokenDto tokenDto = memberService.saveToken(twitterMember);
         MemberDto memberDto = MemberDto.of(twitterMember);
 
         return new SocialUserDto(memberDto, tokenDto);
