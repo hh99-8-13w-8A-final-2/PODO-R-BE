@@ -18,4 +18,8 @@ public class MemberSearch extends BaseEntity {
 
     @Column(nullable = false)
     private String search;
+
+    public static MemberSearch empty() {
+        return new MemberSearch(null, "");
+    }
 }
