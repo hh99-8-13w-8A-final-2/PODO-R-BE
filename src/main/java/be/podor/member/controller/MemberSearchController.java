@@ -17,7 +17,7 @@ public class MemberSearchController {
 
     private final MemberSearchService memberSearchService;
 
-    @GetMapping("/api/recents")
+    @GetMapping("/api/recents/search")
     public ResponseEntity<?> getRecentSearch(
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
@@ -26,7 +26,7 @@ public class MemberSearchController {
         return ResponseEntity.ok(responseDto);
     }
 
-    @PostMapping("/api/recents")
+    @PostMapping("/api/recents/search")
     public ResponseEntity<?> getRecentSearch(
             @RequestParam(name = "search") String search,
             @AuthenticationPrincipal UserDetailsImpl userDetails

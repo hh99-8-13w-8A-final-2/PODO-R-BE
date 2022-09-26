@@ -26,6 +26,8 @@ public class MemberSearchService {
                 ? new ArrayList<>()
                 : Arrays.stream(memberSearch.getSearch().split(";")).collect(Collectors.toList());
 
+        Collections.reverse(recentSearches);
+
         return new MemberSearchResponseDto(recentSearches);
     }
 
