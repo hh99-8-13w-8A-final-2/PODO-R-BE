@@ -20,7 +20,7 @@ public class MemberSearchService {
 
     private static final int SEARCH_MAX = 5;
 
-    private MemberSearchRepository memberSearchRepository;
+    private final MemberSearchRepository memberSearchRepository;
 
     public MemberSearchResponseDto getRecentSearch(UserDetailsImpl userDetails) {
         MemberSearch memberSearch = memberSearchRepository.findByCreatedBy(userDetails.getMemberId())
