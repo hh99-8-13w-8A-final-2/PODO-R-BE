@@ -3,6 +3,7 @@ package be.podor.review.service;
 import be.podor.member.dto.MemberDto;
 import be.podor.member.model.Member;
 import be.podor.member.repository.MemberRepository;
+import be.podor.member.service.MemberSearchService;
 import be.podor.musical.model.Musical;
 import be.podor.musical.repository.MusicalRepository;
 import be.podor.musical.validator.MusicalValidator;
@@ -54,6 +55,8 @@ public class ReviewService {
 
     private final ReviewHeartRepository reviewHeartRepository;
 
+    private final MemberSearchService memberSearchService;
+
     // 리뷰 작성
     @Transactional
     public Review createReview(Long musicalId, ReviewRequestDto requestDto) {
@@ -104,6 +107,10 @@ public class ReviewService {
                     return ReviewListResponseDto.of(review, heartChecked);
                 })
                 .collect(Collectors.toList());
+
+        if (searchDto.getSearch() != null && userDetails != null) {
+            memberSearchService.appendSearch(searchDto.getSearch(), userDetails);
+        }
 
         return new PageImpl<>(reviewListResponseDtos, reviews.getPageable(), reviews.getTotalElements());
     }
