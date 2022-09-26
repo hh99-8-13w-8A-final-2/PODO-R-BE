@@ -7,7 +7,10 @@ import be.podor.member.service.MemberSearchService;
 import be.podor.musical.model.Musical;
 import be.podor.musical.repository.MusicalRepository;
 import be.podor.musical.validator.MusicalValidator;
-import be.podor.review.dto.*;
+import be.podor.review.dto.ReviewDetailResponseDto;
+import be.podor.review.dto.ReviewListResponseDto;
+import be.podor.review.dto.ReviewLiveResponseDto;
+import be.podor.review.dto.ReviewRequestDto;
 import be.podor.review.dto.search.SearchDto;
 import be.podor.review.model.Review;
 import be.podor.review.model.reviewfile.ReviewFile;
@@ -30,6 +33,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -153,13 +157,12 @@ public class ReviewService {
                 .map(tag -> ReviewTag.of(review, tag))
                 .collect(Collectors.toList());
 
-        tags.forEach(tag -> tag.addReviewTags(reviewTags));
-
         review.addFiles(reviewFiles);
 
         // OneToMany ManyToOne 관계 정리
-        reviewTagRepository.deleteAllByIdInBatch(review.getReviewTags().stream().map(ReviewTag::getReviewTagId).collect(Collectors.toList()));
+        List<ReviewTag> prevTags = new ArrayList<>(review.getReviewTags());
         review.addTags(reviewTags);
+        reviewTagRepository.deleteAllInBatch(prevTags);
 
         Member member = memberRepository.findById(review.getCreatedBy()).orElseThrow(
                 () -> new IllegalArgumentException("존재하지 않는 작성자입니다.")
@@ -182,6 +185,11 @@ public class ReviewService {
 
         for (String splitTag : splitTags) {
             splitTag = splitTag.trim();
+
+            if (splitTag.isEmpty()) {
+                continue;
+            }
+
             if (!existTagNames.contains(splitTag)) {
                 existTags.add(tagRepository.save(new Tag(splitTag)));
             }
