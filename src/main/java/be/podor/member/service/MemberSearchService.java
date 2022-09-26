@@ -6,12 +6,8 @@ import be.podor.member.repository.MemberSearchRepository;
 import be.podor.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,18 +22,21 @@ public class MemberSearchService {
         MemberSearch memberSearch = memberSearchRepository.findByCreatedBy(userDetails.getMemberId())
                 .orElseGet(MemberSearch::empty);
 
-        List<String> recentSearches = Arrays.stream(memberSearch.getSearch().split(";"))
-                .collect(Collectors.toList());
+        List<String> recentSearches = memberSearch.getSearch().isEmpty()
+                ? new ArrayList<>()
+                : Arrays.stream(memberSearch.getSearch().split(";")).collect(Collectors.toList());
 
         return new MemberSearchResponseDto(recentSearches);
     }
 
-    @Transactional
     public void appendSearch(String search, UserDetailsImpl userDetails) {
         MemberSearch memberSearch = memberSearchRepository.findByCreatedBy(userDetails.getMemberId())
                 .orElseGet(MemberSearch::empty);
 
-        LinkedHashSet<String> recentSearches = Arrays.stream(memberSearch.getSearch().split(";"))
+
+        Set<String> recentSearches = memberSearch.getSearch().isEmpty()
+                ? new LinkedHashSet<>()
+                : Arrays.stream(memberSearch.getSearch().split(";"))
                 .collect(Collectors.toCollection(LinkedHashSet::new));
 
         recentSearches.add(search);
@@ -47,5 +46,7 @@ public class MemberSearchService {
         }
 
         memberSearch.updateSearch(String.join(";", recentSearches));
+
+        memberSearchRepository.save(memberSearch);
     }
 }
