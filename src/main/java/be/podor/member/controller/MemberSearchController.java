@@ -26,10 +26,10 @@ public class MemberSearchController {
 
     @PostMapping("/api/recents/search")
     public ResponseEntity<?> postRecentSearch(
-            @RequestParam(name = "search") String search,
+            @RequestBody MemberSearchRequestDto requestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        memberSearchService.appendSearch(search, userDetails);
+        memberSearchService.appendSearch(requestDto, userDetails);
 
         return ResponseEntity.ok().build();
     }

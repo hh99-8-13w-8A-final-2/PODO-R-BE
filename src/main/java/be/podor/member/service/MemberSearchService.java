@@ -32,7 +32,7 @@ public class MemberSearchService {
         return new MemberSearchResponseDto(recentSearches);
     }
 
-    public void appendSearch(String search, UserDetailsImpl userDetails) {
+    public void appendSearch(MemberSearchRequestDto requestDto, UserDetailsImpl userDetails) {
         MemberSearch memberSearch = memberSearchRepository.findByCreatedBy(userDetails.getMemberId())
                 .orElseGet(MemberSearch::empty);
 
@@ -42,7 +42,7 @@ public class MemberSearchService {
                 : Arrays.stream(memberSearch.getSearch().split(";"))
                 .collect(Collectors.toCollection(LinkedHashSet::new));
 
-        recentSearches.add(search);
+        recentSearches.add(requestDto.getRecent());
 
         if (recentSearches.size() > SEARCH_MAX) {
             recentSearches.remove((recentSearches.iterator().next()));

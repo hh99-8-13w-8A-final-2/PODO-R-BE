@@ -8,5 +8,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MemberSearchRequestDto {
-    public String recent;
+    private String recent;
 }

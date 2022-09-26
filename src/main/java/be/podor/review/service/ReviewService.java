@@ -108,10 +108,6 @@ public class ReviewService {
                 })
                 .collect(Collectors.toList());
 
-        if (searchDto.getSearch() != null && userDetails != null) {
-            memberSearchService.appendSearch(searchDto.getSearch(), userDetails);
-        }
-
         return new PageImpl<>(reviewListResponseDtos, reviews.getPageable(), reviews.getTotalElements());
     }
 
