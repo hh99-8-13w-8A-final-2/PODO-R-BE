@@ -12,6 +12,8 @@ public class ReviewLiveResponseDto {
 
     private Long reviewId;
 
+    private Long musicalId;
+
     private String imgUrl;
 
     private String floor;
@@ -31,6 +33,7 @@ public class ReviewLiveResponseDto {
 
         return ReviewLiveResponseDto.builder()
                 .reviewId(review.getReviewId())
+                .musicalId(review.getMusical().getMusicalId())
                 .imgUrl(review.getMusical().getMusicalPoster())
                 .floor(theaterSeat.getFloor().getFloor())
                 .section(theaterSeat.getSection())
