@@ -22,4 +22,8 @@ public class MemberSearch extends BaseEntity {
     public static MemberSearch empty() {
         return new MemberSearch(null, "");
     }
+
+    public void updateSearch(String search) {
+        this.search = search;
+    }
 }
