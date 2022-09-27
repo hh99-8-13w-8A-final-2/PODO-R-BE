@@ -54,7 +54,8 @@ public class WebSecurityConfig {
                         "/api/theaters/**",
                         "/api/comments/**",
                         "/api/notices/**",
-                        "/api/tags/**"
+                        "/api/tags/**",
+                        "/api/recents/**"
                 ).permitAll()
                 .anyRequest().authenticated()
                 .and()

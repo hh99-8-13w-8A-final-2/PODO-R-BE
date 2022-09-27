@@ -25,6 +25,14 @@ public class MusicalController {
         return ResponseEntity.ok(responseDto);
     }
 
+    // 메인화면 데이터베이스 전체 뮤지컬 가져오기
+    @GetMapping("/api/musicals/all")
+    public ResponseEntity<?> getAllMusical() {
+        List<MusicalListResponseDto> responseDto = musicalService.getAllMusical();
+
+        return ResponseEntity.ok(responseDto);
+    }
+
     // 가장 리뷰가 많은 뮤지컬 가져오기
     @GetMapping("/api/musicals/popular")
     public ResponseEntity<?> getPopularMusical() {

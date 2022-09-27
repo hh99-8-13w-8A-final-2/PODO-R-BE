@@ -30,6 +30,16 @@ public class MusicalService {
                 .collect(Collectors.toList());
     }
 
+    // 전체 뮤지컬 가져오기
+    @Cacheable(value = "musicals", key = "'all'")
+    public List<MusicalListResponseDto> getAllMusical() {
+        List<Musical> musicals = musicalRepository.findTop15ByOrderByOpenDateDesc();
+
+        return musicals.stream()
+                .map(MusicalListResponseDto::of)
+                .collect(Collectors.toList());
+    }
+
     // 가장 리뷰가 많은 뮤지컬 가져오기
     @Cacheable(value = "musicals", key = "'popular'")
     public List<MusicalListResponseDto> getPopularMusical() {
@@ -48,4 +58,6 @@ public class MusicalService {
 
         return MusicalResponseDto.of(musical);
     }
+
+
 }

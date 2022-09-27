@@ -15,6 +15,9 @@ public interface MusicalRepository extends JpaRepository<Musical, Long> {
     List<Musical> findTop10ByOrderByOpenDateDesc();
 
     @EntityGraph(attributePaths = {"theater"})
+    List<Musical> findTop15ByOrderByOpenDateDesc();
+
+    @EntityGraph(attributePaths = {"theater"})
     Optional<Musical> findByMusicalId(Long musicalId);
 
     @Query(value = "SELECT m " +
@@ -23,4 +26,5 @@ public interface MusicalRepository extends JpaRepository<Musical, Long> {
             "GROUP BY r.musical.musicalId " +
             "ORDER BY COUNT(r) DESC")
     List<Musical> findPopularMusical(Pageable pageable);
+
 }
