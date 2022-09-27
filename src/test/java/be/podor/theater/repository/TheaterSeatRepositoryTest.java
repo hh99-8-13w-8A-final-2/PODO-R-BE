@@ -37,6 +37,7 @@ class TheaterSeatRepositoryTest {
                 .theaterAddr("서울특별시 강남구 역삼1동 논현로 425")
                 .la(37.4979954)
                 .lo(127.0379322)
+                .theaterSeatImage("")
                 .build()
         );
 
