@@ -29,7 +29,7 @@ public class JwtTokenProvider {
     private String secretKey;
     public static String BEARER_PREFIX = "Bearer ";
 
-    private final Long TokenValidTime = 30 * 60 * 1000L;  // 30분
+    private final Long TokenValidTime = 60 * 60 * 1000L;  // 60분
     private final Long RefreshTokenValidTime = 7 * 24 * 60 * 60 * 1000L;  // 1주일
 
     private final UserDetailsService userDetailsService;

@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -30,7 +31,7 @@ public class ReviewController {
     @PostMapping("/api/musicals/{musicalId}/reviews")
     public ResponseEntity<?> createReview(
             @PathVariable Long musicalId,
-            @RequestBody ReviewRequestDto requestDto
+            @Valid @RequestBody ReviewRequestDto requestDto
     ) {
         Review review = reviewService.createReview(musicalId, requestDto);
 
@@ -90,7 +91,7 @@ public class ReviewController {
     public ResponseEntity<?> updateReview(
             @PathVariable Long musicalId,
             @PathVariable Long reviewId,
-            @RequestBody ReviewRequestDto requestDto,
+            @Valid @RequestBody ReviewRequestDto requestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         ReviewDetailResponseDto responseDto = reviewService.updateReview(musicalId, reviewId, requestDto, userDetails);

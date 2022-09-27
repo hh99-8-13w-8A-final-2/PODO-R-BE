@@ -49,7 +49,7 @@ public class MemberService {
     public TokenDto reissue(HttpServletRequest request) {
 
         RefreshToken refreshToken = refreshTokenRepository.findByTokenValue(request.getHeader(REFRESH_TOKEN_HEADER))
-                .orElseThrow(() -> new UnsupportedJwtException("RefreshToken 이 유효하지 않습니다."));//403);
+                .orElseThrow(() -> new UnsupportedJwtException("로그인 정보 갱신에 실패하여 로그아웃 되었습니다."));//403);
 
         TokenDto newToken = jwtTokenProvider.createToken(refreshToken.getMember());
 

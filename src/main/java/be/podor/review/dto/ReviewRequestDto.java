@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Size;
 import java.util.List;
 
 @Getter
@@ -19,7 +20,10 @@ public class ReviewRequestDto {
     private String row;
     private Integer seat;
     private String reviewContent;
+
+    @Size(min = 1, max = 4)
     private List<String> imgUrls;
+
     private ScoreEnum gap;
     private ScoreEnum sight;
     private ScoreEnum sound;
