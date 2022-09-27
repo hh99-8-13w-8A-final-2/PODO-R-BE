@@ -20,6 +20,10 @@ public class MemberSearchService {
     private final MemberSearchRepository memberSearchRepository;
 
     public MemberSearchResponseDto getRecentSearch(UserDetailsImpl userDetails) {
+        if (userDetails == null) {
+            return new MemberSearchResponseDto(Collections.emptyList());
+        }
+
         MemberSearch memberSearch = memberSearchRepository.findByCreatedBy(userDetails.getMemberId())
                 .orElseGet(MemberSearch::empty);
 
