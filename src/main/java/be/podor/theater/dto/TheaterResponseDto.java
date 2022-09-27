@@ -20,6 +20,7 @@ public class TheaterResponseDto {
     private List<ConvenienceResponseDto> conveniences;
     private Double la;
     private Double lo;
+    private String theaterSeatImage;
 
     public static TheaterResponseDto of(Theater theater) {
         List<ConvenienceResponseDto> convenienceCodes = theater.getTheaterConveniences().stream()
@@ -36,6 +37,7 @@ public class TheaterResponseDto {
                 .conveniences(convenienceCodes)
                 .la(theater.getLa())
                 .lo(theater.getLo())
+                .theaterSeatImage(theater.getTheaterSeatImage())
                 .build();
     }
 }

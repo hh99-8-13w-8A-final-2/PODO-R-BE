@@ -36,6 +36,9 @@ public class Theater {
     @Column(nullable = false)
     private Double lo;
 
+    @Column(nullable = false)
+    private String theaterSeatImage;
+
     // 편의시설
     @OneToMany(mappedBy = "theater", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TheaterConvenience> theaterConveniences;
