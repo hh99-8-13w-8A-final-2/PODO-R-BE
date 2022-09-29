@@ -14,7 +14,9 @@ public enum ExceptionType {
     // 극장
     NO_THEATER("NO_THEATER_EXCEPTION", "존재하지 않는 극장입니다."),
     // 뮤지컬
-    NO_MUSICAL("NO_MUSICAL_EXCEPTION", "존재하지 않는 뮤지컬입니다.");
+    NO_MUSICAL("NO_MUSICAL_EXCEPTION", "존재하지 않는 뮤지컬입니다."),
+    // 리뷰
+    NO_REVIEW("NO_REVIEW_EXCEPTION", "해당하는 리뷰가 존재하지 않습니다.");
 
     private final String exception;
     private final String message;
