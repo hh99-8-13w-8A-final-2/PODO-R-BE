@@ -2,6 +2,7 @@ package be.podor.aws.service;
 
 import be.podor.aws.dto.ImageUrlDto;
 import be.podor.aws.dto.S3Dto;
+import be.podor.exception.podor.PodoalException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
@@ -71,6 +72,10 @@ public class S3Service {
     // image resize
     private BufferedImage resizeImage(MultipartFile multipartFile, int targetWidth) throws IOException {
         BufferedImage bufferedImage = ImageIO.read(multipartFile.getInputStream());
+
+        if (bufferedImage == null) {
+            throw PodoalException.NO_IMAGE_EXCEPTION;
+        }
 
         if (bufferedImage.getWidth() < targetWidth) {
             return bufferedImage;
