@@ -1,5 +1,6 @@
 package be.podor.member.service;
 
+import be.podor.exception.podor.PodoalException;
 import be.podor.member.dto.membersearch.MemberSearchRequestDto;
 import be.podor.member.dto.membersearch.MemberSearchResponseDto;
 import be.podor.member.model.MemberSearch;
@@ -59,7 +60,7 @@ public class MemberSearchService {
 
     public void deleteSearch(MemberSearchRequestDto requestDto, UserDetailsImpl userDetails) {
         MemberSearch memberSearch = memberSearchRepository.findByCreatedBy(userDetails.getMemberId())
-                .orElseThrow(() -> new IllegalArgumentException("해당하는 검색 기록이 존재하지 않습니다."));
+                .orElseThrow(() -> PodoalException.NO_SEARCH_HISTORY_EXCEPTION);
 
         Set<String> recentSearches = memberSearch.getSearch().isEmpty()
                 ? new LinkedHashSet<>()

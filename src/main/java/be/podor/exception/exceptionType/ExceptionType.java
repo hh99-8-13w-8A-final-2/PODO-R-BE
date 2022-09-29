@@ -19,7 +19,9 @@ public enum ExceptionType {
     // 리뷰
     NO_REVIEW("NO_REVIEW_EXCEPTION", "해당하는 리뷰가 존재하지 않습니다."),
     // 멤버
-    NO_MEMBER("NO_MEMBER_EXCEPTION", "해당하는 멤버가 존재하지 않습니다.");
+    NO_MEMBER("NO_MEMBER_EXCEPTION", "해당하는 멤버가 존재하지 않습니다."),
+    // 검색
+    NO_SEARCH_HISTORY("NO_SEARCH_HISTORY_EXCEPTION", "해당하는 검색 기록이 존재하지 않습니다.");
 
     private final String exception;
     private final String message;
