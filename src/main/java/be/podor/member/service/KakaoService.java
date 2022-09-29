@@ -5,6 +5,7 @@ import be.podor.member.dto.KakaoUserInfoDto;
 import be.podor.member.dto.MemberDto;
 import be.podor.member.dto.SocialUserDto;
 import be.podor.member.model.Member;
+import be.podor.member.model.MemberEnum;
 import be.podor.member.repository.MemberRepository;
 import be.podor.security.jwt.TokenDto;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -124,6 +125,7 @@ public class KakaoService {
                 //DB에 중복된 계정이 없으면 회원가입 처리
                 .orElseGet(() -> {
                     Member kakaoUser = Member.of(kakaoUserInfoDto);
+                    kakaoUser.setMemberRole(MemberEnum.ROLE_MEMBER);
                     return memberRepository.save(kakaoUser);
                 });
         return findKakao;
