@@ -9,6 +9,7 @@ import be.podor.notice.dto.NoticeRequestDto;
 import be.podor.notice.dto.NoticeResponseDto;
 import be.podor.notice.model.Notice;
 import be.podor.notice.repository.NoticeRepository;
+import be.podor.notice.validator.NoticeValidator;
 import be.podor.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -38,8 +39,7 @@ public class NoticeService {
     }
 
     public NoticeResponseDto getNoticeDetail(Long noticeId) {
-        Notice notice = noticeRepository.findById(noticeId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
+        Notice notice = NoticeValidator.validate(noticeRepository, noticeId);
         Member member = MemberValidator.validate(memberRepository, notice.getCreatedBy());
 
         return NoticeResponseDto.of(notice, MemberDto.of(member));
@@ -54,8 +54,7 @@ public class NoticeService {
 
     @Transactional
     public NoticeResponseDto updateNotice(Long noticeId, NoticeRequestDto requestDto, UserDetailsImpl userDetails) {
-        Notice notice = noticeRepository.findById(noticeId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
+        Notice notice = NoticeValidator.validate(noticeRepository, noticeId);
         if (!notice.getCreatedBy().equals(userDetails.getMemberId())) {
             throw new IllegalArgumentException("공지사항을 수정할 수 없습니다.");
         }
@@ -66,9 +65,8 @@ public class NoticeService {
     }
 
     @Transactional
-    public void deleteNotice(Long noticeId, UserDetailsImpl userDetails) {
-        Notice notice = noticeRepository.findByNoticeIdAndCreatedBy(noticeId, userDetails.getMemberId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 작성자입니다."));
+    public void deleteNotice(Long noticeId, UserDetailsImpl userDtails) {
+        Notice notice = NoticeValidator.validate(noticeRepository, noticeId, userDtails.getMemberId());
         noticeRepository.delete(notice);
     }
 }

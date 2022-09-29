@@ -21,7 +21,9 @@ public enum ExceptionType {
     // 멤버
     NO_MEMBER("NO_MEMBER_EXCEPTION", "해당하는 멤버가 존재하지 않습니다."),
     // 검색
-    NO_SEARCH_HISTORY("NO_SEARCH_HISTORY_EXCEPTION", "해당하는 검색 기록이 존재하지 않습니다.");
+    NO_SEARCH_HISTORY("NO_SEARCH_HISTORY_EXCEPTION", "해당하는 검색 기록이 존재하지 않습니다."),
+    // 공지사항
+    NO_NOTICE("NO_NOTICE_EXCEPTION", "해당하는 공지사항이 존재하지 않습니다.");
 
     private final String exception;
     private final String message;
