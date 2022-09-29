@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,12 +39,14 @@ public class NoticeController {
         return ResponseEntity.ok(responseDto);
     }
 
+    @Secured("ROLE_ADMIN")
     @PostMapping("/api/notices")
     public ResponseEntity<?> createNotice(@RequestBody NoticeRequestDto requestDto) {
         Notice notice = noticeService.createNotice(requestDto);
         return ResponseEntity.ok().build();
     }
 
+    @Secured("ROLE_ADMIN")
     @PutMapping("/api/notices/{noticeId}")
     public ResponseEntity<?> updateNotice(@PathVariable Long noticeId,
                                           @RequestBody NoticeRequestDto requestDto,
@@ -52,6 +55,7 @@ public class NoticeController {
         return ResponseEntity.ok(responseDto);
     }
 
+    @Secured("ROLE_ADMIN")
     @DeleteMapping("/api/notices/{noticeId}")
     public ResponseEntity<?> deleteNotice(@PathVariable Long noticeId,
                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {

@@ -4,8 +4,8 @@ import be.podor.member.dto.MemberDto;
 import be.podor.member.dto.SocialUserDto;
 import be.podor.member.dto.TwitterUserInfoDto;
 import be.podor.member.model.Member;
+import be.podor.member.model.MemberEnum;
 import be.podor.member.repository.MemberRepository;
-import be.podor.security.jwt.JwtTokenProvider;
 import be.podor.security.jwt.TokenDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -96,7 +96,11 @@ public class TwitterService {
     Member signupTwitterUser(TwitterUserInfoDto twitterUserInfoDto) {
         Member twitterUser = memberRepository.findByTwitterId(twitterUserInfoDto.getTwitterId())
                 .orElseGet(
-                        () -> memberRepository.save(Member.of(twitterUserInfoDto))
+                        () -> {
+                            Member twitterMember = Member.of(twitterUserInfoDto);
+                            twitterMember.setMemberRole(MemberEnum.ROLE_MEMBER);
+                            return memberRepository.save(twitterMember);
+                        }
                 );
         return twitterUser;
     }

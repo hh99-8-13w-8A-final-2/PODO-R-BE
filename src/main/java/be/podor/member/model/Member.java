@@ -1,8 +1,8 @@
 package be.podor.member.model;
 
 import be.podor.member.dto.KakaoUserInfoDto;
-import be.podor.member.dto.TwitterUserInfoDto;
 import be.podor.member.dto.MemberInfoRequestDto;
+import be.podor.member.dto.TwitterUserInfoDto;
 import be.podor.share.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,11 +35,9 @@ public class Member extends BaseEntity {
     @Column
     private String profilePic;
 
-
-    public void updateMember(MemberInfoRequestDto requestDto) {
-        this.nickname = requestDto.getNickname();
-        this.profilePic = requestDto.getProfilePic();
-    }
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private MemberEnum memberRole;
 
     public static Member of(KakaoUserInfoDto kakaoUserInfoDto) {
 
@@ -57,5 +55,14 @@ public class Member extends BaseEntity {
                 .profilePic(twitterUserInfoDto.getProfilePic())
                 .twitterId(twitterUserInfoDto.getTwitterId())
                 .build();
+    }
+
+    public void updateMember(MemberInfoRequestDto requestDto) {
+        this.nickname = requestDto.getNickname();
+        this.profilePic = requestDto.getProfilePic();
+    }
+
+    public void setMemberRole(MemberEnum memberRole){
+        this.memberRole = memberRole;
     }
 }
