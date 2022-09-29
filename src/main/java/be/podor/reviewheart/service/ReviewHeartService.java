@@ -1,5 +1,6 @@
 package be.podor.reviewheart.service;
 
+import be.podor.exception.podor.PodoalException;
 import be.podor.review.model.Review;
 import be.podor.review.repository.ReviewRepository;
 import be.podor.reviewheart.model.ReviewHeart;
@@ -21,7 +22,7 @@ public class ReviewHeartService {
         Review review = reviewRepository.getReferenceById(reviewId);
 
         if (reviewHeartRepository.existsByReviewAndCreatedBy(review, userDetails.getMemberId())) {
-            throw new IllegalArgumentException("같은 리뷰에 대해 좋아요를 두 번 지정할 수 없습니다.");
+            throw PodoalException.DOUBLE_HEART_EXCEPTION;
         }
 
         reviewHeartRepository.save(ReviewHeart.of(review));
@@ -32,7 +33,7 @@ public class ReviewHeartService {
         Review review = reviewRepository.getReferenceById(reviewId);
 
         if (!reviewHeartRepository.existsByReviewAndCreatedBy(review, userDetails.getMemberId())) {
-            throw new IllegalArgumentException("좋아요를 누르지 않은 리뷰입니다.");
+            throw PodoalException.NO_HEART_EXCEPTION;
         }
 
         reviewHeartRepository.deleteByReviewAndCreatedBy(review, userDetails.getMemberId());
