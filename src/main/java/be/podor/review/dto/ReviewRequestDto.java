@@ -51,10 +51,8 @@ public class ReviewRequestDto {
     @NotNull
     private ScoreEnum light;
 
-    @NotNull
     private String operaGlass;
 
-    @NotNull
     private String block;
 
     private String tags;
