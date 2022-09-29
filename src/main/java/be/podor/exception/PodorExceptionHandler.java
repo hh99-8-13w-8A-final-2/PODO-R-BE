@@ -40,7 +40,7 @@ public class PodorExceptionHandler {
     // Podoal 통합 예외
     @ExceptionHandler(PodoalException.class)
     public ResponseEntity<?> handlePodoalException(PodoalException exception) {
-        log.warn(exception.getMessage(), exception);
+        log.warn(exception.getExceptionType().getException() + ": " + exception.getMessage(), exception);
         return ResponseEntity.badRequest().body(exception.getMessage());
     }
 }
