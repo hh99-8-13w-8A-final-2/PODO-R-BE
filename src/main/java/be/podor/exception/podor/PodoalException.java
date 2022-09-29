@@ -18,6 +18,8 @@ public class PodoalException extends RuntimeException {
     public static final PodoalException NO_MUSICAL_EXCEPTION = new PodoalException(NO_MUSICAL);
     // 리뷰
     public static final PodoalException NO_REVIEW_EXCEPTION = new PodoalException(NO_REVIEW);
+    // 회원
+    public static final PodoalException NO_MEMBER_EXCEPTION = new PodoalException(NO_MEMBER);
 
     private final ExceptionType exceptionType;
 
