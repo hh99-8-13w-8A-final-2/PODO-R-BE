@@ -4,6 +4,7 @@ import be.podor.member.dto.MemberDto;
 import be.podor.member.model.Member;
 import be.podor.member.repository.MemberRepository;
 import be.podor.member.service.MemberSearchService;
+import be.podor.member.validator.MemberValidator;
 import be.podor.musical.model.Musical;
 import be.podor.musical.repository.MusicalRepository;
 import be.podor.musical.validator.MusicalValidator;
@@ -120,9 +121,7 @@ public class ReviewService {
     public ReviewDetailResponseDto getReviewDetail(Long musicalId, Long reviewId, UserDetailsImpl userDetails) {
         Review review = ReviewValidator.validate(reviewRepository, reviewId);
 
-        Member member = memberRepository.findById(review.getCreatedBy()).orElseThrow(
-                () -> new IllegalArgumentException("존재하지 않는 작성자입니다.")
-        );
+        Member member = MemberValidator.validate(memberRepository, review.getCreatedBy());
 
         Boolean heartChecked = userDetails != null && reviewHeartRepository.existsByReviewAndCreatedBy(review, userDetails.getMemberId());
 
@@ -161,9 +160,7 @@ public class ReviewService {
         review.addTags(reviewTags);
         reviewTagRepository.deleteAllInBatch(prevTags);
 
-        Member member = memberRepository.findById(review.getCreatedBy()).orElseThrow(
-                () -> new IllegalArgumentException("존재하지 않는 작성자입니다.")
-        );
+        Member member = MemberValidator.validate(memberRepository, review.getCreatedBy());
 
         Boolean heartChecked = reviewHeartRepository.existsByReviewAndCreatedBy(review, userDetails.getMemberId());
 

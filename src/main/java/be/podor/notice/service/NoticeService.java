@@ -3,6 +3,7 @@ package be.podor.notice.service;
 import be.podor.member.dto.MemberDto;
 import be.podor.member.model.Member;
 import be.podor.member.repository.MemberRepository;
+import be.podor.member.validator.MemberValidator;
 import be.podor.notice.dto.NoticeListResponseDto;
 import be.podor.notice.dto.NoticeRequestDto;
 import be.podor.notice.dto.NoticeResponseDto;
@@ -39,8 +40,8 @@ public class NoticeService {
     public NoticeResponseDto getNoticeDetail(Long noticeId) {
         Notice notice = noticeRepository.findById(noticeId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
-        Member member = memberRepository.findById(notice.getCreatedBy())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 작성자입니다."));
+        Member member = MemberValidator.validate(memberRepository, notice.getCreatedBy());
+
         return NoticeResponseDto.of(notice, MemberDto.of(member));
     }
 
@@ -59,9 +60,8 @@ public class NoticeService {
             throw new IllegalArgumentException("공지사항을 수정할 수 없습니다.");
         }
         notice.update(requestDto);
-        Member member = memberRepository.findById(notice.getCreatedBy())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 작성자입니다.")
-        );
+        Member member = MemberValidator.validate(memberRepository, notice.getCreatedBy());
+
         return NoticeResponseDto.of(notice, MemberDto.of(member));
     }
 

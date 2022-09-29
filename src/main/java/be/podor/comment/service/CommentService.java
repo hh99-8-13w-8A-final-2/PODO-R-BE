@@ -6,6 +6,7 @@ import be.podor.comment.model.Comment;
 import be.podor.comment.repository.CommentRepository;
 import be.podor.member.model.Member;
 import be.podor.member.repository.MemberRepository;
+import be.podor.member.validator.MemberValidator;
 import be.podor.review.model.Review;
 import be.podor.review.repository.ReviewRepository;
 import be.podor.review.validator.ReviewValidator;
@@ -44,8 +45,8 @@ public class CommentService {
     // 리뷰 댓글 작성
     public CommentResponseDto createReviewComment(Long reviewId, CommentRequestDto requestDto, UserDetailsImpl userDetails) {
         Review review = ReviewValidator.validate(reviewRepository, reviewId);
+        Member member = MemberValidator.validate(memberRepository, userDetails.getMemberId());
 
-        Member member = memberRepository.findById(userDetails.getMemberId()).orElseThrow();
         Comment comment = commentRepository.save(Comment.of(requestDto, review));
 
         return CommentResponseDto.of(member, comment);
@@ -59,7 +60,7 @@ public class CommentService {
         );
 
         comment.update(requestDto);
-        Member member = memberRepository.findById(userDetails.getMemberId()).orElseThrow();
+        Member member = MemberValidator.validate(memberRepository, userDetails.getMemberId());
 
         return CommentResponseDto.of(member, comment);
     }
