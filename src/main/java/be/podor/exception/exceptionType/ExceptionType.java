@@ -12,7 +12,9 @@ public enum ExceptionType {
     DOUBLE_HEART("DOUBLE_HEART_EXCEPTION", "같은 리뷰에 대해 좋아요를 두 번 지정할 수 없습니다."),
     NO_HEART("NO_HEART_EXCEPTION", "좋아요를 누르지 않은 리뷰입니다."),
     // 극장
-    NO_THEATER("NO_THEATER_EXCEPTION", "존재하지 않는 극장입니다.");
+    NO_THEATER("NO_THEATER_EXCEPTION", "존재하지 않는 극장입니다."),
+    // 뮤지컬
+    NO_MUSICAL("NO_MUSICAL_EXCEPTION", "존재하지 않는 뮤지컬입니다.");
 
     private final String exception;
     private final String message;
