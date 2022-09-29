@@ -70,13 +70,14 @@ public class JwtTokenProvider {
     }
 
     // 토큰에서 회원 정보 추출
-    public String getUserPk(String jwtToken) {
-        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwtToken).getBody().getSubject();
+    public Claims getClaims(String jwtToken) {
+        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwtToken).getBody();
     }
 
     // JWT 토큰에서 인증 정보 조회
     public Authentication getAuthentication(String jwtToken) {
-        UserDetailsImpl userDetails = (UserDetailsImpl) userDetailsService.loadUserByUsername(getUserPk(jwtToken));
+        Claims claims = getClaims(jwtToken);
+        UserDetailsImpl userDetails = new UserDetailsImpl(Long.parseLong(claims.getSubject()), claims.get("role").toString());
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
