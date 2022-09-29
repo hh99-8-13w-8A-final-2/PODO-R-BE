@@ -14,6 +14,7 @@ public class PodoalException extends RuntimeException {
     public static final PodoalException NO_HEART_EXCEPTION = new PodoalException(NO_HEART);
     // 극장
     public static final PodoalException NO_THEATER_EXCEPTION = new PodoalException(NO_THEATER);
+    public static final PodoalException NO_THEATER_SEAT_EXCEPTION = new PodoalException(NO_SEAT_THEATER);
     // 뮤지컬
     public static final PodoalException NO_MUSICAL_EXCEPTION = new PodoalException(NO_MUSICAL);
     // 리뷰

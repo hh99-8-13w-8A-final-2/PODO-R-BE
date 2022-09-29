@@ -1,5 +1,6 @@
 package be.podor.theater.validator;
 
+import be.podor.exception.podor.PodoalException;
 import be.podor.musical.model.Musical;
 import be.podor.review.dto.ReviewRequestDto;
 import be.podor.theater.model.TheaterSeat;
@@ -19,9 +20,7 @@ public class TheaterSeatValidator {
                 requestDto.getRow(),
                 requestDto.getSeat(),
                 musical.getTheater().getTheaterId()
-        ).orElseThrow(
-                () -> new IllegalArgumentException("존재하지 않는 좌석입니다.")
-        );
+        ).orElseThrow(() -> PodoalException.NO_THEATER_SEAT_EXCEPTION);
 
         return theaterSeat;
     }
