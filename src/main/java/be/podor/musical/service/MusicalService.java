@@ -4,6 +4,7 @@ import be.podor.musical.dto.MusicalListResponseDto;
 import be.podor.musical.dto.MusicalResponseDto;
 import be.podor.musical.model.Musical;
 import be.podor.musical.repository.MusicalRepository;
+import be.podor.musical.validator.MusicalValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
@@ -52,12 +53,7 @@ public class MusicalService {
 
     // 선택된 뮤지컬 가져오기
     public MusicalResponseDto getMusical(Long musicalId) {
-        Musical musical = musicalRepository.findByMusicalId(musicalId).orElseThrow(
-                () -> new IllegalArgumentException("존재하지 않는 뮤지컬입니다.")
-        );
-
+        Musical musical = MusicalValidator.validate(musicalRepository, musicalId);
         return MusicalResponseDto.of(musical);
     }
-
-
 }
