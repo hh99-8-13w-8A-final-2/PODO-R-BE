@@ -8,6 +8,7 @@ import be.podor.member.model.Member;
 import be.podor.member.repository.MemberRepository;
 import be.podor.review.model.Review;
 import be.podor.review.repository.ReviewRepository;
+import be.podor.review.validator.ReviewValidator;
 import be.podor.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -42,10 +43,7 @@ public class CommentService {
 
     // 리뷰 댓글 작성
     public CommentResponseDto createReviewComment(Long reviewId, CommentRequestDto requestDto, UserDetailsImpl userDetails) {
-        Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(
-                        () -> new IllegalArgumentException(reviewId + "번에 해당하는 리뷰가 존재하지 않습니다.")
-                );
+        Review review = ReviewValidator.validate(reviewRepository, reviewId);
 
         Member member = memberRepository.findById(userDetails.getMemberId()).orElseThrow();
         Comment comment = commentRepository.save(Comment.of(requestDto, review));
