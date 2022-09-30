@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequiredArgsConstructor
 public class CommentController {
@@ -35,7 +37,7 @@ public class CommentController {
     @PostMapping("/api/comments")
     public ResponseEntity<?> createReviewComment(
             @RequestParam("reviewId") Long reviewId,
-            @RequestBody CommentRequestDto requestDto,
+            @Valid @RequestBody CommentRequestDto requestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         CommentResponseDto responseDto = commentService.createReviewComment(reviewId, requestDto, userDetails);
@@ -47,7 +49,7 @@ public class CommentController {
     @PutMapping("/api/comments/{commentId}")
     public ResponseEntity<?> UpdateReviewComment(
             @PathVariable Long commentId,
-            @RequestBody CommentRequestDto requestDto,
+            @Valid @RequestBody CommentRequestDto requestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         CommentResponseDto responseDto = commentService.updateReviewComment(commentId, requestDto, userDetails);

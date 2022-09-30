@@ -4,6 +4,7 @@ import be.podor.member.dto.MemberDto;
 import be.podor.member.model.Member;
 import be.podor.member.repository.MemberRepository;
 import be.podor.member.service.MemberSearchService;
+import be.podor.member.validator.MemberValidator;
 import be.podor.musical.model.Musical;
 import be.podor.musical.repository.MusicalRepository;
 import be.podor.musical.validator.MusicalValidator;
@@ -18,6 +19,7 @@ import be.podor.review.model.tag.ReviewTag;
 import be.podor.review.repository.ReviewRepository;
 import be.podor.review.repository.ReviewSearchRepository;
 import be.podor.review.repository.ReviewTagRepository;
+import be.podor.review.validator.ReviewValidator;
 import be.podor.reviewheart.repository.ReviewHeartRepository;
 import be.podor.security.UserDetailsImpl;
 import be.podor.tag.model.Tag;
@@ -117,13 +119,9 @@ public class ReviewService {
 
     // 리뷰 상세 조회
     public ReviewDetailResponseDto getReviewDetail(Long musicalId, Long reviewId, UserDetailsImpl userDetails) {
-        Review review = reviewRepository.findById(reviewId).orElseThrow(
-                () -> new IllegalArgumentException("해당 리뷰가 존재하지 않습니다.")
-        );
+        Review review = ReviewValidator.validate(reviewRepository, reviewId);
 
-        Member member = memberRepository.findById(review.getCreatedBy()).orElseThrow(
-                () -> new IllegalArgumentException("존재하지 않는 작성자입니다.")
-        );
+        Member member = MemberValidator.validate(memberRepository, review.getCreatedBy());
 
         Boolean heartChecked = userDetails != null && reviewHeartRepository.existsByReviewAndCreatedBy(review, userDetails.getMemberId());
 
@@ -133,9 +131,7 @@ public class ReviewService {
     // 리뷰 수정
     @Transactional
     public ReviewDetailResponseDto updateReview(Long musicalId, Long reviewId, ReviewRequestDto requestDto, UserDetailsImpl userDetails) {
-        Review review = reviewRepository.findById(reviewId).orElseThrow(
-                () -> new IllegalArgumentException(reviewId + "번 리뷰가 존재하지 않습니다.")
-        );
+        Review review = ReviewValidator.validate(reviewRepository, reviewId);
 
         if (!review.getCreatedBy().equals(userDetails.getMemberId())) {
             throw new IllegalArgumentException("다른 사용자의 리뷰를 수정할 수 없습니다.");
@@ -164,9 +160,7 @@ public class ReviewService {
         review.addTags(reviewTags);
         reviewTagRepository.deleteAllInBatch(prevTags);
 
-        Member member = memberRepository.findById(review.getCreatedBy()).orElseThrow(
-                () -> new IllegalArgumentException("존재하지 않는 작성자입니다.")
-        );
+        Member member = MemberValidator.validate(memberRepository, review.getCreatedBy());
 
         Boolean heartChecked = reviewHeartRepository.existsByReviewAndCreatedBy(review, userDetails.getMemberId());
 

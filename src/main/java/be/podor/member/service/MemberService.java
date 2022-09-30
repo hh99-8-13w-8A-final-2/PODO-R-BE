@@ -4,6 +4,7 @@ import be.podor.member.dto.MemberDto;
 import be.podor.member.model.Member;
 import be.podor.member.repository.MemberRepository;
 import be.podor.member.dto.MemberInfoRequestDto;
+import be.podor.member.validator.MemberValidator;
 import be.podor.security.UserDetailsImpl;
 import be.podor.security.jwt.JwtTokenProvider;
 import be.podor.security.jwt.TokenDto;
@@ -60,8 +61,7 @@ public class MemberService {
 
     @Transactional
     public MemberDto updateMemberInfo(UserDetailsImpl userDetails, MemberInfoRequestDto requestDto) {
-        Member member = memberRepository.findById(userDetails.getMemberId())
-                .orElseThrow(() -> new IllegalArgumentException("아이디가 없습니다."));
+        Member member = MemberValidator.validate(memberRepository, userDetails.getMemberId());
         member.updateMember(requestDto);
         return MemberDto.of(member);
     }
