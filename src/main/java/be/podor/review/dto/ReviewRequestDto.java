@@ -32,7 +32,6 @@ public class ReviewRequestDto {
     @NotNull
     private Integer seat;
 
-    @NotNull
     @NotBlank
     private String reviewContent;
 
