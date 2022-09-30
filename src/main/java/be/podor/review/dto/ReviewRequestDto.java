@@ -33,6 +33,7 @@ public class ReviewRequestDto {
     private Integer seat;
 
     @NotBlank
+    @Size(max = 500)
     private String reviewContent;
 
     @Size(min = 1, max = 4)
