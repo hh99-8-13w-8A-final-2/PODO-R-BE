@@ -11,11 +11,14 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 @Slf4j
 @RestControllerAdvice
 @RequiredArgsConstructor
 public class PodorExceptionHandler {
+
+    private final String MAX_FILESIZE_OVER_MESSAGE = "최대 입력 가능한 파일 사이즈를 초과하였습니다. (단일 파일 10MB)";
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<?> handleIllegalArgumentException(IllegalArgumentException exception) {
@@ -49,6 +52,13 @@ public class PodorExceptionHandler {
         }
         log.warn(builder.toString());
         return ResponseEntity.badRequest().body(builder.toString());
+    }
+
+    // 이미지 업로드 예외
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<?> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException exception) {
+        log.warn(exception.getMessage(), exception);
+        return ResponseEntity.badRequest().body(MAX_FILESIZE_OVER_MESSAGE);
     }
 
     // Podoal 통합 예외
