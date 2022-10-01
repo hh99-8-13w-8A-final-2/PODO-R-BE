@@ -30,6 +30,7 @@ application-*.properties
 application-*.yml
 application-*.yaml
 !application-h2.yaml
+!application-port*.yaml
 
 ### NetBeans ###
 /nbproject/private/
