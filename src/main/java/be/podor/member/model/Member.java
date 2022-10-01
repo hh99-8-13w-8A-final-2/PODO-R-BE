@@ -3,6 +3,7 @@ package be.podor.member.model;
 import be.podor.member.dto.KakaoUserInfoDto;
 import be.podor.member.dto.MemberInfoRequestDto;
 import be.podor.member.dto.TwitterUserInfoDto;
+import be.podor.security.jwt.refresh.RefreshToken;
 import be.podor.share.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,6 +39,9 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private MemberEnum memberRole;
+
+    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private RefreshToken refreshToken;
 
     public static Member of(KakaoUserInfoDto kakaoUserInfoDto) {
 
