@@ -5,6 +5,8 @@ import be.podor.security.jwt.TokenDto;
 import org.springframework.http.HttpHeaders;
 
 public class MemberUtil {
+    public static final Long LEAVE_MEMBER_ID = Long.MAX_VALUE;
+
     public static HttpHeaders getTokenHeaders(TokenDto tokenDto) {
         HttpHeaders headers = new HttpHeaders();
         headers.add(JwtFilter.AUTHORIZATION_HEADER, tokenDto.getAccessToken());

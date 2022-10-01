@@ -2,12 +2,12 @@ package be.podor.member.controller;
 
 
 import be.podor.member.dto.MemberDto;
+import be.podor.member.dto.MemberInfoRequestDto;
 import be.podor.member.dto.SocialUserDto;
 import be.podor.member.service.KakaoService;
 import be.podor.member.service.MemberService;
 import be.podor.member.service.TwitterService;
 import be.podor.member.util.MemberUtil;
-import be.podor.member.dto.MemberInfoRequestDto;
 import be.podor.security.UserDetailsImpl;
 import be.podor.security.jwt.TokenDto;
 import lombok.RequiredArgsConstructor;
@@ -70,11 +70,18 @@ public class SocialController {
                 .headers(MemberUtil.getTokenHeaders(tokenDto))
                 .build();
     }
+
     @PutMapping("/member/update")
     public ResponseEntity<?> updateMemberInfo(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                               @Valid @RequestBody MemberInfoRequestDto requestDto) {
         MemberDto memberDto = memberService.updateMemberInfo(userDetails, requestDto);
         return ResponseEntity.ok(memberDto);
+    }
+
+    @DeleteMapping("/member/delete")
+    public ResponseEntity<?> deleteMember(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        memberService.deleteMember(userDetails);
+        return ResponseEntity.ok().build();
     }
 }
 

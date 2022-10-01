@@ -4,6 +4,7 @@ import be.podor.comment.model.Comment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
@@ -18,4 +19,8 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     // 삭제
     void deleteByCommentIdAndCreatedBy(Long commentId, Long createdBy);
+
+    @Modifying(clearAutomatically = true)
+    @Query("UPDATE Comment c SET c.createdBy = :leaveMemberId WHERE c.createdBy = :createdBy")
+    void updateCreatedBy(Long leaveMemberId, Long createdBy);
 }

@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
@@ -28,4 +29,8 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     Page<Musical> findByReviewIdGroupByMusical(Long createdBy, Pageable pageable);
 
     Page<Review> findByMusical_MusicalIdAndCreatedBy(Long createdBy, Long musicalId, Pageable pageable);
+
+    @Modifying(clearAutomatically = true)
+    @Query("UPDATE Review r SET r.createdBy = :leaveMemberId WHERE r.createdBy = :createdBy")
+    void updateCreatedBy(Long leaveMemberId, Long createdBy);
 }
