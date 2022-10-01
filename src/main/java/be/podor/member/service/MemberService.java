@@ -1,9 +1,13 @@
 package be.podor.member.service;
 
+import be.podor.comment.repository.CommentRepository;
 import be.podor.member.dto.MemberDto;
+import be.podor.member.dto.MemberInfoRequestDto;
 import be.podor.member.model.Member;
 import be.podor.member.repository.MemberRepository;
-import be.podor.member.dto.MemberInfoRequestDto;
+import be.podor.member.repository.MemberSearchRepository;
+import be.podor.review.repository.ReviewRepository;
+import be.podor.reviewheart.repository.ReviewHeartRepository;
 import be.podor.member.validator.MemberValidator;
 import be.podor.security.UserDetailsImpl;
 import be.podor.security.jwt.JwtTokenProvider;
@@ -17,6 +21,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 
+import static be.podor.member.util.MemberUtil.LEAVE_MEMBER_ID;
 import static be.podor.security.jwt.JwtFilter.REFRESH_TOKEN_HEADER;
 
 @RequiredArgsConstructor
@@ -25,6 +30,10 @@ public class MemberService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberRepository memberRepository;
+    private final ReviewRepository reviewRepository;
+    private final CommentRepository commentRepository;
+    private final ReviewHeartRepository reviewHeartRepository;
+    private final MemberSearchRepository memberSearchRepository;
 
     @Transactional
     public void logout(UserDetailsImpl userDetails) {
@@ -64,5 +73,14 @@ public class MemberService {
         Member member = MemberValidator.validate(memberRepository, userDetails.getMemberId());
         member.updateMember(requestDto);
         return MemberDto.of(member);
+    }
+
+    @Transactional
+    public void deleteMember(UserDetailsImpl userDetails) {
+        reviewRepository.updateCreatedBy(LEAVE_MEMBER_ID, userDetails.getMemberId());
+        commentRepository.updateCreatedBy(LEAVE_MEMBER_ID, userDetails.getMemberId());
+        reviewHeartRepository.updateCreatedBy(LEAVE_MEMBER_ID, userDetails.getMemberId());
+        memberSearchRepository.updateCreatedBy(LEAVE_MEMBER_ID, userDetails.getMemberId());
+        memberRepository.deleteById(userDetails.getMemberId());
     }
 }
