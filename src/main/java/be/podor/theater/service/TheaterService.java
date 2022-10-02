@@ -1,6 +1,7 @@
 package be.podor.theater.service;
 
 import be.podor.exception.podor.PodoalException;
+import be.podor.redis.CacheKey;
 import be.podor.theater.dto.TheaterResponseDto;
 import be.podor.theater.dto.seat.FloorResponseDto;
 import be.podor.theater.dto.seat.SectionResponseDto;
@@ -35,10 +36,9 @@ public class TheaterService {
         return responseDto;
     }
 
-    // Todo refactoring
     //극장별 좌석 정보 조회
     @Transactional(readOnly = true)
-    @Cacheable(value = "seats", key = "#theaterId")
+    @Cacheable(value = CacheKey.Key.THEATER_SEAT_KEY, key = "#theaterId")
     public List<FloorResponseDto> getTheaterSeats(Long theaterId) {
 
         // 층별 정보 ResponseDto
