@@ -11,10 +11,17 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class NginxController {
 
+    private final String HEALTH = "up";
+
     private final Environment env;
 
-    @GetMapping("/api/profile")
+    @GetMapping("/api/nginx/profile")
     public String getProfile() {
         return Arrays.stream(env.getActiveProfiles()).findFirst().orElse("");
+    }
+
+    @GetMapping("/api/nginx/health")
+    public String getHealth() {
+        return HEALTH;
     }
 }

@@ -51,7 +51,7 @@ public class WebSecurityConfig {
                 .authorizeRequests()
                 .antMatchers("/api/oauth/**", "/api/twitter/**", "/api/member/**", "/api/reissue/**").permitAll()
                 .antMatchers(HttpMethod.GET,
-                        "/api/profile",
+                        "/api/nginx/**",
                         "/api/reviews/**",
                         "/api/musicals/**",
                         "/api/theaters/**",
