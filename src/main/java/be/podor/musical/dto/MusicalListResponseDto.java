@@ -6,13 +6,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MusicalListResponseDto {
+public class MusicalListResponseDto implements Serializable {
     private Long musicalId;
     private String musicalName;
     private String musicalRegion;

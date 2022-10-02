@@ -1,5 +1,6 @@
 package be.podor.tag.service;
 
+import be.podor.redis.CacheKey;
 import be.podor.review.repository.ReviewTagRepository;
 import be.podor.tag.dto.TagsResponseDto;
 import be.podor.tag.model.Tag;
@@ -29,7 +30,7 @@ public class TagService {
                 .collect(Collectors.toList()));
     }
 
-    @Cacheable(value = "popularTags", key = "#musicalId")
+    @Cacheable(value = CacheKey.Key.TAG_KEY, key = "#musicalId")
     public TagsResponseDto getPopularTags(Long musicalId, Pageable pageable) {
         List<String> tags = new ArrayList<>();
 
