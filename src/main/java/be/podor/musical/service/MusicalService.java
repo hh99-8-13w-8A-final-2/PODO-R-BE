@@ -5,6 +5,7 @@ import be.podor.musical.dto.MusicalResponseDto;
 import be.podor.musical.model.Musical;
 import be.podor.musical.repository.MusicalRepository;
 import be.podor.musical.validator.MusicalValidator;
+import be.podor.redis.CacheKey;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
@@ -22,7 +23,7 @@ public class MusicalService {
     private static PageRequest POPULAR_LIMIT = PageRequest.of(0, 2);
 
     // 메인화면 상영중 뮤지컬 가져오기
-    @Cacheable(value = "musicals", key = "'open'")
+    @Cacheable(value = CacheKey.Key.MUSICAL_KEY, key = "'open'")
     public List<MusicalListResponseDto> getOpenMusical() {
         List<Musical> musicals = musicalRepository.findTop10ByOrderByOpenDateDesc();
 
@@ -32,7 +33,7 @@ public class MusicalService {
     }
 
     // 전체 뮤지컬 가져오기
-    @Cacheable(value = "musicals", key = "'all'")
+    @Cacheable(value = CacheKey.Key.MUSICAL_KEY, key = "'all'")
     public List<MusicalListResponseDto> getAllMusical() {
         List<Musical> musicals = musicalRepository.findTop15ByOrderByOpenDateDesc();
 
@@ -42,7 +43,7 @@ public class MusicalService {
     }
 
     // 가장 리뷰가 많은 뮤지컬 가져오기
-    @Cacheable(value = "musicals", key = "'popular'")
+    @Cacheable(value = CacheKey.Key.MUSICAL_KEY, key = "'popular'")
     public List<MusicalListResponseDto> getPopularMusical() {
         List<Musical> musicals = musicalRepository.findPopularMusical(POPULAR_LIMIT);
 
