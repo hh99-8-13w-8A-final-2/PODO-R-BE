@@ -1,5 +1,5 @@
 echo "> 현재 구동중인 Port 확인"
-CURRENT_PROFILE=$(curl -s http://localhost/api/profile)
+CURRENT_PROFILE=$(curl -s http://localhost/api/nginx/profile)
 
 # 쉬고 있는 set 찾기: port1이 사용중이면 port2가 쉬고 있고, 반대면 port1이 쉬고 있음
 if [ $CURRENT_PROFILE == port1 ]
@@ -18,7 +18,7 @@ echo "> 전환할 Port: $IDLE_PORT"
 echo "> Port 전환"
 echo "set \$service_url http://127.0.0.1:${IDLE_PORT};" |sudo tee /etc/nginx/conf.d/service-url.inc
 
-PROXY_PORT=$(curl -s http://localhost/api/profile)
+PROXY_PORT=$(curl -s http://localhost/api/nginx/profile)
 echo "> Nginx Current Proxy Port: $PROXY_PORT"
 
 echo "> Nginx Reload"
