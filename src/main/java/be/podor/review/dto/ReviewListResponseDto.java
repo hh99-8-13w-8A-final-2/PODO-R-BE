@@ -18,6 +18,7 @@ public class ReviewListResponseDto {
     private Long musicalId;
     private Long reviewId;
     private String imgUrl;
+    private Long theaterId;
     private String grade;
     private String floor;
     private String section;
@@ -45,6 +46,7 @@ public class ReviewListResponseDto {
                 .musicalId(review.getMusical().getMusicalId())
                 .reviewId(review.getReviewId())
                 .imgUrl(review.getReviewFiles().get(0).getFilePath())
+                .theaterId(theaterSeat.getTheater().getTheaterId())
                 .grade(review.getGrade().toString())
                 .floor(theaterSeat.getFloor().getFloor())
                 .section(theaterSeat.getSection())
