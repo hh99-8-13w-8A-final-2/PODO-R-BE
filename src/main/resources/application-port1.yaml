@@ -1,0 +1,6 @@
+server:
+  port: 8081
+
+spring:
+  config:
+    import: classpath:application.yaml
