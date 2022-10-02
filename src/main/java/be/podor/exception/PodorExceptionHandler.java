@@ -20,6 +20,8 @@ public class PodorExceptionHandler {
 
     private final String MAX_FILESIZE_OVER_MESSAGE = "최대 입력 가능한 파일 사이즈를 초과하였습니다. (단일 파일 10MB)";
 
+    private final String WRONG_INPUT_MESSAGE = "입력값을 다시 확인해주세요.";
+
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<?> handleIllegalArgumentException(IllegalArgumentException exception) {
         String errorMessage = exception.getMessage();
@@ -51,7 +53,7 @@ public class PodorExceptionHandler {
             builder.append("]\n");
         }
         log.warn(builder.toString());
-        return ResponseEntity.badRequest().body(builder.toString());
+        return ResponseEntity.badRequest().body(WRONG_INPUT_MESSAGE);
     }
 
     // 이미지 업로드 예외
