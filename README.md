@@ -47,7 +47,7 @@
 <br>
 
 ## 🛠 아키텍쳐 | Architecture
-![KakaoTalk_20221003_032628588](https://user-images.githubusercontent.com/109055420/193469947-d72568f4-bb8d-4787-ac3f-cb4963a585c5.png)
+![Architecture](https://user-images.githubusercontent.com/109055420/193575167-388b4e4a-62a1-4f97-8735-626730b9524b.png)
 
 
 ## ⛏ 개발환경 | Development Environment
