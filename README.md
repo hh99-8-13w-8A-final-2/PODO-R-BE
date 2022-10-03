@@ -1,6 +1,6 @@
 # 🍇[포도알] 극장 좌석 리뷰사이트🍇
 ## 🔭목차 | Contents
-1. [포도알 소개 | About podoal](#-포도알-소개--about-)
+1. [포도알 소개 | About podoal](#-포도알-소개--about-pooral)
 2. [웹 사이트 | Website](#-웹사이트--website)
 3. [개발기간 | Project Period](#-개발기간--project-period)
 4. [주요 API 기능 | Main API](#-주요-api-기능--main-api)
@@ -13,7 +13,7 @@
 11. [More Info](#-more-info)
 <br>
 
-## 🎉 포도알 소개 | About WEat
+## 🎉 포도알 소개 | About podoal
 
 
 ### 극장 좌석?! 좋은 자리는 없는 상태에 최선의 선택은?
