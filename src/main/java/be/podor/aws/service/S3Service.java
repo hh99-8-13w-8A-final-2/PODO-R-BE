@@ -81,7 +81,7 @@ public class S3Service {
             return bufferedImage;
         }
 
-        return Scalr.resize(bufferedImage, targetWidth);
+        return Scalr.resize(bufferedImage, Scalr.Method.QUALITY, targetWidth);
     }
 
     // image to InputStream
