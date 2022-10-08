@@ -8,7 +8,10 @@ import be.podor.musical.repository.MusicalRepository;
 import be.podor.review.model.Review;
 import be.podor.review.model.reviewInfo.Evaluation;
 import be.podor.review.model.reviewInfo.ScoreEnum;
+import be.podor.review.model.tag.ReviewTag;
 import be.podor.security.UserDetailsImpl;
+import be.podor.tag.model.Tag;
+import be.podor.tag.repository.TagRepository;
 import be.podor.theater.model.Theater;
 import be.podor.theater.model.TheaterSeat;
 import be.podor.theater.model.type.FloorType;
@@ -20,8 +23,10 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,16 +34,26 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.PostConstruct;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
-@TestPropertySource(properties = {"spring.jpa.properties.hibernate.format_sql=true"})
+//@TestPropertySource(properties = {"spring.jpa.properties.hibernate.format_sql=true"})
 @Import(AuditingConfig.class)
 @DataJpaTest
 public class ReviewRepositoryTest {
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Autowired
     private ReviewRepository reviewRepository;
@@ -52,6 +67,12 @@ public class ReviewRepositoryTest {
     @Autowired
     private TheaterSeatRepository theaterSeatRepository;
 
+    @Autowired
+    private TagRepository tagRepository;
+
+    @Autowired
+    private ReviewTagRepository reviewTagRepository;
+
     private Member member;
 
     private Musical musical;
@@ -60,8 +81,10 @@ public class ReviewRepositoryTest {
 
     private TheaterSeat theaterSeat;
 
-    @PostConstruct
-    void setLoginUserAndData() {
+    private List<Tag> tags;
+
+    @BeforeEach
+    void setUp() {
         member = Member.builder()
                 .id(1L)
                 .nickname("테스트유저")
@@ -97,10 +120,21 @@ public class ReviewRepositoryTest {
                 .seat(1)
                 .theater(theater)
                 .build());
-    }
 
-    @BeforeEach
-    void setUp() {
+        tags = tagRepository.saveAll(
+                Arrays.asList(
+                        new Tag("테스트태그0"),
+                        new Tag("테스트태그1"),
+                        new Tag("테스트태그2"),
+                        new Tag("테스트태그3"),
+                        new Tag("테스트태그4"),
+                        new Tag("테스트태그5"),
+                        new Tag("테스트태그6"),
+                        new Tag("테스트태그7"),
+                        new Tag("테스트태그8"),
+                        new Tag("테스트태그9")
+                ));
+
         List<Review> reviewList = new ArrayList<>();
 
         for (int i = 0; i < 20; i++) {
@@ -111,7 +145,7 @@ public class ReviewRepositoryTest {
                     .sound(ScoreEnum.GOOD)
                     .build();
 
-            reviewList.add(Review.builder()
+            Review review = Review.builder()
                     .evaluation(evaluation)
                     .content("test_content_" + i)
                     .grade(GradeType.VIP)
@@ -120,10 +154,21 @@ public class ReviewRepositoryTest {
                     .theaterSeat(theaterSeat)
                     .block(false)
                     .operaGlass(false)
-                    .build());
+                    .build();
+
+            List<ReviewTag> reviewTags = tags.stream()
+                    .map(tag -> ReviewTag.of(review, tag))
+                    .collect(Collectors.toList());
+
+            review.addTags(reviewTags);
+
+            reviewList.add(review);
         }
 
         reviewRepository.saveAll(reviewList);
+
+        entityManager.flush();
+        entityManager.clear();
     }
 
     @DisplayName("MemberId Auditing Test")
@@ -136,8 +181,20 @@ public class ReviewRepositoryTest {
         Assertions.assertThat(reviewPage.getContent().get(0).getCreatedBy()).isEqualTo(member.getId());
     }
 
+    @DisplayName("N + 1 Test")
+    @Test
+    void nPlusOne() {
+        int size = 10;
+        Review review = reviewRepository.findAll().get(0);
+        Set<String> tagNames = tags.stream().map(Tag::getTag).collect(Collectors.toSet());
+
+        for (ReviewTag reviewTag : review.getReviewTags()) {
+            Assertions.assertThat(reviewTag.getTag().getTag()).isIn(tagNames);
+        }
+    }
+
     @AfterEach
     void tearDown() {
-        reviewRepository.deleteAll();
+        theaterRepository.deleteAll();
     }
 }
