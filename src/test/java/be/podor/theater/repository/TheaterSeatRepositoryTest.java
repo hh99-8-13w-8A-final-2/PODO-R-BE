@@ -1,8 +1,8 @@
 package be.podor.theater.repository;
 
-import be.podor.theater.model.type.FloorType;
 import be.podor.theater.model.Theater;
 import be.podor.theater.model.TheaterSeat;
+import be.podor.theater.model.type.FloorType;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,17 +10,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@ComponentScan(basePackages = "be.podor.theater.repository")
-@ActiveProfiles("h2")
 @DataJpaTest
-class TheaterSeatRepositoryTest {
+public class TheaterSeatRepositoryTest {
 
     @Autowired
     private TheaterRepository theaterRepository;
@@ -128,3 +124,4 @@ class TheaterSeatRepositoryTest {
         theaterRepository.deleteAll();
     }
 }
+
